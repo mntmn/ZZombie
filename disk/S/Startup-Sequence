@@ -12,19 +12,12 @@ Copy >NIL: ENVARC:#? ENV: ALL
 Mount >NIL: DEVS:DOSDrivers/~(#?.info)
 
 Alias Version C:VersionWB LIKECVER
-Alias Ed SYS:Tools/Redit
-Alias Installer C:Installer
-Alias More C:More
-Alias MultiView SYS:Utilities/MultiView
 
-SetPatch
 RTPatch
 
-IF EXISTS s:user-startup
-  Execute s:user-startup
+IF EXISTS S:User-Startup
+  Execute S:User-Startup
 EndIF
-
-C:FastIPrefs
 
 LoadWB
 EndCLI
