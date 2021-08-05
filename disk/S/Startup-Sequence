@@ -7,11 +7,15 @@ Assign  CLIPS:   RAM:Clipboards
 Assign  LOCALE:  SYS:Locale
 Assign  HELP:    LOCALE:Help
 
+Alias Version C:VersionWB LIKECVER
+
+Assign VIM: SYS:Vim-5.3
+Alias vim VIM:Vim
+Alias ed VIM:Vim
+
 Copy >NIL: ENVARC:#? ENV: ALL
 
 Mount >NIL: DEVS:DOSDrivers/~(#?.info)
-
-Alias Version C:VersionWB LIKECVER
 
 RTPatch
 
