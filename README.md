@@ -23,7 +23,7 @@ If you think that any license of any included program is violated by this distri
 
 *Please note that this is not intended as a base for a production system!* It is merely a pre-installation/last resort/insane technical demo environment for when you really don't care about the quality of the components, just that it works somehow. It is held together by chewing gum and wire. Get the real AmigaOS, P96 etc. instead!
 
-## The Parts
+## The Parts: Minimal Version
 
 ### Commands
 
@@ -54,20 +54,16 @@ Most C: commands come from [AROS m68k](https://github.com/aros-development-team/
 - Wait
 - Which
 
+The license for these tools is the [AROS APL](https://github.com/aros-development-team/AROS/blob/master/LICENSE) (based on Mozilla Public License).
+
 The `Assign` command from AROS crashes, so I heavily edited the source and compiled it with bebbo-gcc and made it work. The modified source is in the `custom` folder.
 
 Additional commands and tools:
 
-- FastIPrefs (replaces IPrefs) http://aminet.net/package/util/boot/FastIPrefs4035
-- Installer (MUI replacement) http://aminet.net/package/util/sys/Installer
-- MuchMore (replaces More) http://aminet.net/package/text/show/muchmore46
-- OS 2.0+ MultiView replacement http://aminet.net/package/util/sys/2b_mv_os2
-- lha https://aminet.net/package/util/arc/lha
-- VersionWB (`VersionWB LIKECVER` replaces Version via an Alias in `Startup-Sequence`) http://aminet.net/package/util/sys/VersionWB
+- lha https://aminet.net/package/util/arc/lha License: "Permissive License"
+- VersionWB (`VersionWB LIKECVER` replaces Version via an Alias in `Startup-Sequence`) http://aminet.net/package/util/sys/VersionWB License: "Gift-Ware"
 - RTPatch (see asl.library below)
-- ToolX (replaces IconX) http://aminet.net/package/util/sys/toolx24
-- SetPatch 43.6b http://aminet.net/package/util/boot/SetPatch_43.6b
-- Redit (text editor, Aliased as replacement for Ed) https://aminet.net/package/text/edit/
+- ToolX (replaces IconX) http://aminet.net/package/util/sys/toolx24 License: "Freeware"
 
 ### Libraries
 
@@ -90,37 +86,31 @@ Most libraries come from [AROS m68k](https://github.com/aros-development-team/AR
 
 Other libraries:
 
-- As we don't have asl.library, it is stubbed by [NewReqLibs](http://aminet.net/package/util/libs/NewReqLibs18) and replaced by [ReqTools](http://aminet.net/package/util/libs/ReqToolsUsr.lha)
-- FileID.library http://aminet.net/package/util/libs/FIDLib80
-- notifyintuition.library http://aminet.net/package/util/libs/NotInt24
+- As we don't have asl.library, it is stubbed by:
+  - [NewReqLibs](http://aminet.net/package/util/libs/NewReqLibs18) License: Freeware
+  - and replaced by [ReqTools](http://aminet.net/package/util/libs/ReqToolsUsr.lha) License: Freeware or Shareware, depending on context. ("ReqTools is Copyright © Nico François and Magnus Holmgren")
 
 ### Classes, Datatypes
 
-- picture.datatype replacement is installed by Picasso96 if we sneakily create an empty dummy file before
-- colorwheel.gadget (RTG capable replacement) http://aminet.net/package/dev/gui/ColorWheel
+- colorwheel.gadget (RTG capable replacement) http://aminet.net/package/dev/gui/ColorWheel (from AROS)
 - TODO: gradientslider.gadget
 
 ### DOSDrivers
 
-- PIPE from AROS
+- PIPE (from AROS)
 
 ### Prefs
 
-- WBPattern from FastIPrefs http://aminet.net/package/util/boot/FastIPrefs4035
-- ScreenMode: MUIScrMode http://aminet.net/package/util/wb/MUIScrMode1_5
+- None.
 
 ### Useful Software
 
 These are preinstalled but also the original archives are included:
 
-- MUI 3.8, the Magical User Interface (Shareware) https://aminet.net/package/util/libs/mui38usr
-- WHDLoad http://aminet.net/package/dev/misc/WHDLoad_usr
-- MiamiDx Demo Version (TCP/IP Stack) https://aminet.net/package/comm/tcp/MiamiDx10cmain and http://aminet.net/package/comm/tcp/MiamiDx10c-MUI
-- AWeb APL Lite 3.5.09 (Basic HTML browser) http://aminet.net/package/comm/www/AWeb-3.5.09-68000
-- Ixemul 48 (POSIX libraries required for wget) https://aminet.net/package/util/libs/ixemul-48.0
-- Wget 1.8.2 (Downloader tool) http://aminet.net/package/comm/tcp/wget-1.8.2
-- Picasso96 2.0 (Obsolete version, but can do the basics) https://aminet.net/package/driver/video/Picasso96
-- SnoopDos https://aminet.net/package/util/moni/SnoopDos
+- AmiTCP 3.0 https://aminet.net/package/comm/net/AmiTCP-bin-30b2 License: GNU
+- AWeb APL Lite 3.5.09 (Basic HTML browser) http://aminet.net/package/comm/www/AWeb-3.5.09-68000 License: "AWeb Public Licence", https://www.yvonrozijn.nl/aweb/apl.txt
+- Ixemul 48 (POSIX libraries required for wget) https://aminet.net/package/util/libs/ixemul-48.0 License: BSD?
+- Wget 1.8.2 (Downloader tool) http://aminet.net/package/comm/tcp/wget-1.8.2 License: GPL
 - ZZ9000 Drivers
 
 ### Fonts
@@ -134,9 +124,3 @@ These are preinstalled but also the original archives are included:
 ### S:Startup-Sequence
 
 - Custom written.
-
-## Unsolved Problems: Help Wanted
-
-1. Missing monitor drivers (`PAL` and `NTSC` files normally in `Devs:Monitors`) make it hard to use MUIScrMode. Unlike the original ScreenMode Prefs, it doesn't seem to pick up the built-in PAL and NTSC screenmodes.
-2. FastIPrefs has weird behavior. It seems to auto-hide the menu bar of Workbench when Backdrop is on?!
-3. AmigaGuide files don't seem to be rendered by the MultiView replacement
