@@ -1,0 +1,31 @@
+@database ch_nfsutil
+
+Copyright (c) 1994 Carsten Heyl
+All Rights Reserved
+
+@master ch_nfsutil.guide
+@node main "ch_nfs utilities"
+This document serves as the main node for all ch_nfs documentation.
+
+        @{" The NFS client ch_nfsc (main document)" link "ch_nfsc/main"}
+
+        @{" ch_chmod    - Changing file permissions         " link "ch_chmod.doc/main"}
+        @{" ch_die      - Removing a NFS client             " link "ch_die.doc/main"}
+        @{" ch_mknod    - Creating special files            " link "ch_mknod.doc/main"}
+        @{" ch_nfsc     - Parameters                        " link "ch_nfsc/ch_nfsc"}
+        @{" ch_nfsctl   - Runtime parameter control         " link "ch_nfsc/ch_nfsctl"}
+        @{" ch_nfsmount - Mounting a NFS drive              " link "ch_nfsc/ch_nfsmount"}
+        @{" ch_setowner - Set file's user and group         " link "ch_setowner.doc/main"}
+        @{" showmount   - Show information about NFS server " link "showmount.doc/main"}
+
+        @{" How to reach the author." link "ch_nfsc/Reporting Bugs"}
+@remark             @{" Contacting the author                   " link author}
+@endnode
+
+@node author "Contacting the author"
+@endnode
+
+@node HELP "HELP"
+No extra help available.
+$Id: ch_nfsutil,v 1.4 1994/05/08 21:24:47 alph Exp $
+@endnode

@@ -1,0 +1,54 @@
+
+NAME
+	ch_chmod
+
+SYNOPSIS
+	ch_chmod [ugoa][+|-|=][uhsparwed][,Flags][,Flags] FILES/A/M ALL/S
+
+DESCRIPTION
+	Change file permissions for given file, recursively if flag 
+	ALL is present.
+	The file permissions are divided in 3 groups:
+
+		u	user
+		g	group
+		o	others
+
+	"a" is a synonym for "ugo".
+
+	The following are legal modifiers
+
+		+	set the corresponding flags
+		-	reset the corresponding flags
+		=	set to the given flags
+
+	
+	The following flags are possible: 
+	(Not all are present on all file systems or are legal in all 
+	 permission groups.
+	 Illegal combinations are silently ignored.)
+
+		u	user:	setuid bit (unix, multiuser fs, bffs (?))
+			group:	setgid bit (unix, bffs (?))
+			others:	sticky bit (unix, bffs (?))
+		h		hidden 	(amiga)
+		s		script 	(amiga)
+		p		pure 	(amiga)
+		a		archive (amiga)
+		r		read
+		w		write
+		e		execute
+		d		delete
+
+BUGS
+	When removing the write permission on NFS partitions you have to specify
+	both "w" and "d".
+
+$Id: ch_chmod.doc,v 1.1 1994/03/06 21:52:21 alph Exp $
+	
+		
+	
+
+	
+	
+	

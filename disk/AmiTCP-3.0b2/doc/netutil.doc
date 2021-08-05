@@ -1,0 +1,1174 @@
+TABLE OF CONTENTS
+
+netutil.doc/arp
+netutil.doc/ifconfig
+netutil.doc/inetd
+netutil.doc/letnet
+netutil.doc/offline
+netutil.doc/online
+netutil.doc/ping
+netutil.doc/portmap
+netutil.doc/route
+netutil.doc/rpcinfo
+utilities/finger
+utilities/login
+utilities/ls
+utilities/passwd
+utilities/rsh
+utilities/whoami
+netutil.doc/arp                                               netutil.doc/arp
+
+  NAME
+       Arp - address resolution display and control
+
+  SYNOPSIS
+       arp hostname
+       arp -a [netname | hostname]
+       arp -d hostname
+       arp -s hostname address [temp] [pub] 
+       arp -f filename
+
+  DESCRIPTION
+       Arp displays and modifies the Internet to hardware address
+       translation tables used by the Address Resolution Protocol. The
+       hardware address is a hexadecimal string with each octet separated
+       by a colon, for instance 0:12:ff:a. The length of the address must
+       be correct for the specified interface.
+
+  OPTIONS
+        none If no options are specified (first form above), arp displays
+             the current ARP entry for hostname.  The hostname must either
+             appear in the hostname database (SEE hosts), or be a DARPA
+             Internet address expressed in Internet standard "dot
+             notation". Hostname can also be resolved by nameserver.
+
+       -a    Display all current ARP entries by reading the address mapping
+             table of the specified (sub)network. `Hostname' is used to as
+             default network specifier.
+
+       -d    If an ARP entry exists for the host called hostname, delete
+             it. [This requires super-user privileges.]
+
+       -s    Create an ARP entry for the host called hostname with the
+             hardware station address address. The hardware station address
+             is given as hexadecimal bytes separated by colons. If an ARP
+             entry already exists for hostname, the existing entry is
+             updated with the new information. The entry is permanent
+             unless the word temp is given in the command. If the word pub
+             is specified, the entry is published, which means that this
+             system will act as an ARP server responding to requests for
+             hostname even though the host address is not its own.
+
+       -f    Read file filename and set multiple entries in the ARP tables.
+             Entries in the file should be of the form:
+
+                  hostname address [temp] [pub]
+
+             Argument meanings are the same as for the -s option.
+
+  AUTHOR
+       Arp was developed by the University of California, Berkeley, for the
+       BSD Unix system.
+
+  SEE ALSO
+       ifconfig, netif.protocols/arp, "net/if_arp.h"
+
+netutil.doc/ifconfig                                     netutil.doc/ifconfig
+
+  NAME
+       ifconfig - configure network interface parameters
+
+  VERSION
+       $Id: ifconfig.c,v 3.1 1994/02/22 03:28:22 ppessi Exp $
+
+  SYNOPSIS
+       ifconfig interface address_family [address [dest_address]] [params]
+       ifconfig interface [address_family]
+
+  DESCRIPTION
+       ifconfig is used to assign an address to a network interface and/or
+       configure network interface parameters.  ifconfig must be used at
+       boot time to define the network address of each interface present on
+       a machine.  It can also be used at other times to redefine an
+       interface's address or other operating parameters.
+
+  PARAMETERS
+       interface     A string of the interface name concatenated with unit
+                     numver, for example `eth0'.  The AmiTCP/IP network
+                     interfaces are defined in the `AmiTCP:db/interface'
+                     file.  For example, a interface sl corresponds by
+                     default to `Devs:networks/rhcslip.device'.
+
+       address_family
+
+                     Name of protocol on which naming scheme is based.  An
+                     interface can receive transmissions in differing
+                     protocols, each of which may require separate naming
+                     schemes.  Therefore, it is necessary to specify the
+                     address_family, which may affect interpretation of the
+                     remaining parameters on the command line.  The only
+                     address family currently supported is inet (DARPA-
+                     Internet family).
+
+       address       Either a host name present in the host name database,
+                     (SEE hosts), or a DARPA Internet address
+                     expressed in Internet standard "dot notation".  The
+                     host number can be omitted on 10-Mbyte/second Ethernet
+                     interfaces (which use the hardware physical address),
+                     and on interfaces other than the first.
+
+       dest_address  Address of destination system.  Consists of either a
+                     host name present in the host name database, hosts(4),
+                     or a DARPA Internet address expressed in Internet
+                     standard "dot notation".
+
+  SWITCHES
+       The following operating parameters can be specified:
+
+        up           Mark an interface "up". Enables interface after an
+                     "ifconfig down."  Occurs automatically when setting the
+                     address on an interface.  Setting this flag has no
+                     effect if the hardware is "down".
+
+        down         Mark an interface "down".  When an interface is marked
+                     "down", the system will not attempt to transmit
+                     messages through that interface. If possible, the
+                     interface will be reset to disable reception as well.
+                     This action does not automatically disable routes
+                     using the interface.
+
+       arp           Enable the use of Address Resolution Protocol in
+                     mapping between network level addresses and link-level
+                     addresses (default).
+
+       -arp          Disable the use of Address Resolution Protocol.
+
+        metric n     Set the routing metric of the interface to n, default
+                     0.  The routing metric is used by the routing protocol
+                     (see gated).  Higher metrics have the effect of making
+                     a route less favorable; metrics are counted as
+                     additional hops to the destination network or host.
+
+        debug        Enable driver-dependent debugging code. This usually
+                     turns on extra console error logging.
+
+       -debug        Disable driver-dependent debugging code.
+
+        netmask mask (Inet only) Specify how much of the address to reserve
+                     for subdividing networks into sub-networks.  mask
+                     includes the network part of the local address, and
+                     the subnet part which is taken from the host field of
+                     the address.  mask can be specified as a single hexa-
+                     decimal number with a leading 0x, with a dot-notation
+                     Internet address, or with a pseudo-network name listed
+                     in the file AmiTCP:db/networks.  `mask' contains 1's
+                     for each bit position in the 32-bit address that are
+                     to be used for the network and subnet parts, and 0's
+                     for the host part.  mask should contain at least the
+                     standard network portion, and the subnet field should
+                     be contiguous with the network portion.
+
+       broadcast    (Inet only) Specify the address that represents
+                     broadcasts to the network.  The default broadcast
+                     address is the address with a host part of all 1's.
+
+       The command:
+
+            ifconfig interface/unit
+
+       with no optional command arguments supplied displays the current
+       configuration for interface.  If address_family is specified,
+       ifconfig reports only the details specific to that address family.
+
+  DIAGNOSTICS
+       Messages indicating that the specified interface does not exist, the
+       requested address is unknown, or the user is not privileged and
+       tried to alter an interface's configuration.
+
+  EXAMPLES
+       ifconfig lo0 127.0.0.1
+
+               This command marks internal loopback device "UP", and
+               attach an inet address 127.0.0.1 to it.
+
+       ifconfig cslip0 inet 193.102.4.144 193.102.4.129
+
+               This command starts the CSLIP driver, attach an
+               address 193.102.4.144 (our internet address) and a
+               destination address 193.102.4.129 (the internet
+               address of the host you are connecting) to it.
+
+       ifconfig eth0 inet 193.124.100.64 netmask 255.255.255.192 -arp
+
+               This command loads an ethernet driver (by default for the
+               Commodore A2065 Ethernet adapter unit 0), marks it "up",
+               disables ARP protocol for it, attaches an inet address
+               193.124.100.65 to it and sets its netmask to
+               255.255.255.192.  A bitwise logical and of netmask and
+               address for the interface forms a subnet address, in this
+               case 193.124.100.64.  All packets aimed to hosts with same
+               subnet address (that is hosts 193.124.100.64 -
+               193.124.100.127) are routed to this interface.
+
+  FILES
+       AmiTCP:db/interfaces
+
+  SEE ALSO
+       netstat, hosts, arp, "net/if.h", "net/sana2tags.h"
+
+netutil.doc/inetd                                           netutil.doc/inetd
+
+  NAME
+        inetd - internet ``super-server''
+
+  TEMPLATE
+       inetd DEBUG/S CONFIGFILE
+
+  DESCRIPTION
+
+       Inetd should be run when the AmiTCP/IP protocol stack is started.
+       Inetd listens for connections on certain internet sockets.  When a
+       connection is found on one of its sockets, it decides what service the
+       socket corresponds to, and invokes a program to service the request.
+       After the program is finished, it continues to listen on the socket
+       (except in some cases which will be described below).  Essentially,
+       inetd allows running one daemon to invoke several others, reducing
+       load on the system.
+
+  PARAMETERS
+       DEBUG      Turns on debugging.
+
+       CONFIGFILE Specifies the configuration file name.
+
+  CONFIGURATION
+
+       Upon execution, inetd reads its configuration information from a
+       configuration file which, by default, is AmiTCP:db/inetd.conf. There
+       must be an entry for each field of the configuration file, with
+       entries for each field separated by a tab or a space.  Comments are
+       denoted by a ``#'' at the beginning of a line or ``;'' anywhere in the
+       line. There must be an entry for each field. The fields of the
+       configuration file are as follows:
+
+             service name
+             socket type
+             protocol
+             wait/nowait
+             user
+             server program
+             server program name
+             server program arguments
+
+       The service-name entry is the name of a valid service in the
+       netdatabase.  For ``internal'' services (discussed below), the service
+       name must be the official name of the service.
+
+       The socket-type should be one of ``stream'', ``dgram'', ``raw'',
+       ``rdm'', or ``seqpacket'', depending on whether the socket is a
+       stream, datagram, raw, reliably delivered message, or sequenced packet
+       socket. Current system supports only stream, datagram and raw
+       protocols.
+
+       The protocol must be a valid protocol as given in netdatabase.
+       Examples might be ``tcp'' or ``udp''.
+
+       The wait/nowait entry is useful for datagram sockets only (other
+       sockets should have a ``nowait'' entry in this space).  If a datagram
+       server connects to its peer, freeing the socket so inetd can received
+       further messages on the socket, it is said to be a ``multi-threaded''
+       server, and should use the ``nowait'' entry.  For datagram servers
+       which process all incoming datagrams on a socket and eventually time
+       out, the server is said to be ``single-threaded'' and should use a
+       ``wait'' entry.  Comsat and talkd are both examples of the latter type
+       of datagram server.
+
+       The user entry should contain the user name of the user as whom the
+       server should run. This field is for Unix and future compability
+       only.
+
+       The server-program entry should contain the pathname of the program
+       which is to be executed by inetd when a request is found on its
+       socket.  If the server program is resident, the path name should be
+       suppressed. If inetd provides this service internally, this entry
+       should be ``internal''.
+
+       The server-program-name is CLI command name for the server process. It
+       is shown in the printout of ``status'' command. (Task name of the
+       server process is the service and the peer address, e.g. ``echo
+       [192.233.15.19]''.) This and argument entry are optional.
+
+       The server program arguments should be just as arguments normally are.
+
+       Inetd provides several ``trivial'' services internally by use of
+       routines within itself.  These services are ``echo'', ``discard'',
+       ``chargen'' (character generator), ``daytime'' (human readable time),
+       and ``time'' (machine readable time, in the form of the number of
+       seconds since mid­ night, January 1, 1900).  All of these services are
+       TCP and UDP based.  For details of these services, consult the
+       appropriate RFC from the Network Information Center.
+
+       Inetd rereads its configuration file when it receives the CTRL-F
+       signal.  Services may be added, deleted or modified when the
+       configuration file is reread.
+
+  HISTORY
+       The inetd command appeared in 4.3BSD system.
+
+  SEE ALSO
+
+netutil.doc/letnet                                         netutil.doc/letnet
+
+  NAME
+       Letnet - a simple TCP connection tool
+
+  SYNOPSIS
+       letnet HOSTNAME/A,PORT/A
+
+  DESCRIPTION
+       Letnet connects to the specified TCP port at the specified host. The
+       data read from standard input is sent to the host and data received
+       from the connection is written to the standard output. Letnet
+       terminates upon shutdown of the socket or receiving SIGBREAKF_CTRL_C
+       signal.
+
+  ARGUMENTS
+        HOSTNAME/A
+               If there is no name service available, hostname may be given
+               in the Internet dot notation.
+
+        PORT/A
+               The port identifier is searched from the standard services
+               (SEE ALSO netdb/services) database. A nonstandard
+               service port may be specified in the numeric form, numbers
+               between 1---65535 are acceptable. 
+
+  AUTHOR
+       Pekka Pessi, the AmiTCP/IP Group, Helsinki University of Technology
+
+  SEE ALSO
+       netdb/services, netdb/hosts       
+
+netutil.doc/offline                                       netutil.doc/offline
+
+  NAME
+       Offline - put a SANA-II device offline 
+
+  TEMPLATE
+       Offline DEV=DEVICE devicename[/unit] [UNIT unit]
+
+  DESCRIPTION 
+       Offline sends the S2_OFFLINE command to the given SANA-II device
+       driver and unit. This command is normally used to disconnect SANA-II
+       device driver from the network adapter hardware. Device driver does
+       not accept any more read or write requests.
+
+  EXAMPLES 
+       This command puts the SLIP offline, which frees then the serial port
+       to your use.
+
+       OFFLINE slip.device/1
+
+  NOTES
+       The offline figures out its identity from its CLI program name.
+
+  SEE ALSO
+       Online, sana2.device/S2_OFFLINE
+
+netutil.doc/online                                         netutil.doc/online
+
+  NAME
+       Online - put a SANA-II device online 
+
+  TEMPLATE
+       Online DEV=DEVICE devicename[/unit] [UNIT unit]
+
+  DESCRIPTION 
+       Online sends the S2_ONLINE command to the given SANA-II device driver
+       and unit. The device driver restarts the network adapter hardware and
+       accepts read and write request again.
+
+  EXAMPLES 
+
+       This command puts the Commodore Ethernet driver online.
+
+       Online a2065.device/0
+
+  NOTES
+       The online figures out its identity from its CLI program name.
+
+  SEE ALSO
+       Offline, sana2.device/S2_ONLINE
+
+netutil.doc/ping                                             netutil.doc/ping
+
+   NAME
+       ping - send ICMP ECHO_REQUEST packets to network hosts
+
+   SYNOPSIS
+       ping [-dfnqrvR] [-c count] [-i wait] [-l preload] [-p pattern]
+            [-s packetsize] [-L [ hosts ]] host
+
+   DESCRIPTION
+       Ping uses the ICMP protocol's mandatory ECHO_REQUEST datagram to
+       elicit an ICMP ECHO_RESPONSE from a host or gateway.  ECHO_REQUEST
+       datagrams (``pings'') have an IP and ICMP header, followed by a
+       ``struct timeval'' and then an arbitrary number of ``pad'' bytes
+       used to fill out the packet.  The options are as follows: Other
+       options are:
+
+       -c count
+               Stop after sending (and receiving) count ECHO_RESPONSE
+               packets.
+
+       -d      Set the SO_DEBUG option on the socket being used.
+
+       -f      Flood ping.  Outputs packets as fast as they come back or
+               one hundred times per second, whichever is more.  For every
+               ECHO_REQUEST sent a period ``.'' is printed, while for ever
+               ECHO_REPLY received a backspace is printed.  This provides a
+               rapid display of how many packets are being dropped.  Only
+               the super-user may use this option.  This can be very hard
+               on a network and should be used with caution.
+
+       -i wait
+               Wait wait seconds between sending each packet. The default
+               is to wait for one second between each packet.  This option
+               is incompatible with the -f option.
+
+       -L [hosts]
+               Use loose routing IP option.  Includes IPOPT_LSRR option in
+               the ECHO_REQUEST packet with all specified hosts in the
+               route.  Many hosts wont support loose routing, such a host
+               can either ignore or return the loose routed ICMP packet in
+               the middle of the route.
+
+       -l preload
+               If preload is specified, ping sends that many packets as
+               fast as possible before falling into its normal mode of
+               behavior.
+
+       -n      Numeric output only.  No attempt will be made to lookup
+               symbolic names for host addresses.
+
+       -p pattern
+               You may specify up to 16 ``pad'' bytes to fill out the
+               packet you send.  This is useful for diagnosing
+               data-dependent problems in a network.  For example, ``-p
+               ff'' will cause the sent packet to be filled with all ones.
+
+       -q      Quiet output.  Nothing is displayed except the summary lines
+               at startup time and when finished.
+
+       -R      Record route.  Includes the RECORD_ROUTE option in the
+               ECHO_REQUEST packet and displays the route buffer on
+               returned packets.  Note that the IP header is only large
+               enough for nine such routes.  Many hosts ignore or discard
+               this option.
+
+       -r      Bypass the normal routing tables and send directly to a host
+               on an attached network.  If the host is not on a
+               directly-attached network, an error is returned.  This
+               option can be used to ping a local host through an interface
+               that has no route through it.
+
+       -s packetsize
+               Specifies the number of data bytes to be sent.  The default
+               is 56, which translates into 64 ICMP data bytes when
+               combined with the 8 bytes of ICMP header data.
+
+       -v      Verbose output.  ICMP packets other than ECHO_RESPONSE that
+               are received are listed.
+
+       When using ping for fault isolation, it should first be run on the
+       local host, to verify that the local network interface is up and
+       running.  Then, hosts and gateways further and further away should
+       be ``pinged''.  Round-trip times and packet loss statistics are
+       computed.  If duplicate packets are received, they are not included
+       in the packet loss calculation, although the round trip time of
+       these packets is used in calculating the minimum/average/maximum
+       round-trip time numbers.  When the specified number of packets have
+       been sent (and received) or if the program is terminated with a
+       SIGINT, a brief summary is displayed.
+
+       This program is intended for use in network testing, measurement and
+       management.  Because of the load it can impose on the network, it is
+       unwise to use ping during normal operations or from automated
+       scripts.
+
+   ICMP PACKET DETAILS
+       An IP header without options is 20 bytes.  An ICMP ECHO_REQUEST
+       packet contains an additional 8 bytes worth of ICMP header followed
+       by an arbitrary amount of data.  When a packetsize is given, this
+       indicated the size of this extra piece of data (the default is 56).
+       Thus the amount of data received inside of an IP packet of type ICMP
+       ECHO_REPLY will always be 8 bytes more than the requested data space
+       (the ICMP header).
+
+       If the data space is at least eight bytes large, ping uses the first
+       eight bytes of this space to include a timestamp which it uses in
+       the computation of round trip times.  If less than eight bytes of
+       pad are specified, no round trip times are given.
+
+   DUPLICATE AND DAMAGED PACKETS
+       Ping will report duplicate and damaged packets.  Duplicate packets
+       should never occur, and seem to be caused by inappropriate
+       link-level retransmissions.  Duplicates may occur in many situations
+       and are rarely (if ever) a good sign, although the presence of low
+       levels of duplicates may not always be cause for alarm.
+
+       Damaged packets are obviously serious cause for alarm and often
+       indicate broken hardware somewhere in the ping packet's path (in the
+       network or in the hosts).
+
+   TRYING DIFFERENT DATA PATTERNS
+       The (inter)network layer should never treat packets differently
+       depending on the data contained in the data portion.  Unfortunately,
+       data-dependent problems have been known to sneak into networks and
+       remain undetected for long periods of time.  In many cases the
+       particular pattern that will have problems is something that doesn't
+       have sufficient ``transitions'', such as all ones or all zeros, or a
+       pattern right at the edge, such as almost all zeros.  It isn't
+       necessarily enough to specify a data pattern of all zeros (for
+       example) on the command line because the pattern that is of interest
+       is at the data link level, and the relationship between what you
+       type and what the controllers transmit can be complicated.
+
+       This means that if you have a data-dependent problem you will
+       probably have to do a lot of testing to find it.  If you are lucky,
+       you may manage to find a file that either can't be sent across your
+       network or that takes much longer to transfer than other similar
+       length files.  You can then examine this file for repeated patterns
+       that you can test using the -p option of ping.
+
+   TTL DETAILS
+       The TTL value of an IP packet represents the maximum number of IP
+       routers that the packet can go through before being thrown away.  In
+       current practice you can expect each router in the Internet to
+       decrement the TTL field by exactly one.
+
+       The TCP/IP specification states that the TTL field for TCP packets
+       should be set to 60, but many systems use smaller values (4.3 BSD
+       uses 30, 4.2 used 15). The AmiTCP/IP uses normally TTL value 30.
+
+       The maximum possible value of this field is 255, and most systems
+       set the TTL field of ICMP ECHO_REQUEST packets to 255.  This is why
+       you will find you can ``ping'' some hosts, but not reach them with
+       telnet or ftp.
+
+       In normal operation ping prints the ttl value from the packet it re-
+       ceives.  When a remote system receives a ping packet, it can do one
+       of three things with the TTL field in its response:
+
+       ·   Not change it; this is what Berkeley Unix systems did before the
+           4.3BSD-Tahoe release.  In this case the TTL value in the
+           received packet will be 255 minus the number of routers in the
+           round-trip path.
+
+       ·   Set it to 255; this is what AmiTCP/IP and current Berkeley Unix
+           systems do.  In this case the TTL value in the received packet
+           will be 255 minus the number of routers in the path from the
+           remote system to the pinging host.
+
+       ·   Set it to some other value.  Some machines use the same value
+           for ICMP packets that they use for TCP packets, for example
+           either 30 or 60.  Others may use completely wild values.
+
+   LOOSE SOURCE ROUTING DETAILS 
+       When a packet is routed with loose routing in IP, the destination
+       address of datagram is originally set to the first address in the
+       routing list.  When the datagram reaches its destination, the
+       destination address is changed to the next address in the list and
+       the datagram is routed to that destination. After the whole routing
+       list is exhausted, the datagram is handled to upper-level protocols.
+
+       The loose routing options can be ignored by hosts between the
+       gateways in the loose routing list.  However, if the host in the
+       list don't understand loose routing, it may think that the datagram
+       is destined to it and respond to it.  Also, many hosts simply drop
+       the packets with IP options.
+
+   BUGS
+       Many Hosts and Gateways ignore the RECORD_ROUTE and
+       LOOSE_SOURCE_ROUTING options.
+
+       The maximum IP header length is too small for options like
+       RECORD_ROUTE to be completely useful.  There's not much that that
+       can be done about this, however.
+
+       Flood pinging is not recommended in general, and flood pinging the
+       broadcast address should only be done under very controlled
+       conditions.
+
+   SEE ALSO
+       netstat,  ifconfig
+
+   AUTHOR
+       Mike Muuss, U. S. Army Ballistic Research Laboratory, December, 1983
+
+       The ping command appeared in 4.3BSD.
+
+       The loose routing and working record route options were added by
+       Pekka Pessi, AmiTCP/IP Group, Helsinki Univ. of Technology.
+
+netutil.doc/portmap                                       netutil.doc/portmap
+   NAME
+       portmap - DARPA port to RPC program number mapper
+
+   SYNOPSIS
+       AmiTCP:bin/portmap
+
+   DESCRIPTION
+       `portmap' is a server that converts RPC program numbers into DARPA
+       protocol port numbers.  It must be running in order to make RPC
+       calls.  When an RPC server is started, it will tell `portmap' what
+       port number it is listening to, and what RPC program numbers it is
+       prepared to serve.  When a client wishes to make an RPC call to a
+       given program number, it will first contact `portmap' on the
+       server machine to determine the port number where RPC packets
+       should be sent.  Normally, standard RPC servers are started by
+       `inetd', so `portmap' must be started before `inetd' is invoked.
+
+   SEE ALSO
+       netutil.doc/rpcinfo
+
+   BUGS
+       If `portmap' crashes, all servers must be restarted.
+
+netutil.doc/route                                           netutil.doc/route
+
+   NAME
+        route - manually manipulate the routing tables
+   
+   SYNOPSIS
+        route [-n] [-q] [-v] command [modifiers] destination gateway
+   
+   DESCRIPTION
+        Route is a program used to manually manipulate the network routing
+        tables. 
+   
+        Options supported by route:
+   
+        -n      Prevent attempts to print host and network names
+                symbolically when reporting actions.
+   
+        -v      (verbose) Print additional details.
+   
+        -q      Suppress all output.
+   
+        Commands accepted by route:
+   
+        add         Add a route.
+        delete      Delete a specific route.
+   
+        The destination is the destination host or network, gateway is the
+        next-hop gateway to which packets should be addressed. Routes to a
+        particular host are distinguished from those to a network by
+        interpreting the Internet address associated with destination. The
+        optional modifiers -net and -host force the destination to be
+        interpreted as a network or a host, respectively.  Otherwise, if the
+        destination has a ``local address part'' of INADDR_ANY, or if the
+        destination is the symbolic name of a network, then the route is
+        assumed to be to a network; otherwise, it is presumed to be a route
+        to a host.
+   
+        For example, 128.32 is interpreted as -host 128.0.0.32; 128.32.130
+        is interpreted as -host 128.32.0.130; -net 128.32 is interpreted as
+        128.32.0.0; and -net 128.32.130 is interpreted as 128.32.130.0.
+   
+        To add a default route, give the destination as 'default'.
+    
+        If the route is via an interface rather than via a gateway, the
+        -interface modifier should be specified; the gateway given is the
+        address of this host on the common network, indicating the interface
+        to be used for transmission.
+   
+        The optional -netmask qualifier is used to specify the netmask of
+        the interface. One specifies an additional ensuing address parameter
+        (to be interpreted as a network mask).  The implicit network mask
+        generated can be overridden by making sure this option follows the
+        destination parameter.
+   
+        All symbolic names specified for a destination or gateway are looked
+        up first as a host name using gethostbyname(). If this lookup fails,
+        getnetbyname() is then used to interpret the name as that of a
+        network.
+   
+   DIAGNOSTICS
+        add [host | network ] %s: gateway %s flags %x
+                The specified route is being added to the tables. The values
+                printed are from the routing table entry supplied in the
+                IoctlSocket() call. If the gateway address used was not the
+                primary address of the gateway (the first one returned by
+                gethostbyname()), the gateway address is printed numerically
+                as well as symbolically.
+   
+        delete [ host | network ] %s: gateway %s flags %x
+                As above, but when deleting an entry.
+   
+        Network is unreachable
+                An attempt to add a route failed because the gateway listed
+                was not on a directly-connected network.  The next-hop
+                gateway must be given.
+   
+        not in table
+                A delete operation was attempted for an entry which wasn't
+                present in the tables.
+   
+        routing table overflow
+                An add operation was attempted, but the system was low on
+                resources and was unable to allocate memory to create the
+                new entry.
+   
+   SEE ALSO
+        ifconfig, protocols/routing
+   
+   HISTORY
+        The route command appeared in 4.2BSD.
+   
+netutil.doc/rpcinfo                                       netutil.doc/rpcinfo
+   NAME
+       rpcinfo - report RPC information
+   
+   SYNOPSIS
+       `rpcinfo -p [ host ]'
+   
+       `rpcinfo [ -n portnum ] -u host program [ version ]'
+   
+       `rpcinfo [ -n portnum ] -t host program [ version ]'
+   
+       `rpcinfo -b program version'
+   
+       `rpcinfo -d program version'
+   
+   DESCRIPTION
+       `rpcinfo' makes an RPC call to an RPC server and reports what it
+       finds.
+   
+   OPTIONS
+       `-p'  Probe the portmapper on host, and print a list of all
+             registered RPC programs.  If host is not specified, it
+             defaults to the value returned by `gethostname()'.
+   
+       `-u'  Make an RPC call to procedure 0 of program on the specified
+             host using UDP, and report whether a response was received.
+   
+       `-t'  Make an RPC call to procedure 0 of program on the specified
+             host using TCP, and report whether a response was received.
+   
+       `-n'  Use `portnum' as the port number for the `-t' and `-u'
+             options instead of the port number given by the portmapper.
+   
+       `-b'  Make an RPC broadcast to procedure 0 of the specified program
+             and version using UDP and report all hosts that respond.
+   
+       `-d'  Delete registration for the RPC service of the specified
+             program and version.  This option can be exercised only by
+             the superuser.  The program argument can be either a name or
+             a number.  If a version is specified, `rpcinfo' attempts to
+             call that version of the specified program.  Otherwise,
+             rpcinfo attempts to find all the registered version numbers
+             for the specified program by calling version 0 (which is
+             presumed not to exist; if it does exist, rpcinfo attempts to
+             obtain this information by calling an extremely high version
+             number instead) and attempts to call each registered version.
+   
+       *Note:* the version number is required for -b and -d options.
+   
+   EXAMPLES
+       To show all of the RPC services registered on the local machine
+       use:
+   
+           example% rpcinfo -p
+   
+       To show all of the RPC services registered on the machine named
+       klaxon use:
+   
+           example% rpcinfo -p klaxon
+   
+       To show all machines on the local net that are running the Yellow
+       Pages service use:
+   
+           example% rpcinfo -b ypserv 'version' | uniq
+   
+       where '`version'' is the current Yellow Pages version obtained
+       from the results of the `-p' switch above.
+   
+       To delete the registration for version 1 of the `walld' service
+       use:
+   
+           example% rpcinfo -d walld 1
+   
+   SEE ALSO
+       AmiTCP:db/rpc, netutil.doc/portmap
+   
+utilities/finger                                             utilities/finger
+
+   NAME
+       finger - user information lookup program
+
+   VERSION
+       $Id: finger.c,v 6.9 1994/05/02 19:41:27 jraja Exp $
+
+   SYNOPSIS
+       finger [-lmsp] [user ...] [user@host ...]
+
+   DESCRIPTION
+       The finger displays information about the system users.
+
+       Options are:
+
+       -s    Finger displays the user's login name, real name, login time
+             and host, office location and office phone number.
+
+             Login time is displayed as month, day, hours and minutes,
+             unless more than six months ago, in which case the year is
+             displayed rather than the hours and minutes.
+
+             Unknown hosts as well as nonexistent login time are
+             displayed as single asterisks.
+
+       -l    Produces a multi-line format displaying the user's login name,
+             real name, the user's home directory, home phone number, login
+             shell, and the contents of the files `.forward', `.plan' and
+             `.project' from the user's home directory.
+
+             Phone numbers specified as eleven digits are printed as
+             `+N-NNN- NNN-NNNN'.  Numbers specified as ten or seven digits
+             are printed as the appropriate subset of that string.  Numbers
+             specified as five digits are printed as `xN-NNNN'.
+
+       -p    Prevents the -l option of finger from displaying the contents
+             of the `.forward', `.plan' and `.project' files.
+
+       -m    Prevent matching of user names.  User is usually a login name;
+             however, matching will also be done on the users' real names,
+             unless the -m option is supplied.  All name matching performed
+             by finger is case insensitive.
+
+       If no options are specified, finger defaults to the -l style output
+       if operands are provided, otherwise to the -s style.  Note that some
+       fields may be missing, in either format, if information is not
+       available for them.
+
+       If no arguments are specified, finger will print an entry for each
+       user currently logged into the system.
+
+       Finger may be used to look up users on a remote machine.  The format
+       is to specify a user as `user@host', or `@host', where the default
+       output format for the former is the -l style, and the default output
+       format for the latter is the -s style.  The -l option is the only
+       option that may be passed to a remote machine.
+
+   SEE ALSO
+       in.fingerd
+
+   HISTORY
+       The finger command appeared in 3.0BSD.
+
+utilities/login                                               utilities/login
+
+   NAME
+       login - log into the computer
+
+   VERSION
+       $Id: login.c,v 1.9 1994/05/02 19:55:55 jraja Exp $
+
+   SYNOPSIS
+       login [-a] [-f] [-p] [-h hostname] [user]
+
+   DESCRIPTION
+
+       The login utility logs users (and pseudo-users) into the computer
+       system.
+
+       If no user is specified, or if a user is specified and authentication
+       of the user fails, login prompts for a user name.  Authentication of
+       users is done via passwords.
+
+       The options are as follows:
+
+       -a      The -a option is used when a user is logging in on the
+               console and wants to get ownership of processes running on
+               WorkBench.  Currently, this is default behauviour.
+
+       -f      The -f option is used when a user name is specified to
+               indicate that proper authentication has already been done and
+               that no password need be requested.  This option may only be
+               used by the super-user or when an already logged in user is
+               logging in as themselves.
+
+       -h      The -h option specifies the host from which the connection was
+               received.  It can be used by various daemons such as telnetd.
+               This option may only be used by the super-user.
+
+       -p      By default, login discards any previous environment of CLI.
+               The -p option disables this behavior.  This option is
+               implied by -a option.
+
+       If the file `AmiTCP:db/nologin' exists, login dislays its contents to
+       the user and exits.  This is used (by shutdown) to prevent users from
+       logging in when the system is about to go down.
+
+       Immediately after logging a user in, login displays the system
+       copyright notice, the date and time the user last logged in, the
+       message of the day as well as other information.  If the file
+       `.hushlogin' exists in the user's home directory, all of these
+       messages are suppressed.  This is to simplify logins for non-human
+       users, such as uucp.  Login then records an entry in the wtmp and utmp
+       files and executes the user's command interpretor.
+
+       Login enters information into the environment specifying the user's
+       home directory (HOME), command interpreter (SHELL) and user name
+       (both LOGNAME and USER).  It assigns the directory HOME: to user's
+       home directory.
+
+   FILES
+       AmiTCP:db/motd          message-of-the-day
+       AmiTCP:db/nologin       disallows logins
+       .hushlogin              makes login quieter
+
+   SEE ALSO
+       passwd, rlogin, usergroup.library/getpass()
+
+   HISTORY
+       A login command appeared in Version 6 AT&T UNIX.
+
+utilities/ls                                                     utilities/ls
+
+   NAME
+       ls - list contents of directory
+
+   VERSION
+       $Id: ls.c,v 3.2 1994/05/02 19:52:55 jraja Exp $
+
+   SYNOPSIS
+       ls [ -acdfgilqrst1ACLFR ] name ...
+
+   DESCRIPTION
+
+       For each directory argument, ls lists the contents of the directory;
+       for each file argument, ls repeats its name and any other informa-
+       tion requested.  By default, the output is sorted alphabetically.
+       When no argument is given, the current directory is listed.  When
+       several arguments are given, the arguments are first sorted appropr-
+       iately, but file arguments are processed before directories and
+       their contents.
+
+       There are a large number of options:
+
+       -l   List in long format, giving mode, number of links, owner, size
+            in bytes, and time of last modification for each file.  (See
+            below.)  If the file is a symbolic link the pathname of the
+            linked-to file is printed preceded by "->".
+
+       -g   Include the group ownership of the file in a long output.
+
+       -t   Sort by time modified (latest first) instead of by name.
+
+       -a   List all entries; in the absence of this option, entries whose
+            names begin with a period (".") or end with ".info" are not
+            listed.
+
+       -A   List all entries except entries whose names end with ".info".
+
+       -s   Give size in blocks of each file.
+
+       -d   If argument is a directory, list only its name; often used with
+            -l to get the status of a directory.
+
+       -L   If argument is a symbolic link, list the file or directory the
+            link references rather than the link itself.
+
+       -r   Reverse the order of sort to get reverse alphabetic or oldest
+            first as appropriate.
+
+       -i   For each file, print the key block number in the first column
+            of the report.
+
+       -f   Force each argument to be interpreted as a directory and list
+            the name found in each slot.  This option turns off -l, -t, -s,
+            and -r, and turns on -a; the order is the order in which
+            entries appear in the directory.
+
+       -F   Cause directories to be marked with a trailing `/', hard links
+            sockets with a trailing `#' and symbolic links with a trailing
+            `@'.
+
+       -R   Recursively list subdirectories encountered.
+
+       -p   Include relative pathname into the long listing.
+
+       -1   Force one entry per line output format; this is the default
+            when output is not interactive.
+
+       -C   Force multi-column output; this is the default when output is
+            interactive.
+
+       -q   Force printing of non-graphic characters in file names as the
+            character `?'; this is the default when output is interactive.
+
+       The mode printed under the -l option contains 10 characters which
+       are interpreted as follows: the first character is
+
+       d       if the entry is a directory;
+       r       if the entry is a root directory;
+       l       if the entry is a symbolic link;
+       D       if the entry is a hard link to a directory;
+       p       if the entry is a pipe file;
+       h       if the entry is a hard link to a file, or
+       -       if the entry is a plain file.
+
+       The next 9 characters are interpreted as three sets of access
+       control bits. The first set refers to owner permissions; the next
+       refers to permissions to others in the same user-group; and the last
+       to all others. Within each set the three characters indicate
+       permission respectively to read, to write, or to execute the file as
+       a program. For a directory, `write' and `execute' permissions are
+       meaningless. The permissions are indicated as follows:
+
+       r       if the file is readable;
+       w       if the file is writable;
+       x       if the file is executable;
+       -       if the indicated permission is not granted.
+
+       The write-permission character is given as a D if the file is
+       deleteable but not writeable. It is given as a 'W' if the file is
+       writeable but not deleteable. The group-execute permission character
+       is given as s if the file has the set-group-id bit set; likewise the
+       user-execute permission character is given as s if the file has the
+       set-user-id bit set.
+
+       The last character of the mode (normally `x' or `-') is 't' or 'T'
+       (as sticky in Unix systems) if the pure bit of the mode is on. If
+       the script bit is on, the last character is 's' or 'S'. The
+       protection bits `h' and `a' are not printed.
+
+       When the sizes of the files in a directory are listed, a total count
+       of blocks (not including indirect blocks) is printed.
+
+   FILES
+       AmiTCP:db/passwd to get user id's for `ls -l'.
+       AmiTCP:db/group to get group id's for `ls -g'.
+
+   BUGS
+       The option setting based on whether the output is interactive is
+       undesirable as "ls -s" is much different than "ls -s > t:file".
+
+       The printed protection flags are inadequate for Amiga DOS. The root
+       directory flags are garbage. There are problems when printing soft
+       links.
+
+       There are too many options.
+
+   AUTHOR
+       Pekka Pessi, <Pekka.Pessi@hut.fi>. 
+       ls is part of the AmiTCP/IP package.
+utilities/passwd                                             utilities/passwd
+
+   NAME
+       passwd - modify a user's password
+
+   VERSION
+       $Id: passwd.c,v 1.5 1994/05/02 19:52:55 jraja Exp $
+
+   SYNOPSIS
+       passwd [user]
+
+   FUNCTION
+
+       Passwd changes the user's password.  First, the user is prompted for
+       their current password.  If the current password is correctly typed, a
+       new password is requested.  The new password must be entered twice to
+       avoid typing errors.
+
+       The new password should be at least six characters long and not purely
+       alphabetic.  Its total length must be less than _PASSWORD_LEN
+       (currently 128 characters).  Numbers, upper case letters and meta
+       characters are en­ couraged.
+
+       Once the password has been verified, passwd communicates the new
+       password information to the netinfo.device.
+
+       The super-user is not required to provide a user's current password.
+
+   FILES
+
+   SEE ALSO
+       login
+
+       Robert Morris, and Ken Thompson, UNIX password security.
+
+   HISTORY
+       A passwd command appeared in Version 6 AT&T UNIX.
+
+utilities/rsh                                                   utilities/rsh
+
+   NAME
+       rsh - remote shell
+
+   VERSION
+       $Id: rsh.c,v 5.6 1994/05/02 19:57:16 jraja Exp $
+
+   SYNOPSIS
+       rsh [-n] [-l username] host [command]
+
+   DESCRIPTION
+       Rsh executes command on remote Unix host.
+
+       Rsh copies its standard input to the remote command, the standard
+       output of the remote command to its standard output, and the
+       standard error of the remote command to its standard error. Break
+       signals C, E and F are propagated to the remote command as
+       interrupt, quit and terminate signals, respectively; rsh normally
+       terminates when the remote command does. The options are as follows:
+
+       -l    By default, the remote username is the same as the local
+             username.  The -l option allows the remote name to be
+             specified.  Authorization is determined as in rlogin(1).
+
+       -n    The -n option redirects input from the special device NIL:
+
+       If no command is specified, you will be logged in on the remote host
+       using rlogin.
+
+       Shell metacharacters which are not quoted are interpreted on local
+       machine, while quoted metacharacters are interpreted on the remote
+       machine.  For example, the command
+
+             rsh otherhost cat remotefile >> localfile
+
+       appends the remote file remotefile to the local file localfile,
+       while
+
+             rsh otherhost cat remotefile ">>" other_remotefile
+
+       appends remotefile to other_remotefile.
+
+   SEE ALSO
+       rlogin
+
+   HISTORY
+       The rsh command appeared in 4.2BSD.
+
+utilities/whoami                                             utilities/whoami
+
+  NAME
+       whoami - prints effective current user id
+
+  VERSION
+       $Id: whoami.c,v 1.3 1994/02/12 04:39:41 ppessi Exp $
+
+  TEMPLATE
+       whoami
+
+  FUNCTION
+       Whoami prints your effective user id.  It works even if you are
+       su'd.
+
+  RETURN VALUE
+       Whoami return WARN, if the user id has got no user name associated.
+
+  SEE ALSO
+       id
+
+

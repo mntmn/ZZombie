@@ -1,0 +1,206 @@
+
+               NetFS -- network file system for AmiTCP
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                           by Timo Rossi
+
+
+                      Version 0.56 (19-Mar-94)
+
+
+   NetFS is a network filesystem for Amigas running the AmiTCP protocol stack.
+
+Requirements:
+~~~~~~~~~~~~~
+ · AmigaOS 2.04 or later (AmiTCP requires it anyway)
+
+ · AmiTCP version 3.0 or later.
+
+ · Some sort of network interface that has a Sana2 driver and works
+   with AmiTCP (Ethernet, ArcNet, SLIP, CSLIP, PLIP or something other).
+
+
+Installation instructions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ · Make sure that you have AmiTCP configured properly and it can communicate
+   between the machines you want to use with NetFS (you can use
+   the ping-command for checking this)
+
+ · Copy netfs-handler to AmiTCP:L-directory on client machine
+   (In earlier versions of NetFS the system L:-directory was used. 
+    Also, an alternate directory can be specified in the mountlist
+    or using the HANDLER-keyword in the netmount-command)
+
+ · Copy netfs-server to AmiTCP:serv-directory on server machine
+
+ · Copy netmount to some directory that is in your path (AmiTCP:bin
+   is a good place)
+
+ · Add the following line to the AmiTCP:db/services on all machines
+   that will use NetFS (both client and server):
+
+amiganetfs	2500/tcp
+
+   You may select another port number if the default 2500 conflicts with
+   something (port 2500 is not officially registered for NetFS)
+
+   If you already have AmiTCP running and don't want to reboot the machine,
+   you should send the RESET-command to the AmiTCP AREXX-port to get it
+   to re-read the configuration file.
+
+   (You can also use the AmiTCP AREXX port to add the service entry without
+    editing the netdb file. See AmiTCP documentation for details)
+
+·  Add the following line to the AmiTCP:db/inetd.conf
+
+amiganetfs stream    tcp nowait root amitcp:serv/netfs-server
+
+   If you have put netfs-server in some other directory than amitcp:bin,
+   you should use that directory name here instead.
+
+   If you already have AmiTCP running and don't want to reboot the machine,
+   you should send a Ctrl-F signal to inetd with the break-command.
+
+·  Use the netmount-command to mount the partitions you want.
+   The command syntax is:
+
+netmount hostname remotedev localdev
+
+  For example, if you want to mount drive dh0: on a machine called Amiga1
+  and you want to call the local device rh0:, you can use the following:
+
+netmount Amiga1 dh0 rh0
+
+  The full command template for netmount is:
+
+SERVER=HOST/A,REMOTEDEV/A,LOCALDEV/A,HANDLER/K,NOACT/S:
+
+  If you have put netfs-handler in some other directory than L: or renamed
+  it, you can specify its filename with the HANDLER keyword.
+
+  Normally netmount automatically activates the mounted device (the same
+  way as 'Mount=1' keyword in mountlist). If you don't want that to
+  happen, you can use the NOACT-switch. In that case the device process
+  starts when the device is first referenced.
+
+
+MountLists (optional):
+~~~~~~~~~~~~~~~~~~~~~~
+  Alternatively you can make the mountlist entries and use the normal mount-
+  command. You can put these in the normal DEVS:MountList file or a separate
+  file and use the Mount FROM-option. If you have AmigaDOS 2.1 or newer,
+  you can also use the new style mountfiles instead of mountlists.
+
+  Here is an example mountlist entry:
+
+RH0:
+	Handler = L:netfs-handler
+	Priority = 5
+	StackSize = 5000
+	GlobVec = -1
+	Mount = 1
+	Startup = Server-machine.name.domain/Device-DH0:
+#
+
+   The only parameters that you need to change are the server machine name
+   and the device name (The syntax is a little strange for compatibility with
+   different versions of the Mount-command. Most of them don't like '='-signs
+   on the startup-line)
+
+   If you use the 2.1+ mountfiles, you don't need the device name in the beginning
+   or the '#' in the end.
+
+
+   (But it is so much easier to use the netmount-command, that you probably
+   don't want to use mountlists)
+
+
+Security (or the lack of it):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Netfs has a couple of primitive security features.
+
+    · You can prevent mounting a partition by putting a file called '.nomount'
+      in the root directory of that partition.
+
+    · You can cause a partition to be mounted in read-only mode by putting
+      a file called '.readonly' in the root directory of that partition.
+
+  You cannot control which machines may connect to the server, so it might
+  not be a good idea to connect a machine with netfs-server to the
+  global Internet (of course you can use a strange port number
+  and hope that nobody guesses it (security through obscurity)).
+
+  It is likely that future versions of netfs have more advances security/
+  access control features.
+
+
+Volume names:
+~~~~~~~~~~~~~
+   Netfs normally automatically uses the remote volume name in the mounted
+   device, but if there is a name collision (another volume/device/assign
+   of the same name already exists), it modifies the name by adding
+   an underscore and a number to it.
+
+   You can relabel the mounted volume, but this does not affect the actual
+   disk on the server machine.
+
+
+Workbench:
+~~~~~~~~~~
+   Netfs does not allow access (or Open(), anyway) to a file called '.backdrop',
+   so left out icons do not work over the network. This is a feature, not a bug.
+
+
+Reconnect:
+~~~~~~~~~~
+   If the server machine is rebooted, NetFS will automatically reconnect
+   to it when it is running again. However, there may be long timeouts
+   after a connection failure before NetFS gives up. This is a normal
+   for the TCP protocol that NetFS uses for its connections.
+
+   Sometimes NetFS may lose the connection to the server machine so that
+   it doesn't automatically try to reconnect. In that case, you can
+   try to reconnect by using the DiskChange-command.
+
+   You can also force NetFS to close the connection by sending ACTION_DIE
+   packet to it (for example with the 'die'-command that comes with MSH).
+
+
+Known problems:
+~~~~~~~~~~~~~~~
+   - speed/performance is not the best possible
+
+   - does not support all 2.0 packet types
+     (does not support notification or file locking, but does support links)
+
+   - because netfs uses one TCP connection and separate server/client processes
+     for each mounted device, memory usage is probably more than actually
+     necessary if netfs was implemented in some other, smarter way...
+
+Copyright and distribution:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   NetFS is Copyright © 1993 by Timo Rossi. It can be freely distributed
+   for non-commercial purposes. It can be included on disk collections such
+   as Fred Fish's AmigaLibDisks or CD-ROMs such as the AmiNET CD-ROM.
+
+   It may not be used for military purposes or life-critical purposes such
+   as controlling nuclear reactors or guidance system for a manned spacecraft.
+
+   If you want to include netfs in a commercial product, you should contact
+   me first (my address is in the next section).
+
+   NetFS is NOT under the GNU General Public Licence.
+            ~~~
+   Source code is not currently available, but it may be in the future...
+
+
+Contact information:
+~~~~~~~~~~~~~~~~~~~~
+   Timo Rossi
+   Mattilankatu 40 A 4
+   40600 Jyväskylä
+   FINLAND
+
+   E-Mail:  trossi@jyu.fi
+

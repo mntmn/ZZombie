@@ -1,0 +1,6 @@
+; This host
+HOST 192.168.1.222 zzombie.local zzombie
+; Domain names
+DOMAIN local
+; Name servers
+NAMESERVER 8.8.8.8

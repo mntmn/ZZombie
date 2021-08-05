@@ -1,0 +1,330 @@
+Short: TCP/IP stack as shared library binaries
+Type: comm/net
+Uploader: amitcp-group@hut.fi
+Author: amitcp-group@hut.fi (The AmiTCP/IP Group)
+Version: Release 3.0 beta 2
+
+  Please read the NOTE_TO_BETA_TESTERS on the archive before you do
+  anything else.
+
+  AmiTCP/IP is the first publicly available TCP/IP protocol stack for
+  the SANA-II interface. AmiTCP/IP provides an application level socket
+  interface to the Internet protocol suite as an Amiga shared library.
+
+* distributions
+
+  AmiTCP/IP 3.0 beta 2 is distributed in 3 archives:
+
+	AmiTCP-bin-30b2.lha	AmiTCP/IP package
+	AmiTCP-api-30b2.lha	Include files and link libraries
+	AmiTCP-src-30b2.lha	Source for AmiTCP/IP and utilities
+
+  If you just want to use AmiTCP/IP you need just bin and one of
+  document files. If you want to write your own applications or compile
+  AmiTCP/IP you need api/src, too. Number in the name corresponds to
+  distribution version. Printed documentation is currently up to release
+  2.0.
+
+  Unpack archive(s), then read README.FIRST and HowToInstall.
+
+* Bug reports 
+
+  Send any bug reports to <AmiTCP-Bug@hut.fi>.
+
+* New Features, enchancements and bug fixes on each release:
+
+  New Features on 3.0 beta 2:
+
+    * binary distribution:
+	- all files which are installed to non-AmiTCP directories are
+	  now placed in AmiTCP:export. After the installation is done
+	  you can delete all these files.
+
+    * AmiTCP:
+	- Added "INACTIVE" to the log window parameters (suggested by
+	  Carsten Heyl).
+	- Added new callback functionality to coordinate fd tables
+	  with the link library. (SocketBaseTags() tag
+	  SBTC_FDCALLBACK).
+	- Added simple (but efficient) access control to the protocol
+	  stack. Now it is possible to deny TCP connections to
+	  given/any ports from given/any machine.
+	- Made name server resolving multithreaded. Now each
+	  application has it's own set of resolver state variables.
+	  Before any name resolvation would block if another
+	  resolvation was in progress.
+	- Added h_errno setting via a pointer (SocketBaseTags() tag
+	  SBTC_HERRNOLONGPTR).
+
+    * db/inet.access:
+	- New configuration file for Internet access control. Includes
+	  documentation.
+
+    * netinclude:
+	- Added arpa protocol headers (arpa/ftp.h, arpa/nameser.h,
+	  arpa/tftp.h and arpa/telnet.h) to the distribution.
+	- Added/deleted some files.
+
+    * netlib:
+	- Moved usr.lib functionality to here.
+	- Added implementation of SAS/C level 1 I/O functions, which
+	  allows stdio on sockets (printf(), and a like).
+	- Integrated inetd daemon startup code to here. Includes
+	  functions init_inet_daemon() and set_socket_stdio(). See
+	  src/examples/serv for an example.
+	- Added some unix style functions (utime(), popen(), sleep()
+	  etc.). See doc/netlib.doc for a full list and a reference.
+	- Added real h_errno variable.
+
+    * libs/usergroup.library:
+	- Added a new function call getcredentials() which returns all
+	  credential for a process, updated library version to 4.
+
+    * ch_nfsc:
+	- Carsten Heyl's (SUN NFS compatible) NFS client added to the
+	  distribution.
+	  
+    * napsaterm:
+	- Upgraded to version 3.8, merged enchanchements made by R. Knop
+	  (tektronix emulation). Major new feature is support of the 
+	  Telnet protocol.
+
+    * netfs:
+	- Updated version.
+
+    * tcp_AmiTCP:
+	- Updated version.
+
+    * inet-handler:
+	- Updated version.
+
+    * telnet:
+	- Totally new version.
+
+    * netstat:
+	- Added resolving the IP addresses (by Pavel Troller
+	  <patrol@k332.feld.cvut.cz>). The resolving is done with
+	  AmiTCP command 'resolve', and can be bypassed with command
+	  line switch '-n'.
+	- Added caching the resolved addresses (jraja).
+
+    * src/examples/serv:
+	- New example of stdio and inetd usage.
+
+    * ftp:
+	- removed from the distribution. Use NcFTP instead.
+	  (Hint: alias ftp ncftp -u [])
+
+  Fixed Bugs on 3.0 beta 2:
+
+    * AmiTCP:
+	- Fixed bug in getservbyname() which now checks the protocol
+	  string.
+	- Fixed the bug in log file/console name change notify
+	  function (NETTRACE's DosBase is no more used before
+	  initialization).
+
+    * inetd:
+	- Fixed bugs in server argument parsing. Before any more than
+	  one argument would not have worked. (Thanks to Magnus Lilja
+	  for pointing this out).
+
+    * Install_AmiTCP:
+	- Added copying of the "libs" dir.
+
+    * rsh:
+	- Fixed bug which caused sending to stop if input was redirected
+	  from a (not small) file.
+
+  New Features on 3.0 beta:
+
+    * AmiTCP:
+	- Changed the AmiTCP ARexx port (AMITCP) to show only after the API
+	  is up and running (no need to "wait" on the bin/startnet).
+	- Added functions sendmsg() and recvmsg() for scatter/gather I/O.
+	- First parameter to Dup2Socket() can now be -1 to mark the fd
+          (the second parameter) as not to be used by AmiTCP.
+	- Added function SocketBaseTagList(). Tag definitions for it are
+          on netinclude:amitcp/socketbasetags.h
+	- Added function gethostid(), which returns the primary IP
+          address of the host as the unique host id.
+	- Implemented gethostname() API function and HOSTNAME ARexx variable
+	  (QUERY/SET). The host name is queried from the netdb and/or name
+	  server, if it is not explicitly given in db/AmiTCP.config _or_ set
+	  with the ARexx SET command.
+	- Added support for the BSD %m feature to the syslog() (%m is
+          replaced by the error description of current errno value), Also
+          changed the formatting code to not use the Exec's RawDoFmt()
+          allowing 32 bit values to be printed without the 'l' size
+          modifier. 
+	- Only the sizes 1, 2 and 4 are now allowed for the errno
+          variable.
+	- SetErrnoPtr() has now return value. 0 on success and -1
+          otherwise. The _old_ errno indicates the error causing the
+          failure.
+	- "new" interface naming style (eg. slip.device/0 -> sl0)
+
+    * db/interfaces:
+	- New configuration file to allow easy extension to new sana2
+	  devices. Maps interface names to sana2 parameters.
+
+    * netinclude:
+	- Added SocketBaseTagList() definitions to
+	  amitcp/socketbasetags.h 
+	- GCC: Added inline functions from clib/socket_inlines.h to
+	  inline/socket.h, since those had to be modified for gcc.
+	  Generated big list of defines to make possible to use local
+	  `SocketBase' variable in calls to bsdsocket.library calls.
+	  This feature is invoked defining SOCKETBASE_IN_CONTEXT.
+	- Added syslog.h (includes sys/syslog.h) for source
+	  compatibility.
+	- SAS/C: inline functions are defined only if OPTINLINE is
+	  used, netlib stubs are used otherwise.
+	- Added new prototypes and declarations for the
+	  usergroup.library and its link library (grp.h, pwd.h,
+	  unistd.h, utmp.h, clib/netlib_protos.h) 
+	- Changes for the short interface names, removed interface
+	  tags.
+	- Added include files for the netinfo.device
+	- Added RPC include directories rpc and rpcsvc
+ 
+    * net.lib:
+	- Added rcmd() and resvport(), removed getpwuid() and getgrgid().
+	- Added syslog() support functions: openlog(), closelog() and
+          setlogmask().
+	- Removed errlst.c (error tables are now inside the AmiTCP to
+	  decrease overall memory usage).
+	- Removed gethostname(), now implemented in the AmiTCP.
+	- Added strerror().
+	- Added perror() and stubs for the inline functions (if the
+	  inlining is not done).
+	- Program name is passed to the AmiTCP at startup. It is used
+	  in the syslog() messages.
+	- New function herror() will print the host error code set
+	  after host resolving failure (uses SocketBaseTags()).
+	- New function GetHErrno() will return the host error code
+	  using the SocketBaseTags().
+
+    * usergroup.library:
+	- New library managing the user/group information.
+
+    * netinfo.device:
+        - New device, which handles the actual user/group database
+	  files.
+
+    * rpc.lib:
+	- AmiTCP implementation of the Sun RPC 4.0.
+
+    * help/RPC.guide:
+	- Full documentation for the RPC in the AmigaGuide format.
+
+    * rh(c)slip.device:
+	- Added configureable MTU and EOFMODE.
+
+    * tcp_AmiTCP:
+	- Added sending of custom packet to ABORT pending read packet
+	  when network closes the connection. This packet is FIFO
+	  spesific and won't do anything when using another handler.
+	  Anyway, it works with emacs which uses FIFO to communicate
+	  with spawned processes.
+
+    * ping:
+	- New loose routing option (-L).
+
+    * napsaterm:
+	- New version, has some bugs fixed and uses the
+	  usergroup.library for user information.
+
+    * ncftp:
+	- Uses usergroup.library to find the user name _and_ home
+	  directory. 
+
+    * id, login, passwd, umask and whoami:
+	- New usergroup.library oriented utilities
+	
+    * resolve:
+	- New utility, trying to return host name from the IP address.
+
+    * rsh:
+	- New utility to execute commands on remote hosts, note that
+	  the server program is not included.
+
+    * rcsrev:
+	- New development utility, which creates standard _rev.h files
+	  from some files RCS id.
+
+    * src/devtools, src/examples, src/doc:
+	- New directories to clean up the directory structure.
+
+    * portmap:
+	- RPC program,version to port mapper, needed to be run before
+	  any RPC based servers.
+
+    * rpcinfo:
+	- Utility to show RPC bindings on a portmap on some host.
+
+  Fixed Bugs on 3.0 beta:
+
+    * AmiTCP:
+	- Fixed the route dumping bug.
+	- Logging information is now appended to the end of the old
+          log file.
+
+    * ping:
+	- record routing (-R) now works.
+
+  New Features on 2.3:
+
+    * AmiTCP:
+	- New ARexx command "KILL" and a new script, bin/stopnet,
+          which sends this command to AmiTCP, causing it to try to
+          stop all networking applications, and if successfull,
+          itself, too.
+
+    * NcFTP:
+	- Faster I/O on binary transfers.
+
+  Fixed Bugs on 2.3:
+
+    * AmiTCP:
+	- Removed the incorrect use of M_EOR, which caused fragmented
+          packets to be	truncated.
+
+New Features in 2.2:
+
+    * AmiTCP:
+ 	- The interactive sessions have now a higher priority when
+	  using rh(c)slip.device
+    * arp: 
+	- Arp table dumping is now working
+    * netstat:
+	- Routing table can be dumped
+
+New Features in 2.1:
+
+    * Inet-handler:
+        - With Inet-Handler you can use AmigaDOS IO to access TCP protocol
+    * finger: 
+	- New application, prints information about local and remote users
+    * fingerd:
+	- Calls now finger when asked for local users. (This feature requires
+	  Apipe-handler by Per Bojsen, Apipe-handler can be found e.g. on Fish
+	  disk 783)
+    * ls:
+	- New application, an imitation of Unix directory lister.  Supports
+	  multiuser filesystems. Included as an example of user and group
+	  database usage
+    * Napsaterm:
+	- Default window title is now the name of the remote host
+	- A public screen can be used with -S switch (thanks trossi!)
+    * SynClock:
+	- A simple script which synchronize clock in Amiga with
+	  specified host in network
+    * AmiTCP:
+	- A timestamp is added to the log messages
+	- Faster checksum calculation implemented in assembler
+    * netlib: 
+	- User and group database handling routines are added to the
+	  net.lib. Release includes example databases for `ls' and `finger'
+	  utilities, which use these databases
+	- A real gettimeofday() using locale is also added

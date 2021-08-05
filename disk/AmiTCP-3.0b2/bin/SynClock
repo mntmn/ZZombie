@@ -1,0 +1,30 @@
+.KEY HOST/A,SAVE/S
+.BRA {
+.KET }
+
+; $VER: SynClock 2.1 (8.11.1993)
+
+; Set your amiga clock from host in network.
+;	if someone finds a way to get DAY
+;	locale (in)dependent way, (and fast)
+;	please tell me   (too@cs.hut.fi)
+
+Assign >NIL: TCP: exists
+if warn
+    echo TCP: not mounted.
+    quit 10
+endif
+
+rx "Address 'COMMAND'; months='JanFebMarAprMayJunJulAugSepOctNovDec' +
+	If ~Open(dt, 'TCP:{HOST}/daytime', 'R') Then +
+		Do; Say '*** Service not present'; Exit 10; End +
+	d = readln(dt) +
+	tim = SubWord(d, 4, 1) +
+	month=(Pos(SubWord(d, 2, 1), months) + 2) / 3 +
+	Date TIME tim DATE SubWord(d, 3, 1)'-'month'-'SubStr(d, 23, 2)
+
+
+If {SAVE} 
+SetClock SAVE
+EndIf
+

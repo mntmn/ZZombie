@@ -1,0 +1,20 @@
+
+NAME
+	ch_die
+
+SYNOPSIS
+	ch_die DEVICE/A
+
+DESCRIPTION
+	Send action ACTION_DIE to handler of given device.
+	The handler will refuse to quit if locks or file
+	handles are still in use.
+
+$Id: ch_die.doc,v 1.1 1994/04/07 14:33:39 alph Exp $
+	
+		
+	
+
+	
+	
+	

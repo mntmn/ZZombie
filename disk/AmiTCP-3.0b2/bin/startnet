@@ -1,0 +1,18 @@
+run AmiTCP:AmiTCP
+Wait
+;WaitForPort AMITCP
+
+; configure loop-back device
+AmiTCP:bin/ifconfig lo0 localhost
+; Configure Devs:Networks/ZZ9000Net.device unit 0
+AmiTCP:bin/ifconfig eth0 192.168.1.222  netmask 255.255.255.0
+; Add route to this host
+AmiTCP:bin/route add zzombie.local localhost
+; Add route to the default gateway
+AmiTCP:bin/route add default 192.168.1.1
+
+;Assign TCP: Exists > NIL:
+;IF Warn
+;  Mount TCP: from AmiTCP:devs/Inet-Mountlist
+;EndIf
+

@@ -1,0 +1,1560 @@
+;;;; Hey Emacs, this script might as well be -*- lisp -*-
+;;;;
+;;;; Install_AmiTCP - AmiTCP/IP installation script for Installer
+;;;;
+;;;; Copyright © 1993 AmiTCP/IP Group, <amitcp-group@hut.fi>
+;;;;
+;;;; $Id: Install_AmiTCP,v 3.6 1994/05/19 04:19:33 ppessi Exp $
+;;;;
+;;;; This script has been tested with Installer 1.24:
+;;;;
+;;;;     Installer and Installer project icon
+;;;;     (c) Copyright 1991-93 Commodore-Amiga, Inc.  All Rights Reserved.
+;;;;     Reproduced and distributed under license from Commodore.
+;;;;
+;;;;     INSTALLER SOFTWARE IS PROVIDED "AS-IS" AND SUBJECT TO CHANGE;
+;;;;     NO WARRANTIES ARE MADE.  ALL USE IS AT YOUR OWN RISK.  NO LIABILITY
+;;;;     OR RESPONSIBILITY IS ASSUMED.
+;;;;
+;;;; Use following Icon tooltypes / Command line options:
+;;;; APPNAME=AmiTCP/IP
+;;;; MINUSER=AVERAGE
+;;;;
+(welcome "    Welcome to " @app-name " 3.0 beta installation.\n"
+	 "    We hope that after this installation your world of "
+	 "communication will be much more broader than before.")
+;;;;
+;;;; What we are?
+;;;;
+(set app-name (cat @app-name " 3.0ß2"))
+
+;;;;
+;;;; "Needs"
+;;;;
+(set need-version 37  ; version of operating system need by AmiTCP/IP
+     need-memory (* 512 1024))
+;;;
+;;; Destination directories of the AmiTCP/IP
+;;;
+(set 
+ atcp-name "AmiTCP"
+ atcp-assign (cat atcp-name ":")	; Assign to AmiTCP
+ ;; Exported files
+ export-dir (tackon atcp-assign "export")
+ ;; Configuration
+ conf-dir (tackon atcp-assign "db")
+ ;; User binaries
+ bin-dir (tackon atcp-assign "bin")
+ ;; documentation
+ doc-dir (tackon atcp-assign "doc")
+ ;; devices directory
+ devs-dir (tackon atcp-assign "devs")
+ ;; AmigaGuide documentation
+ help-dir (tackon atcp-assign "help")
+ ;; DOS handlers
+ l-dir (tackon atcp-assign "l")
+ ;; libraries
+ libs-dir (tackon atcp-assign "libs")
+ ;; source
+ src-dir (tackon atcp-assign "src")
+ ;; includes for net applications
+ include-dir (tackon atcp-assign "netinclude")
+ ;; network link libraries
+ lib-dir (tackon atcp-assign "netlib")
+ ;; daemons
+ serv-dir (tackon atcp-assign "serv")
+ ;;
+ ;; If you add directories above, then also add the name of the variable below.
+ ;; This is to have "for i in a b c d ..." construct
+ ;;
+ ;; These directories are always present
+ dir-pat (cat "(" "devs" "|" "db" "|" "bin" "|" "doc" "|" 
+	      "help" "|" "l" "|" "libs" "|" "serv" ")")
+ ;; Optional directories
+ dir-pat-opt (cat "(" "netinclude" "|" "netlib" "|" "src" ")")
+ ;; The source directory name
+ source-dir (if (= 1 (exists @icon))
+		    (pathonly (expandpath @icon))
+		  (expandpath @icon))
+ ;; Mounts
+ tcp-mount (cat 
+	    "Assign TCP: Exists > NIL:\n" 
+	    "IF Warn\n"
+	    "  Mount TCP: from AmiTCP:devs/Inet-Mountlist\n"
+	    "EndIf\n")
+ )
+ ;; How to get needed information?
+(set
+ net-setup-help
+     "    You can get this information from your network administration.\n")
+
+;;; copy "more" to ram: to be able to use it
+(set
+ pager-cmd (if (exists "ENV:PAGER" (noreq)) (getenv "PAGER"))
+ pager-cmd 
+ (if pager-cmd pager-cmd 
+   (if (exists "SYS:Utilities/More" (noreq))
+       ((copyfiles
+	 (prompt "Copying sys:utilities/more to ram: for use")
+	 (source "SYS:Utilities/More")
+	 (dest   "RAM:")
+	 (safe)
+	 (optional "nofail"))
+	"RAM:More")
+     ("more"))))
+
+;; Return old AmiTCP: assign if we are aborting
+(onerror
+ (if old-atcp-directory
+     (makeassign atcp-name old-atcp-directory)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ ask-ip-address
+ ;;  Procedure to ask an IP address
+ ;;
+ ;; arguments:
+ ;;  ::ask-ip-prompt   - Prompt text
+ ;;  ::ask-ip-help     - help text
+ ;;  ::ask-ip-need     - empty result allowed if not true
+ ;;
+ ;; locally used names:
+ ;;  ::ask-ip-result
+ (set ::ask-ip-result "<none>")
+ (while
+     ((set ::ask-ip-result
+	   (askstring
+	    (prompt ::ask-ip-prompt
+		    (if (NOT ::ask-ip-need)
+			(cat "\nGive an empty string if you want to "
+			     "by-pass this option."))
+		    (if (NOT (= ::ask-ip-result "<none>"))
+			(cat "\n\nYou entered an invalid value\n\""
+			     ::ask-ip-result "\".\n"
+			     "Enter a valid IP address.")))
+	    (default (if (<> ::ask-ip-result "<none>") ::ask-ip-result ""))
+	    (help net-setup-help
+		  ::ask-ip-help
+		  "\n    Internet address is a string of at most four "
+		  "decimal numbers separated by dots. For example, "
+		  "\"130.233.161.40\" is a valid internet address.\n"
+		  "    You will be asked again for the address, "
+		  "if the address you entered is invalid.")))
+      ;; loop while answer is unacceptable
+      (if ::ask-ip-result
+	  (NOT (patmatch "# #(1|2|3|4|5|6|7|8|9|0).#(1|2|3|4|5|6|7|8|9|0|.)# "
+			 ::ask-ip-result))
+	 ::ask-ip-need)))
+ ::ask-ip-result)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ check-system-version
+ ;; is your Exec recent enough?
+ (set exec-version (/ (getversion) 65536))
+ (transcript "Running on exec version " exec-version ".")
+ (if (< exec-version need-version)	; check operating system version
+     ((message @app-name " needs at least Exec version " need-version
+	       " to run.\nYou have only version " exec-version ".\n"
+	       "You can proceed with the installation, but consider "
+	       "installing the " @app-name " with proper version of "
+	       "the operating system."
+	       (help
+		"    The " @app-name " uses some system functions "
+		"that are not present or functional in earlier system "
+		"versions. Consider updating your system.\n"
+		"    If you have a later version of operating system "
+		"and are only now using older version: be sure to use "
+		"only release 2.04 or newer with " @app-name ". "
+		"No damage happens if you run " @app-name " with an "
+		"earlier operating system, however. It just "
+		"refuses to start.\n"
+		"    If you decide to continue, no changes will be made to "
+		"system startup files, so you must edit them yourself. "
+		"Refer instructions for manual installation."))
+      (transcript "User decided to continue installation while running "
+		  "on operating system release earlier than 2.04."))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ check-available-memory
+ ;;
+ (transcript "Checking available memory.")
+ (set avail-mem (+ (database "total-mem")))
+ (if (< avail-mem need-memory)
+     ((message "Your system has only " (/ avail-mem 1024) " kilobytes of "
+	       "free memory, while " @app-name " needs at least "
+	       (/ need-memory 1024) " to be useful.\n"
+	       "You can continue the installation but be warned!")
+      (transcript "User decided to continue installation while available "
+		  "memory was below the recommended minimum."))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ check-user-level
+ ;;
+ (transcript "Checking user level.")
+ (if (< @user-level 1)
+     ((transcript "Installation aborted due to too low user level.")
+      (abort "AmiTCP/IP installation requires at least the \"average\" "
+	     "user level. Restart installation and select appropriate user "
+	     "level."))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ check-old-assign
+ ;; If there is already the AmiTCP/IP installed, store the assign
+ ;; to old-atcp-directory
+ (transcript "Checking for already installed AmiTCP.")
+ (if (exists atcp-assign (noreq))
+     (set old-atcp-directory (getassign atcp-name)))
+ (if old-atcp-directory
+     (transcript "Existing AmiTCP detected at directory " 
+		 old-atcp-directory ".")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ select-destination-directory
+ ;; Select destination directory for the installation. We suggest the user
+ ;; to install to the place from where the installer was started. This is
+ ;; since normally this software will be unarchived to its proper location
+ ;; and the files don't have to be copied any more.
+ ;;
+ (transcript "Selecting destination directory for the installation.")
+ (while
+     ((set @default-dest
+	   (askdir
+	    (prompt "Select directory where to install " @app-name ".\n"
+		    "Most of the files don't have to be copied, if you accept "
+		    "the offered default.")
+	    (help "    Here you can specify location where to install "
+		  "the " @app-name ".\n"
+		  "    Installation can be made on-place. "
+		  "This is recommended if you have already unarchived "
+		  "the " @app-name " archive to its final location. "
+		  "In this case "
+		  "most of the files are left where they are. "
+		  "Only necessary files are copied to different "
+		  "positions.\n"
+		  "    Installation must NOT be made on top of the 1.0 "
+		  "version of the " @app-name)
+	    (newpath)
+	    (default source-dir)))
+      (if (= 2 (exists @default-dest))
+	  ;; check that installation is not tried over the old version
+	  (if (OR (exists (tackon @default-dest "bin/AmiTCP")) ; version 1.0
+		  (> (getversion (tackon source-dir "AmiTCP"))
+		     (if (exists (tackon @default-dest "AmiTCP"))
+			 (getversion (tackon @default-dest "AmiTCP"))
+		       $7FFFFFFF)))
+	      ((message "You are possibly trying to install " @app-name " "
+			"over an old version of it.\n"
+			"It is not allowed.\n"
+			"You should select some other directory or abort "
+			"the installation.")
+	       1)
+	    0)
+	((makedir @default-dest
+		 (infos))
+	 0))))
+
+ ;; Make the AmiTCP: assign
+ (makeassign atcp-name @default-dest))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ copy-files-to-destination ;;; Copy all files if not installing on-place
+ ;;
+ (if (= source-dir
+	(expandpath @default-dest))
+     (message "\nSource and destination directories are the same, "
+	      "not copying."
+	      (help "    The " @app-name " files don't have to be copied, "
+		    "since the source and destination directory are "
+		    "the same"))
+   ((transcript "Copying " @app-name " files from " source-dir " to "
+		@default-dest ".")
+    (set dir-information
+	 (cat
+	  (if (exists "netinclude")
+	      (cat "netinclude - include files needed for networking "
+		   "applications development\n"))
+	  (if (exists "netlib")
+	     "netlib - link libraries for networking program development\n")
+	  (if (exists "src")
+	      (if (exists "src/util")
+		  (cat "src - source code for libraries, examples"
+		       "and all the binaries\n")
+		"src - source code for the libraries and examples\n"))
+	  ))
+    (if (< 0 (strlen dir-information))
+	(if (askbool
+	     (prompt "\nDo you want directories needed only with development "
+		     "of " @app-name " or applications to be copied?")
+	     (help "    These directories (and their contents) is "
+		   "not needed to use AmiTCP/IP. "
+		   "You need to copy them only when you plan to "
+		   "make network programs by yourself.\n"
+		   "    Description of directories:\n"
+		   dir-information
+		   (if (= @user-level 1)
+		       "    If you select EXPERT level at start, you "
+		     "    You ")
+		   "will be prompted for each directory.\n"))
+	    (foreach
+	     source-dir dir-pat-opt
+	     (copyfiles
+	      (source source-dir)
+	      (choices (fileonly @each-name))
+	      (confirm)
+	      (dest @default-dest)
+	      (prompt
+	       (if (= @user-level 1)
+		   "Copying files to selected location."
+		 "Copy this directory?"))
+	      (help "    Description of directories:\n"
+		    dir-information)
+	      (optional "askuser")))))
+    (foreach source-dir dir-pat
+	     ((set dest-dir (tackon @default-dest @each-name))
+	      (if (NOT (exists dest-dir))
+		  (makedir dest-dir))
+	      (copyfiles (all)
+			 (source (expandpath @each-name))
+			 (dest dest-dir)
+			 (prompt "Copying files to the selected location.")
+			 (optional "askuser"))))
+    (copyfiles (source source-dir)
+	       (dest @default-dest)
+	       (prompt "Copying files to the selected location.")
+	       (pattern "#?")
+	       (files)
+	       (infos)
+	       (optional "askuser"))))
+ ;;
+ ;; Add script flags to the scripts, pure flags to pure programs
+ ;;
+ (protect (tackon bin-dir "ch_nfsctl") "+s +e")
+ (protect (tackon bin-dir "netstat") "+s +e")
+ (protect (tackon bin-dir "SynClock") "+s +e")
+ (protect (tackon bin-dir "stopnet") "+s +e")
+ (if (exists src-dir)
+     ((protect (tackon src-dir "compile") "+s +e")
+      (protect (tackon src-dir "compile.lib") "+s +e")))
+ (protect (tackon bin-dir "NapsaTerm") "+p +e")
+ (protect (tackon serv-dir "in.fingerd") "+p +e")
+ )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure 
+ ;;
+ ;; Ask for the default user
+ ;;
+ ask-default-user
+ (if (= adu::setdefaults 0)
+     (set   
+      adu::setdefaults 1
+      default-user-name ""))
+ (while (= default-user-name "")
+   (set default-user-name
+	(askstring
+	 (default default-user-name)
+	 (prompt "Enter the default user name\n")
+	 (help "    The AmiTCP/IP can handle currently only one user "
+	       "at a time.  The default user is selected with `login' "
+	       "command by system startup script. ")))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ ask-hostname ;; Get host name and default domain
+ ;;
+ (procedure
+  setenv-hostname ;; Store hostname to the environment variable
+  ;;
+  ;; Tell the user that the environment variable HOSTNAME will be used.
+  ;;
+  (if
+      (askbool
+       (prompt "\nThe host name \"" my-full-name "\" will be stored to the "
+	       "environment variable HOSTNAME where networking code "
+	       "assumes it to be found.\n"
+	       "This can be done in two ways: Either the variable is "
+	       "stored to the ENV: and ENVARC: or a \"setenv\" command "
+	       "is put to the s:user-startup.\n\n"
+	       "Choose which to do:")
+       (choices "Store to ENV(ARC):" "Use \"setenv\"")
+       (default 1)
+       (help "    This variable must be set for the applications "
+	     "to work correctly.\n"
+	     "    The ENVARC: is the standard place to store environment "
+	     "variables which must not peridh on a re-boot. "
+	     "Select \"setenv\" only if you are sure that it is needed."))
+      ((set use-setenv-to-set-hostname 0)
+       (if (= 2 (exists "ENV:"))
+	   (textfile (dest "ENV:HOSTNAME")
+		     (append my-full-name)))
+       (if (= 2 (exists "ENVARC:"))
+	   (textfile (dest "ENVARC:HOSTNAME")
+		     (append my-full-name))))
+    ;; this variable will be used when the user-startup is updated
+    (set use-setenv-to-set-hostname 1)))
+ ;;
+ ;; Get the hostname from environment variable
+ ;;
+ (set def-full-name (if (exists "ENV:HOSTNAME")
+			(getenv "HOSTNAME")
+		      "")
+      my-host-name ""
+      my-domain-name "")
+ ;;
+ ;; Break the name into the host and domain parts
+ ;;
+ (set ::index 0
+      ::length (strlen def-full-name))
+ (while (AND (< ::index ::length)
+	     (NOT (= (substr def-full-name ::index 1) ".")))
+   (set ::index (+ ::index 1)))
+ (if (= ::index ::length)
+     (set def-host-name ""
+	  def-domain-name "")
+   (set def-host-name (substr def-full-name 0 ::index)
+	def-domain-name (substr def-full-name (+ ::index 1))))
+ ;;
+ ;; Ask the host name from the user
+ ;;
+ (while (OR (= my-host-name "")
+	    ;; check that name has no dots
+	    ((set ::index 0
+		  ::length (strlen my-host-name))
+	     (while (AND (< ::index ::length)
+			 (NOT (= (substr my-host-name ::index 1) ".")))
+	       (set ::index (+ ::index 1)))
+	     (NOT (= ::index ::length))))
+   (set my-host-name
+	(askstring
+	 (prompt
+	  (cat "\nEnter the host name of your computer (not including "
+	       "domain)"
+	       (if (= my-host-name "")
+		   ":"
+		 (cat ".\nThe value " my-host-name " is illegal, since it "
+		      "contains a dot."))))
+	 (help net-setup-help
+	       "    Host name is a string NOT containing dots (.), "
+	       "example: \"my-amiga\".\n"
+	       "    Domain specifies the administrative domain of the "
+	       "network where your host is connected. For example, "
+	       "\"hut.fi\" is the domain name of the Helsinki "
+	       "University of Technology in Finland.\n")
+	 (default def-host-name))))
+ ;;
+ ;; ask the domain name from the user
+ ;;
+ (while (= my-domain-name "")
+   (set my-domain-name
+	(askstring
+	 (prompt "\nEnter the domain part of your host name:")
+	 (help net-setup-help
+	       "    Domain specifies the administrative domain of the "
+	       "network where your host is connected. For example, "
+	       "\"hut.fi\" is the domain name of the Helsinki "
+	       "University of Technology in Finland.\n")
+	 (default def-domain-name))))
+ (set my-full-name (cat my-host-name "." my-domain-name))
+ (setenv-hostname))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ ask-aliases
+ ;;
+ (set my-host-aliases my-host-name)
+ (while
+     (set new-host-name
+	  (askstring
+	   (prompt "Give aliases to your computer " my-full-name
+		   " one at a time."
+		   (if my-host-aliases
+		       (cat "\n\nAliases are:\n" my-host-aliases)))
+	   (default (if my-host-aliases "" my-host-name))
+	   (help net-setup-help
+		 "    Your computer may have additional names "
+		 "(aliases) to its official name. It is a customary "
+		 "to have at least one alias, which "
+		 "is the official host name without the domain part.\n")))
+   (set my-host-aliases (cat my-host-aliases " " new-host-name))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ ask-domains
+ ;;
+ (set domain-list ""
+      text-domain-list "")
+ (while
+     (set domain
+	  (askstring
+	   (prompt
+	    "Give domain names (one at a time) to search.\n"
+	    "Press proceed after you have given each domain.\n"
+	    "Give empty domain after you have finished.\n"
+	    (if text-domain-list
+		(cat "\nIncluded domains are:"
+		    text-domain-list)))
+	  (help
+	   net-setup-help
+	   "    In many environments more than one search domain "
+	   "is needed for name resolution.\n"
+	   "    For example, most of computers in the Helsinki "
+	   "University of Technology are under single domain: "
+	   "\"hut.fi\", so the full name of computer named "
+	   "\"vipu\" would be \"vipu.hut.fi\". If the default "
+	   "domain is \"hut.fi\", then this computer can be "
+	   "referred without the domain part of the name (just "
+	   "\"vipu\"). However, the computer science department "
+	   "has its own domain \"cs.hut.fi\". When computers of "
+           "the computer science department "
+	   "are referred, the full name must be supplied, e.g. "
+	   "\"colossus.cs.hut.fi\". This can be avoided by "
+	   "providing \"cs.hut.fi\" as a secondary search domain. "
+	   "The domains are searched in the given order. It is "
+	   "fastest to give the most used domain first.\n"
+	   "    In Unix systems the domain names are "
+	   "usually stored into the file `/etc/resolv.conf`.\n")
+	  (default (if domain-list "" my-domain-name))))
+  (set domain-list ("%sDOMAIN %s\n" domain-list domain)
+       text-domain-list (cat text-domain-list "\n" domain)
+       default-domain "")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ update-devices
+ (transcript "Updating Sana-II device drivers.")
+ ;;
+ ;; Create directory DEVS:Networks if it does not exist already
+ ;;
+ (if (NOT (= 2 (exists "DEVS:Networks")))
+     (makedir "DEVS:Networks"))
+ ;;
+ ;; Copy each driver in the distribution to the DEVS:Networks if necessary
+ ;;
+ (working "Checking Sana-II device drivers...")
+ (set dist-networks-dir (tackon source-dir "export/Devs/Networks"))
+ (if (= 2 (exists dist-networks-dir))
+     (foreach
+       dist-networks-dir "#?.device"
+       ((set dist-name (tackon dist-networks-dir @each-name)
+	     devs-name (tackon "DEVS:Networks" @each-name)
+	     dist-version (getversion dist-name)
+	     copy-it (NOT (exists devs-name)))
+	;;
+	;; Check if the driver should be copied over
+	;;
+	(if (NOT copy-it)
+	    (set copy-it
+	             ; or if the driver in DEVS:Networks is of older version
+		 (< (set devs-version (getversion devs-name)) dist-version)))
+	(if (NOT copy-it)
+	    (set copy-it
+		     ; or if the files are of the same version but different
+		 (set sum-differs (if (= dist-version devs-version)
+				      (<> (getsum dist-name)
+					  (getsum devs-name))
+				    0))))
+	(if copy-it
+	    (copyfiles
+	     (prompt "Confirm the copy.\n"
+		     (if devs-version
+			 (cat "A driver with the same name exists already"
+			      (if sum-differs
+				  (cat ", it has the same version, but the "
+				       "files are not the same.")
+				(cat ", but the driver in the "
+				     "DEVS:Networks is of older version.")))
+		       ""))
+	     (help
+	      "    The Sana-II drivers should be located in "
+	      "the DEVS:Networks directory.\n"
+	      "    This directory is the official location for the SANA-II "
+	      "device drivers. Some other software may be able to use the "
+	      "drivers, if they are copied over.")
+	     (source (pathonly dist-name))
+	     (choices (fileonly dist-name))
+	     (dest "DEVS:Networks")
+	     (files)
+	     (optional "nofail" "askuser")
+	     (confirm "average"))))))
+
+ ;;; ask user which export/Env/Sana2 files should be copied
+ (if (= 2 (exists (tackon source-dir "export/Env/Sana2")))
+     (if
+	 (askbool (prompt "\nDo you want to install example Sana-II "
+			  "configuration files?\n"
+			  "Copies will be confirmed.")
+		  (help "    This release contains example configuration "
+			"files for the SLIP devices and Agnet (a Sana-II "
+			"pseudo device).\n"
+			"    The copying of each file will confirmed.")
+		  (default 1))
+	 (copyfiles
+	  (prompt "Select Sana-II configuration files to be copied:")
+	  (help "    These configuration files are for example only. "
+		"You need to edit them for them to be useful. Refer to "
+		"the documentation of the Sana-II device in question. "
+		"The AmiTCP:doc directory contains documentation for "
+		"the drivers included in this release.\n"
+		"    The files will be copied to the ENVARC: by default. "
+		"Normally they will be copied to ENV: on next reboot.")
+	  (source (tackon source-dir "export/Env/Sana2"))
+	  (dest "ENVARC:sana2")
+	  (all)
+	  (files)
+	  (optional "nofail" "askuser")
+	  (confirm "average")))
+   ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Ask network interfaces
+;;;
+;;; Loop until no device is given.
+;;;
+(procedure
+ ask-interfaces
+ ;;
+ ;; Procedure to ask the network device driver name
+ ;;
+ ;; (Returns TRUE if an interface file exists..)
+ ;;
+ (procedure
+  if-ask-device
+  (while
+      ((set my-host-if
+	    (askfile
+	     (prompt
+	      "Select a SANA-II device driver. If you have set "
+	      "up all your interfaces, just press proceed.")
+	     (default "Devs:Networks")
+	     (help
+	      "    Select the name of a SANA-II device to be used, "
+	      "like \"a2065.device\" or \"rhslip.device\" for the "
+	      "A2065 ethernet adapter or SLIP driver, respectively.\n"
+	      "    Primary address of your computer is the one "
+	      "with which your computer will most often be referenced.\n"
+	      "    If you are going to attach your computer to "
+	      "several networks (by using many network "
+	      "adapters), different address must be assigned to "
+	      "each adapter.\n"
+	      "    When you have configured all your network "
+	      "interfaces, select no file to continue. This can be done by "
+	      "entering nothing to the \"file\" gadget.")))
+       ;;
+       ;; Try to ensure that we get at least 1 SANA-II network interface
+       ;;
+       (if (AND (= address-list "")
+		(= 2 (exists my-host-if)))
+	   (askbool
+	    (prompt
+	     "\nYou have not defined any SANA-II network interface for "
+	     "the " @app-name ". You should define at least one "
+	     "external interface. It is crucial for the correct "
+	     "operation even if you are using " @app-name " "
+	     "locally with internal loopback device.\n"
+	     "    For the moment you can give "
+	     "the interface a random IP address (eg. 126.1). "
+	     "Reinstall " @app-name " when you get a real "
+	     "network connection.\n\n"
+	     "Do you want to define a network interface for "
+	     @app-name "?")
+	    (help
+	     "    Each IP packet must be given a source address. "
+	     "AmiTCP/IP stamps each packet which it sends with an "
+	     "address of some external interface. "
+	     "Because of an internal design of the AmiTCP/IP, "
+	     "the source address can not be local. (Local address is "
+	     "any address configured to the internal loopback "
+	     "interface, normally 127.1).\n")))))
+  ;; If user gives no file, a directory is actually given
+  (if (= 2 (exists my-host-if))
+      ""
+    my-host-if))
+
+ ;;
+ ;; Ask for the unit number
+ ;;
+ (procedure
+  if-ask-unit
+  (set my-host-if-unit
+       (asknumber
+	(prompt "\nSelect unit number for the " my-host-if ":")
+	(default 0)
+	(help "    Select the unit number for the SANA-II device driver "
+	      my-host-if " to use. This is usually 0 for the first "
+	      "unit of that particular device. "
+	      "Refer your device driver documentation for "
+	      "correct number to use."))))
+
+ ;;
+ ;; Ask for the IP address of this host
+ ;;
+ (procedure
+  if-ask-address
+  (set ::ask-ip-prompt (cat "IP address for the interface " my-host-if
+			    "/" my-host-if-unit ".\n"
+			    "Each interface must have an unique\n"
+			    "Internet Protocol address.")
+       ::ask-ip-help (cat "    If you have no actual network connection, "
+			  "you may give a nonexistent IP number for "
+			  "your external interface.")
+       ::ask-ip-need 1
+       my-host-addr (ask-ip-address)))
+
+ ;;
+ ;; Ask for the optional destination address
+ ;;
+ (procedure
+  if-ask-dest-address
+  (set ::ask-ip-prompt (cat "Give the destination address for the "
+			    my-host-if "/" my-host-if-unit ".\n"
+			    "Address of interface is " my-host-addr ".\n"
+			    "This is should give the destination address "
+			    "ONLY if you have a point-to-point interface "
+			    "(e.g. SLIP). You should give NO destination "
+			    "address for broadcast interface (e.g. Ethernet)."
+			    "\n")
+       ::ask-ip-help (cat
+		      "    A point-to-point device is one that is connected"
+		      " to a medium which only two devices can attach, for "
+		      "example the normal serial line: your computer is in "
+		      "other end and the other computer is on the other "
+		      "end (maybe via modem, that does not change it).\n"
+		      "    Ethernet, for example, is not a "
+		      "point-to-point device because several devices "
+		      "can connect to single physical medium.")
+       ::ask-ip-need 0
+       dest-host (ask-ip-address)))
+
+ ;;
+ ;; Ask for the netmask for this interface. If nothing is given,
+ ;; a default value will be used by the ifconfig.
+ ;;
+ (procedure
+  if-ask-netmask
+  (set ::ask-ip-prompt (cat "Netmask of network on interface " my-host-if
+			    "/" my-host-if-unit ".\n"
+			    "Address of interface is " my-host-addr
+			    (if dest-host
+				(cat ",\ndestination address is " dest-host ".\n")
+			      (cat ".\n")))
+       ::ask-ip-help (cat "    Netmask is a dot separated string of four "
+			  "decimal numbers (similar "
+			  "to an internet address), which specifies which "
+			  "bits of the host address are used as the "
+			  "network address.\n"
+			  "    For example, \"255.255.255.0\" "
+			  "is a possible netmask.\n"
+			  "    The netmask must be same for all interfaces "
+			  "connected to the same network.\n"
+			  "    If you do NOT give a netmask (i.e. leave it "
+			  "empty), it will be computed from your interface "
+			  "address. This is correct only if the network "
+			  "is not divided into subnets.")
+       ::ask-ip-need 0
+       my-host-netmask (ask-ip-address)))
+
+ ;;
+ ;; Ask for confirmation on given information
+ ;;
+ (procedure
+  if-confirmation
+  (askbool
+   (prompt "This is the information you gave for this interface:\n"
+	   "\nSANA-II driver: " my-host-if
+	   "\nUnit number: " my-host-if-unit
+	   "\nInterface address: " my-host-addr
+	   "\nDestination address: " (if (= dest-host "") "<none>"
+				       dest-host)
+	   "\nNetmask: " (if (= my-host-netmask "") "<use default>"
+			   my-host-netmask)
+	   "\n\nIs this correct?")
+   (help "    Check the information shown. If you do not confirm it, "
+	 "all of it will be asked again.")))
+
+ ;;
+ ;; Set startup string to contain configuration for the loopback device
+ ;; (Other information will be later appeneded to this string variable).
+ ;;
+ (set su-script
+      (cat "; configure loop-back device\n"
+	   (tackon bin-dir "ifconfig") " lo/0 localhost\n")
+      ;; a complete list for IP address to host name mappings..
+      address-list "")
+ ;;
+ ;; Ask for interfaces
+ ;;
+ (while
+     (if-ask-device)
+   (if-ask-unit)
+   (if-ask-address)
+   (if-ask-dest-address)
+   (if-ask-netmask)
+   (if (if-confirmation)
+       ((transcript "Adding interface " my-host-if "/" my-host-if-unit )
+	(set
+	 ;; Add this interface to the script string
+	 su-script
+	 (cat su-script
+	      "; Configure " my-host-if " unit " my-host-if-unit "\n"
+	      (tackon bin-dir "ifconfig") " "
+	      my-host-if "/" my-host-if-unit " " my-host-addr " "dest-host
+	      (if my-host-netmask
+		  (cat " netmask " my-host-netmask))
+	      "\n")
+	 ;; Add IP address entry for this IP number
+	 address-list
+	 (cat address-list
+	      "HOST " my-host-addr " " my-full-name " " my-host-aliases "\n")
+	 )))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ ask-gateway ;;; Ask the default gateway address
+ ;;
+ (set ::ask-ip-prompt "Enter the IP address of the default gateway:"
+      ::ask-ip-help (cat
+		     "    All network packets for destinations for which "
+		     "there is no defined route, are sent to the default "
+		     "gateway, which (hopefully) can send them towards "
+		     "the destination host.\n"
+		     "    The IP address (instead of a name) is needed, "
+		     "because the name may not be resolved without the "
+		     "gateway, if the name server is not "
+		     "in your local network.")
+      ::ask-ip-need 0
+      def-gateway-addr (ask-ip-address))
+ ;;
+ (set su-script
+      (cat su-script
+	   "; Add route to this host\n"
+	   (tackon bin-dir "route") " add " my-full-name " localhost\n"
+	   (if def-gateway-addr
+	       (cat "; Add route to the default gateway\n"
+		    (tackon bin-dir "route")
+		    (" add default %s\n" def-gateway-addr))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ ask-nameservers ;;; Ask addresses to the name servers
+ ;;
+ (set name-server-list ""
+      name-server-text-list "")
+ (while
+     (set ::ask-ip-prompt
+	  (cat "Enter the IP addresses of the name servers (one at a time). "
+	       "The name servers will be searched in the given order.\n"
+	       (if name-server-text-list
+		   ("\nIncluded name servers are: %s\n"
+		    name-server-text-list)))
+	  ::ask-ip-help
+	  (cat "    A name server is used to resolve host "
+	       "names to internet addresses. This allows you "
+	       "to use symbolic names for the hosts instead "
+	       "of internet addresses.\n"
+	       "    In Unix systems the name server addresses are "
+	       "usually stored into the file `/etc/resolv.conf`.\n")
+	  ::ask-ip-need 0
+	  name-server-addr (ask-ip-address))
+   (set name-server-list (cat name-server-list
+			      "NAMESERVER " name-server-addr "\n")
+	name-server-text-list (cat name-server-text-list "\n"
+				   name-server-addr))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ create-config-file
+ ;;
+ (textfile (dest (tackon conf-dir "netdb-myhost"))
+	   (append
+	    (if address-list (cat "; This host\n" address-list)))
+	   (append
+	    (if domain-list (cat "; Domain names\n" domain-list)))
+	   (append
+	    (if name-server-list (cat "; Name servers\n" name-server-list)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ create-startup-script
+ ;;
+ ;; Create the network startup-script (AmiTCP:bin/startnet)
+ ;;
+ (textfile (dest (tackon bin-dir "startnet"))
+	   (append
+	    "run AmiTCP:AmiTCP\n"
+	    "WaitForPort AMITCP\n")
+	   (append su-script)
+	   (append tcp-mount)
+	   (append
+	    (if (askbool
+		 (prompt "\nDo you want the Inetd to be started at the "
+			 @app-name " startup?\n")
+		 (help "    Inetd is the Internet `Super Server', which "
+		       "listens for connections on behalf of other "
+		       "servers. When a connection request for a port, "
+		       "for which Inetd is configured to listen, arrives "
+		       "Inetd accepts the connections and starts the "
+		       "server in question.\n"
+		       "    The file " (tackon conf-dir "inetd.conf")
+		       " contains the configuration information for the "
+		       "Inetd, which you will want to edit.\n"
+		       "    Currently only finger daemon is distributed "
+		       "with " @app-name ".\n"
+		       "    Refer to the documentation for more information."))
+		(cat "; Start the internet `super server'\n"
+		     "run AmiTCP:bin/inetd\n")
+	      "\n")))
+ (protect (tackon bin-dir "startnet") "+s +e"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ update-user-startup
+ ;;
+ (set to-be-added-to-startup
+      (cat (if use-setenv-to-set-hostname
+	       (cat "setenv HOSTNAME " my-full-name "\n")
+	     "")
+	   "assign " atcp-assign " " @default-dest "\n"
+	   "path " bin-dir " add\n"
+	   (tackon bin-dir "login") " -f " default-user-name 
+	   " >\"con:*/*/*/200/AmiTCP-IP Login/AUTO/CLOSE/WAIT\"\n"
+	   (tackon bin-dir "umask") " 022\n"
+	   (if (askbool
+		(prompt
+		 "\nDo you want the " @app-name
+		 " to be started at the system startup?")
+		(help
+		 "    If you decide not to start " @app-name " at startup, "
+		 "you can later start it by giving command\n\n"
+		 "run " (tackon bin-dir "startnet")
+		 "\n\n at the command shell."))
+	       ((set started-at-boot 1)
+		(cat "run " (tackon bin-dir "startnet\n")))
+	     ((set started-at-boot 0)
+	      ""))
+	   (if (AND
+		(= 2 (exists include-dir))
+		(= 2 (exists lib-dir)))
+	       (if (askbool
+		    (prompt "\nDo you want to add assigns to "
+			    "netinclude and netlib directories?")
+		    (help "    These assigns are only needed for compiling "
+			  "programs using the " @app-name "."))
+		   (cat "; assigns for programmers\n"
+			"assign netinclude: " include-dir "\n"
+			"assign netlib: " lib-dir "\n"))))
+      complete-to-be-added-to-startup (cat ";BEGIN " @app-name "\n"
+					   to-be-added-to-startup
+					   ";END " @app-name "\n"))
+ ;; Ask for confirmation to add
+ (if (>= exec-version 37)
+     (if
+	 (askbool
+	  (prompt "\nDo you want Installer to make the required changes to "
+		  "your s:user-startup script?\n"
+		  "\n(There is a problem with Installer making these "
+		  "changes if you do not have the original boot volume "
+		  "mounted. Installer may crash or corrupt your system "
+		  "in that case.)")
+	  (help "If you do not want Installer make the changes, it will "
+		"create a script file containing commands which you should "
+		"add to the s:user-startup file."))
+	 ;; Do the addition
+	 (startup
+	  @app-name
+	  (command to-be-added-to-startup)
+	  (prompt "Installer will modify your S:User-Startup file. "
+		  "Following lines will be appended to it:\n\n"
+		  complete-to-be-added-to-startup)
+	  (help "   Installer needs to make indicated modifications to "
+		"your user startup file to make sure that everything is "
+		"correctly set up to run " @app-name ".\n"
+		"   You should make modifications later by hand "
+		"if you skip this part."))
+       ;; Let user add commands
+       ((set addition-to-user-startup
+	     (tackon atcp-assign "addition-to-user-startup"))
+	(textfile (dest addition-to-user-startup)
+		  (append complete-to-be-added-to-startup))
+	(message "Installer created file " addition-to-user-startup
+		 ", which you can add to your startup file by hand. "
+		 "The file includes following changes:\n\n"
+		 complete-to-be-added-to-startup)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ ask-copy-old-configuration
+ ;;
+ ;; Copy old configuration files
+ ;;
+ (set
+  edit-change-fingerd "t:edit-change-fingerd"
+  old-conf-dir (tackon old-atcp-directory "db")
+  old-netdb-myhost (tackon old-conf-dir "netdb-myhost")
+  old-startnet (tackon old-atcp-directory "bin/startnet"))
+ ;;
+ (procedure 
+  copy-myhost-config 
+  (if (>= @user-level 2)
+      (message "\nCopying files\n\n"
+	       old-netdb-myhost "\n"
+	       old-startnet "   \n"
+	       "\nto directory \"" @default-dest "\"."))
+  (copyfiles
+   (source old-netdb-myhost)
+   (dest conf-dir)
+   (files))
+  (copyfiles
+   (source old-startnet)
+   (dest bin-dir)
+   (files)))
+ ;;
+ (procedure 
+  copy-rest-config
+  (copyfiles
+   (prompt
+    "Select configuration files you want to copy from old configuration")
+   (help
+    "    You may copy your old configuration files or use untouched files "
+    "came with the new distribution.")
+   (source old-conf-dir) 
+   (dest conf-dir)
+   (files)
+   (confirm)
+   (if (exists (tackon old-conf-dir "passwd"))
+       (choices
+	"AmiTCP.config"
+	"inetd.conf"
+	"netdb"
+	"hosts"
+	"services"
+	"protocols"
+	"passwd"
+	"group")
+     (choices 
+      "AmiTCP.config"
+      "inetd.conf"
+      "netdb"
+      "hosts"
+      "services"
+      "protocols"))
+   (optional "nofail" "force" "askuser")))
+ ;;
+ (procedure 
+  update-startnet
+  (set startnet-file (tackon bin-dir "startnet"))
+  (if (run (cat "search search \"Mount TCP:\" quiet from " startnet-file)
+	   (safe))
+      ((textfile (dest startnet-file)
+		 (include startnet-file)
+		(append tcp-mount "\n")
+		(prompt 
+		 "\nDo you want to mount TCP: device at network startup?")
+		(help 
+		 @app-name " includes a DOS handler for TCP communications. "
+		 "This DOS handler will usually be mounted at network "
+		 "startup.")
+		(confirm))
+       (protect (tackon bin-dir "startnet") "+s +e"))))
+ (procedure
+  update-services
+  (set service-file (tackon conf-dir "services"))
+  (if (run (cat "search search \""amiganetfs"\" quiet from " service-file)
+	   (safe))
+      (;; Not found, add it 
+       (textfile (dest service-file)
+		 (include service-file)
+		(append ";\n; Amiga specific services\n;\n"
+			"amiganetfs      2500/tcp\n")
+		(prompt 
+		 "Do you want to add AmigaNetFS service to your "
+		 "service database?")
+		(help 
+		 @app-name " includes NetFS, network file system between "
+		 "Amigas, by Timo Rossi. It is a TCP based protocol which "
+		 "requires both ends of connection have same service "
+		 "(TCP port) entries. If you already had NetFS installed "
+		 "you probably do not want to update your service "
+		 "database.")
+		(confirm)))))
+ (procedure
+  update-inetd-conf
+  ;; Change fingerd to serv/in.fingerd
+  (set inetd-conf (tackon atcp-assign "db/inetd.conf"))
+  (if (run (cat "search search \"serv/in.fingerd\" quiet from " inetd-conf)
+	   (safe))
+      ((textfile 
+	(dest edit-change-fingerd)
+	(append
+	 "f b/finger    stream/\n"
+	 "e -amitcp:bin/fingerd-amitcp:serv/in.fingerd-\n"
+	 "m+"
+	 "i"
+	 "# NetFS, a networking support between Amigas"
+	 "# Remove # from the next line to enable NetFS"
+	 "#amiganetfs stream    tcp nowait root amitcp:serv/netfs-server"
+	 "Z"
+	 "w\n")
+	(safe))
+       (run (cat "c:edit from " inetd-conf " with "
+		 edit-change-fingerd " >t:what-changed")
+	    (confirm)
+	    (prompt "\nUpdate \"inetd.conf\" to use " @app-name " services?")
+	    (help "    The fingerd service daemon is moved to directory "
+		  "\"AmiTCP:serv\", and \"inetd.conf\" must be updated to use "
+		  "it. Also the NetFS must be added to old configuration")))))
+ ;;
+ (procedure 
+  update-napsaprefs
+  (set old-napsaprefs
+       (if (exists (tackon old-atcp-directory "db/NapsaPrefs") (noreq))
+	   (tackon old-atcp-directory "db/NapsaPrefs")
+	 (if (exists "s:NapsaPrefs")
+	     "s:NapsaPrefs")
+	 ""))
+  (if old-napsaprefs
+      (;;
+       (copyfiles 
+	(source old-napsaprefs)
+	(dest conf-dir)
+	(files)
+	(confirm)
+	(prompt "\nUse your old Napsaterm preferences?")
+	(help  "    Installer have found an existing NapsaPrefs file "
+	       old-napsaprefs ". You can copy it to new configuration "
+	       "directory.")))))
+ (procedure 
+  copy-extra-binaries
+  "")
+ (transcript "Ready to copy old configuration.")
+ (if (askbool
+      (default 1)
+      (prompt
+       "\nDo you want to use settings from earlier installation?")
+      (help
+       "    Installer have detected existing configuration "
+       "directory \"" old-conf-dir "\" which "
+       "can be used to configure " @app-name ". You can keep most "
+       "of your previous configuration. This is important if you have "
+       "installed extra applications.\n"
+       "    Installer will copy your \"" old-startnet "\" script and "
+       "\"" old-netdb-myhost "\" configuration "
+       (if (> @user-level 1) 
+	   "and optionally "
+	 "then ")
+       "other configuration files" (if "" "and binaries") ".\n"))
+     ((copy-myhost-config)
+      (copy-rest-config)
+      (update-inetd-conf)
+      (update-services)
+      (update-startnet)
+      (update-napsaprefs)
+      (copy-extra-binaries)
+      "Already configured")
+   ""))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ install-emacstcp
+ ;; is GNU Emacs installed?
+ (if (exists "GNUEmacs:" (noreq)) ; check if GNUEmacs is installed
+     (if (exists (tackon source-dir "export/GNUEmacs"))
+	 ((transcript "Installing GNUEmacs support files.")
+	  (copyfiles
+	   (source (tackon source-dir "export/GNUEmacs/lisp"))
+	   (prompt "Copying GNU Emacs lisp files to GNUEmacs:lisp")
+	   (help "   Emacs lisp files implement the Emacs side of the "
+		 "Gnu Emacs TCP support.")
+	   (pattern "#?.el#?")
+	   (dest "GNUEmacs:lisp")
+	   (optional "nofail" "askuser")
+	   (confirm))
+	  (copyfiles
+	   (source (tackon source-dir "export/GNUEmacs/etc"))
+	   (choices "tcp_AmiTCP")
+	   (prompt "Copying tcp_AmiTCP (program) to GNUEmacs:etc")
+	   (help "   tcp_AmiTCP implements the " @app-name " side of the "
+		 "Gnu Emacs TCP support.")
+	   (dest "GNUEmacs:etc")
+	   (optional "nofail" "askuser")
+	   (confirm))
+	  (if (exists "GNUEmacs:etc/tcp_AmiTCP")
+	      (protect "GNUEmacs:etc/tcp_AmiTCP" "+p")) ; tcp is pure
+	  ;; Tell user what to do with .emacs
+	  (run (cat "run " pager-cmd)
+	       (tackon source-dir "export/GNUEmacs/add_to_.emacs")
+	       (safe)))
+       (message "GNUEmacs not present in " source-dir "."))
+   (message "GNU Emacs must be installed before....")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ ask-install-emacstcp
+ ;; is GNU Emacs installed?
+ (if (exists "GNUEmacs:" (noreq)) ; check if GNUEmacs is installed
+     (if (exists (tackon source-dir "export/GNUEmacs"))
+	 (if (askbool
+	      (prompt "\nDo you want to install needed files for GNU Emacs "
+		      "support?")
+	      (help
+	       "    Installer has noticed that you have GNUEmacs: assigned "
+	       "in your system. Normally this means that you have the "
+	       "GNU Emacs installed.\n"
+	       "    AmiTCP/IP provides an Emacs extension, which makes "
+	       "it possible to run networking programs with it. To enable "
+	       "this feature some files need to be installed "
+	       "in to directories under \"GNUEmacs:\".\n"
+	       "    If you select \"Yes\", files will be installed and you "
+	       "will be able to use TCP/IP applications written for "
+	       "GNU Emacs."))
+	     (install-emacstcp)
+	   (transcript "User denied adding AmiTCP/IP support for GNU Emacs."))
+       (transcript "GNUEmacs not present on " source-dir "."))
+   (transcript "No GNU Emacs detected in system.")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ install-napsaterm
+ ;;
+ ;; Install Napsaterm fonts
+ ;;
+ ;; Ask for directory to install fonts.
+ (procedure
+  ask-napsa-font-dir
+  (askdir
+   (prompt "Select directory where to install Napsaterm fonts.\n")
+   (help "    Here you can specify location where to install "
+	 "the Napsaterm font called `napsa'. "
+	 "This directory should be in your font path "
+	 "(i.e. some directory in the assign fonts:).")
+   (newpath)
+   (default "fonts:")))
+ (copyfiles
+  (source (tackon source-dir "export/Fonts"))
+  (prompt "Copying font `napsa' to " napsa-font-dir ".")
+  (dest (ask-napsa-font-dir))
+  (optional "nofail")
+  (fonts)
+  (all)))
+
+(procedure
+ ask-install-napsaterm
+ ;; Optionally intall Napsafonts
+ (if (askbool
+      (prompt "Do you want to install Napsaterm fonts, napsa?\n"
+       "\n    (Napsaterm uses the special fonts in its window "
+       "if they are installed. "
+       "They are sized 6×11 pixels and contain some special VT102 "
+       "characters. They are suitable for interlaced screens. "
+       "If you have normal NTSC or PAL screen, it might be better to not "
+       "install Napsa and use Topaz/8.)\n")
+      (help
+       "    Napsaterm is a VT102 terminal emulator which uses the rlogin "
+       "protocol. You can have a remote login to many hosts in Internet "
+       "with Napsaterm.\n"
+       "    Napsaterm is based on the Niftyterm 1.2 written by "
+       "Todd Williamson and Christopher J. Newman."))
+     (install-napsaterm)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure 
+ ;;
+ ;; Add a new user into AmiTCP:db/passwd
+ ;;
+ add-new-user
+ (if (= anu::setdefaults 0)
+     (set   
+      anu::passwd (tackon conf-dir "passwd")
+      anu::passwd-new (cat anu::passwd ".new")
+      anu::passwd-old (cat anu::passwd ".old")
+      anu::tempfile "t:run-the-password"
+      anu::helptext (cat "    You must give an login name, user ID, group ID"
+			 "real name and home directory for each user.\n")
+      anu::setdefaults 1
+      anu::username ""
+      anu::UID 100
+      anu::GID 100
+      anu::realname ""
+      anu::homedir "HOME:"
+      anu::shell "shell"))
+ (while
+  (askbool (prompt "\nDo you want to create new user?")
+	   (choices "Proceed" "Cancel")
+	   (help "    You are about to add new users into user database."
+		 "You should be logged in as `root' while adding new users\n"))
+  ((set anu::username
+	   (askstring
+	    (default anu::username)
+	    (prompt "Enter the login name of new user\n")
+	    (help anu::helptext
+		  "    The login name consists of lowercase letters a-z "
+		  "and numbers.  Its recommended maximum length is 8 "
+		  "characters.\n"
+		  "    Examples of acceptable login names are `ppessi' "
+		  "and `an345'.")))
+      (set anu::UID
+	   (asknumber
+	    (default anu::UID)
+	    (prompt (cat "Enter the user ID of user " anu::username "\n"))
+	    (help anu::helptext
+		  "    The user ID is a numeric identifier for each user. "
+		  "It is a number between 100 - 32767 for ordinary users.\n")))
+      (set anu::GID
+	   (asknumber
+	    (default anu::GID)
+	    (prompt (cat "Enter the primary group ID of user " 
+			 anu::username "\n"))
+	    (help anu::helptext
+		  "    The group ID is a numeric identifier of groups. "
+		  "Each user has a primary group, which is usually 100, "
+		  "group \"users\".\n")))
+      (set anu::RealName
+	   (askstring
+	    (default anu::realname)
+	    (prompt (cat "Enter the real name of user " anu::username "\n"))
+	    (help anu::helptext
+		  "    The real name can contain any characters except "
+		  "comma (`,'), colon (`:') or bar (`|').")))
+      (set anu::homedir
+	   (askdir
+	    (default anu::homedir)
+	    (prompt (cat "Give the home directory of user" anu::username "\n"))
+	    (help anu::helptext
+		  "    When user logs in, the current directory is changed to"
+		  "her home directory.  Also, the finger information (plan"
+		  "and project) is retrieved from home directory.")
+	    (newpath)))
+      (set anu::shell
+	   (askstring
+	    (default anu::shell)
+	    (prompt (cat "Enter the name of command interpreter for user "
+			 anu::username "\n"))
+	    (help anu::helptext
+		  "    The command interpreter value can be either "
+		  "`shell' or `cli'.")))
+      (set anu::passwd-entry 
+	   (cat anu::username "||" anu::UID "|" anu::GID "|" 
+		anu::RealName "|" anu::homedir "|" anu::shell "\n"))
+      (if (askbool 
+	   (prompt (cat "Are you sure you want to add following user:\n\n"
+			"Login name: " anu::username "\n"
+			"User ID: " anu::UID "\n"
+			"Group ID: " anu::GID "\n"
+			"Real name: " anu::realname "\n"
+			"Home directory: " anu::homedir "\n"
+			"Shell: " anu::shell "\n"))
+	   (choices (cat "Add " anu::username) (cat "Skip " anu::username))
+	   (help "You can still skip creating the new user"))
+	  ((textfile (dest anu::passwd-new)
+		     (include anu::passwd)
+		     (append anu::passwd-entry))
+	   (copyfiles (source anu::passwd)
+		      (dest conf-dir)
+		      (newname "passwd.old")
+		      (optional "askuser"))
+	   (copyfiles (source anu::passwd-new)
+		      (dest conf-dir)
+		      (newname "passwd")
+		      (optional "askuser"))
+	   (textfile (dest anu::tempfile)
+		     (append (cat 
+			      "failat 5000\n"
+			      (tackon bin-dir "passwd") " " anu::username "\n"
+			      "endshell\n"))
+		     (safe))
+	   (run (cat "newshell from " anu::tempfile)
+		(safe))
+	   (set anu::username ""
+		anu::UID (+ anu::UID 1)
+		anu::realname "")))))
+ )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(procedure
+ ;;
+ ;; Install passwd and group databases
+ ;;
+ install-user-databases
+ (transcript "Installing user databases")
+ (procedure get-mufs-version
+	    (set mufs-vernum (getversion "multiuser.library" (resident)))
+	    (set mufs-ver (/ mufs-vernum 65536))
+	    (set mufs-rev (- mufs-vernum (* ver 65536))))
+ (procedure passwd-create
+	    (copyfiles
+	     (prompt "Copying " passwd-source " to AmiTCP:db/passwd.")
+	     (source passwd-source)
+	     (dest conf-dir)
+	     (newname "passwd")
+	     (optional "nofail")))
+ (procedure group-create
+	    (copyfiles
+	     (prompt "Copying " group-source " to AmiTCP:db/group.")
+	     (source group-source)
+	     (dest conf-dir)
+	     (newname "group")
+	     (optional "nofail")))
+ (procedure 
+  ;;
+  ;; Change root's password 
+  ;;
+  change-root-password
+  (set iud::script "t:change-root-file")
+  (textfile (dest iud::script)
+	    (append 
+	     "failat 5000\n"
+	     "echo Log in as super-user (root):\n"
+	     (tackon bin-dir "login") " root\n"
+	     "echo Change the password of root:\n"
+	     (tackon bin-dir "passwd") "\n"
+	     "endcli")
+	    (safe))
+  (message "Logging in as `root' and changing the root's password.")
+  (run (cat "newshell from " iud::script)
+       (safe)))
+ ;; If we are running multiuser 1.4, do some special
+ (get-mufs-version)
+ (if mufs-vernum
+     (transcript ("Multiuser.library %ld.%ld found" mufs-ver mufs-rev)))
+ (if (or (> mufs-ver 39)
+	 (and (= mufs-ver 39) (>= mufs-rev 151)))
+     ((transcript "multiuser.library 1.4 or newer detected")
+      (message
+       "\n    You seem to have MultiUser 1.4 installed. In order to ensure "
+       "the most seamless operation between MultiUser 1.4 and "
+       @app-name " you should do following:\n")
+      (message
+       "\nEither make a link from \"AmiTCP:db/passwd\" to "
+       "MultiUser 1.4 \"passwd\" file, for example with command\n\n"
+       "makelink AmiTCP:db/passwd :multiuser/config/passwd\n\n"
+       "or copy MultiUser 1.4 \"passwd\" file and \"MultiUser.config\" to "
+       "directory \"AmiTCP:db/\", then recreate keyfiles with command\n\n"
+       "makekeyfiles AmiTCP:db/ AmiTCP:db/ vol1: vol2:    \n")))
+ (set passwd-source
+      (if (exists "Inet:db/passwd" (noreq)) ; check for AS225r2 compatible
+	  "Inet:db/passwd"
+	(tackon source-dir "db/passwd-example")))
+ (set group-source (tackon source-dir "db/group-example"))
+ (if (>= @user-level 2)
+     (message 
+      "\n"
+      "Copying user database from file"
+      "\n\n\"" passwd-source "\"\n\n"
+      "and group database from file"
+      "\n\n\"" group-source "\"\n\n"))
+ (passwd-create)
+ (group-create)
+ (change-root-password))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Installatation sequence
+;;;
+(complete 00) (transcript "On making " @app-name ".")
+(complete 01) (check-user-level)
+(complete 02) (check-system-version)
+(complete 03) (check-available-memory)
+(complete 04) (check-old-assign)
+(complete 05) (select-destination-directory)
+
+(if (exists (tackon conf-dir "netdb-myhost"))
+    ( ;; Already configured, ask user what s/he wants to do
+     (transcript @app-name " already configured, presenting options")
+     (while
+	 ((complete 10)
+	  (set choice
+	       (askchoice
+		(prompt @app-name " seems to be already installed. Select "
+			"one of following:")
+		(help "    Installer has detected that the file "
+		      "\"AmiTCP:db/netdb-myhost\" exists already. Normally "
+		      "this means that the installation has been "
+		      "successfully completed.\n"
+		      "    You can now select what part of the full "
+		      "installation you want to repeat. This selection will "
+		      "be repeatedly presented, until \"Done\" is choosed.")
+		(choices "Update Sana-II drivers"		; 0
+			 "Install GNUEmacs support files"	; 1
+			 "Install NapsaTerm fonts"		; 2
+			 "Install user databases"       	; 3
+			 "Add new users"                        ; 4
+			 "Reconfigure AmiTCP/IP"		; 5
+			 "Done")				; 6
+		(default 6)))
+	  (<> choice 6))
+       (select choice
+	       ;; (0)
+	       (update-devices)
+	       ;; (1)
+	       (install-emacstcp)
+	       ;; (2)
+	       (install-napsaterm)
+	       ;; (3)
+	       (install-user-databases)
+	       ;; (4)
+	       (add-new-user)
+	       ;; (5)
+	       ((transcript "Reconfiguring " @app-name ".")
+		(complete 20) (ask-default-user)
+		(complete 25) (ask-hostname)
+		(complete 30) (ask-aliases)
+		(complete 35) (ask-interfaces)
+		(complete 60) (ask-gateway)
+		(complete 65) (ask-domains)
+		(complete 70) (ask-nameservers)
+		(complete 80) (update-user-startup)
+		(complete 90) (create-startup-script)
+		(complete 95) (create-config-file) ; This must be the last one!
+		))
+       )
+     )
+  ( 
+   (complete 10) (copy-files-to-destination) ; copy AmiTCP/IP files
+   (complete 20) (update-devices)	     ; update Sana-II drivers
+   (complete 30) (ask-install-emacstcp)	     ; install EmacsTCP
+   (complete 35) (ask-install-napsaterm)     ; install NapsaTerm
+   (if (if (if old-atcp-directory
+	       (exists (tackon old-atcp-directory "db/netdb-myhost") 
+			(noreq)))
+	   ((complete 40)
+	    (ask-copy-old-configuration)))
+       ((if (exists (tackon conf-dir "passwd"))
+	    (transcript "There is already user database.")
+	  ((complete 70)
+	   (install-user-databases))) ; install passwd/group
+	(complete 90) (update-user-startup)
+	)
+     (;; First time installation, do it all
+      (complete 40) (install-user-databases)	; install passwd/group
+      (complete 45) (ask-default-user)
+
+      ;; Configure AmiTCP/IP
+      (complete 50) (ask-hostname)
+      (complete 55) (ask-aliases)
+      (complete 60) (ask-interfaces)
+      (complete 75) (ask-gateway)
+      (complete 80) (ask-domains)
+      (complete 85) (ask-nameservers)
+      (complete 90) (update-user-startup)
+      (complete 95) (create-startup-script)
+      (complete 96) (create-config-file)))	; This must be the last one!
+   ;; show something
+   (run (cat "run " pager-cmd) (tackon atcp-assign "README.FIRST") (safe))
+   )
+  )
+;;; All done!
+(complete 100)
+(exit "You should reboot your Amiga to make sure that everything is set "
+      "up properly for the " @app-name ". After the reboot, "
+      (if started-at-boot
+	  (cat @app-name " should be running. If this is not a case, "))
+      "type \"run AmiTCP:bin/startnet\" in a command shell to start "
+      @app-name ".")
+
+; EOF

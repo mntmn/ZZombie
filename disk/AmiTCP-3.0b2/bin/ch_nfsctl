@@ -1,0 +1,345 @@
+/*
+ * ch_nfsctl - control options of the ch_nfsc NFS client
+ *
+ * call without args for usage
+ *
+ * $Id$
+ */
+
+Options FailAt 100
+Options Results
+
+PARSE ARG line
+PARSE VAR line device line
+device=upper(device)
+
+IF (device='') | (line='') THEN do
+    CALL usage
+    EXIT 0
+END
+
+PA.Die=""
+PA.GetAll=""
+PA.FlushDebug=""
+
+PA.Debug=""
+PA.GetDebug=""
+PA.UMask=""
+PA.GetUMask=""
+PA.User=""
+PA.GetUser=""
+PA.MR=""
+PA.GetMR=""
+PA.MD=""
+PA.GetMD=""
+PA.MW=""
+PA.GetMW=""
+PA.WL=""
+PA.GetWL=""
+PA.ACTO=""
+PA.GetACTO=""
+PA.DCTO=""
+PA.GetDCTO=""
+PA.RPCTO=""
+PA.GetRPCTO=""
+PA.TR=""
+PA.GetTR=""
+PA.SM=""
+PA.GetSM=""
+PA.ARPC=""
+PA.GetARPC=""
+
+DO FOREVER
+    IF line = '' THEN LEAVE
+    PARSE VAR line tok line
+    IF tok ~='' THEN DO
+	tok=UPPER(tok)
+	SELECT
+	    WHEN tok=SET_DEBUG THEN PARSE VAR line PA.Debug line
+	    WHEN tok=get_debug THEN PA.GetDebug=1
+	    WHEN tok=set_umask THEN PARSE Var line PA.UMask line
+	    WHEN tok=get_umask THEN PA.GetUMask=1
+	    WHEN tok=set_user THEN PARSE VAR line PA.User line
+	    WHEN tok=get_user THEN PA.GetUser=1
+	    WHEN tok=set_MAX_readsize THEN PARSE VAR line PA.MR line
+	    WHEN tok=set_MR THEN PARSE VAR line PA.MR line
+	    WHEN tok=get_MAX_readsize THEN PA.GetMR=1
+	    WHEN tok=get_mr THEN PA.GetMR=1
+	    WHEN tok=set_MAX_readdirsize THEN PARSE VAR line PA.MD line
+	    WHEN tok=set_MD THEN PARSE VAR line PA.MD line
+	    WHEN tok=get_MAX_readdirsize THEN PA.GetMD=1
+	    WHEN tok=get_md THEN PA.GetMD=1
+	    WHEN tok=set_MAX_writesize THEN PARSE VAR line PA.MW line
+	    WHEN tok=set_MW THEN PARSE VAR line PA.MW line
+	    WHEN tok=get_MAX_writesize THEN PA.GetMW=1
+	    WHEN tok=get_mw THEN PA.GetMW=1
+	    WHEN tok=set_wl THEN PARSE VAR line PA.WL line
+	    WHEN tok=set_writebufferlimit THEN PARSE VAR line PA.WL line
+	    WHEN tok=get_wl THEN PA.GetWL=1
+	    WHEN tok=get_writebufferlimit THEN PA.GetWL=1
+	    WHEN tok=set_attrcache_timeout THEN PARSE VAR line PA.ACTO line
+	    WHEN tok=set_acto THEN PARSE VAR line PA.ACTO line
+	    WHEN tok=get_attrcache_timeout THEN PA.GetACTO=1
+	    WHEN tok=get_acto THEN PA.GetACTO=1
+	    WHEN tok=set_dircache_timeout THEN PARSE VAR line PA.DCTO line
+	    WHEN tok=set_dcto THEN PARSE VAR line PA.DCTO line
+	    WHEN tok=get_dircache_timeout THEN PA.GetDCTO=1
+	    WHEN tok=get_dcto THEN PA.GetDCTO=1
+	    WHEN tok=set_rpc_timeout THEN PARSE VAR line PA.RPCTO line
+	    WHEN tok=set_rpcto THEN PARSE VAR line PA.RPCTO line
+	    WHEN tok=get_rpc_timeout THEN PA.GetRPCTO=1
+	    WHEN tok=get_rpcto THEN PA.GetRPCTO=1
+	    WHEN tok=set_timeoutreq then PARSE VAR line PA.TR line
+	    WHEN tok=set_tr then PARSE VAR line PA.TR line
+	    WHEN tok=get_timeoutreq then PA.GetTR=1
+	    WHEN tok=get_tr then PA.GetTR=1
+	    WHEN tok=set_slow_medium then PARSE VAR line PA.SM line
+	    WHEN tok=set_sm then PARSE VAR line PA.SM line
+	    WHEN tok=get_slow_medium then PA.GetSM=1
+	    WHEN tok=get_sm then PA.GetSM=1
+	    WHEN tok=set_arpc THEN PARSE VAR line PA.ARPC line
+	    WHEN tok=set_async_rpc THEN PARSE VAR line PA.ARPC line
+	    WHEN tok=get_arpc THEN PA.GetARPC=1
+	    WHEN tok=set_async_rpc THEN PA.GetARPC=1
+	    
+	    WHEN tok=die THEN PA.die=1
+	    WHEN tok=flush_debug THEN PA.FlushDebug=1
+	    WHEN tok=get_all THEN PA.GetAll=1
+	    OTHERWISE DO
+		CALL usage
+		EXIT 20
+	    END
+	END
+    END
+END
+
+
+if ADDLIB("rexxsupport.library",0,-30,0)<0 THEN DO
+    SAY "Unable to load rexxsupport library!"
+    EXIT 20
+END
+
+/* search for port of given device/volume */
+
+found=0
+ports=showlist('P')
+DO FOREVER
+    IF ports='' THEN LEAVE
+    PARSE VAR ports port ports
+    port=UPPER(port)
+    if INDEX(port,CH_NFSC) = 1 THEN DO
+	ADDRESS VALUE port
+	get volume
+	ADDRESS
+	IF rc > 0 THEN DO
+	    say 'Error was 'VALUE(PORT||.LASTERROR)
+	END
+	ELSE DO
+	    thisdev=UPPER(result)
+	    IF (thisdev = device) THEN do
+		found=i
+		LEAVE
+	    END
+	    ELSE DO
+		thisdev=thisdev || ':'
+		IF (thisdev = device) THEN do
+		    found=i
+		    LEAVE
+		END
+	    END
+	end
+    END
+END
+
+IF found=0 THEN DO 
+    SAY "Device" device "not found"
+    EXIT 20
+END; ELSE DO
+    nop
+/*    SAY "Using port """ || Port || """"*/
+END
+
+IF PA.GetALL~='' THEN DO
+    /*
+    * Try to read all possible commands
+    */
+    
+    ADDRESS VALUE Port
+    get commands
+    ADDRESS
+    
+    gets=""
+    if rc > 0 then DO
+	say 'iocontrol: getting commands returned "'VALUE(PORT||.LASTERROR)'"'
+	EXIT 20
+    END
+    else DO
+	commands=result
+	DO FOREVER
+	    PARSE VAR commands "(" cmdline ")" commands
+	    IF cmd == '' THEN LEAVE
+	    PARSE VAR cmdline cmd "," args
+	    /*	SAY cmd*/
+	    IF INDEX(args,"GET") THEN DO
+		gets = gets || " " || cmd
+	    END
+	END
+    END
+END
+
+/* treat all except 0 as 1 */
+
+IF PA.TR~="" THEN
+    IF DATATYPE(PA.TR)=num THEN	do
+	IF PA.TR~=0 THEN
+	    PA.TR=1
+    END; ELSE DO
+	PA.TR=1
+    END
+IF PA.SM~="" THEN
+    IF DATATYPE(PA.SM)=num THEN	do
+	IF PA.SM~=0 THEN
+	    PA.SM=1
+    END; ELSE DO
+	PA.SM=1
+    END
+
+/* now do the real work */
+    
+CALL setget port debug PA.Debug PA.GetDebug
+CALL setget port umask PA.UMask PA.GetUMask
+CALL setget port user PA.User PA.GetUser
+CALL setget port MAX_READSIZE PA.MR PA.GetMR
+CALL setget port MAX_READDIRSIZE PA.MD PA.GetMD
+CALL setget port MAX_WRITESIZE PA.MW PA.GetMW
+CALL setget port ATTRCACHE_TIMEOUT PA.ACTO PA.GetACTO
+CALL setget port DIRCACHE_TIMEOUT PA.DCTO PA.GetDCTO
+CALL setget port RPC_TIMEOUT PA.RPCTO PA.GetRPCTO
+CALL setget port TIMEOUTREQ PA.TR PA.GetTR
+CALL setget port SLOW_MEDIUM PA.SM PA.GetSM
+CALL setget port ASYNC_RPC PA.ARPC PA.GetARPC
+
+IF PA.GetAll~="" THEN CALL get_all port gets 
+IF PA.FlushDebug~="" THEN CALL iocontrol port get debug
+IF PA.Die~="" THEN ADDRESS COMMAND "ch_die " device
+EXIT 0
+
+setget: PROCEDURE
+DO
+    PARSE ARG port " " memb " " set " " get
+
+    IF set ~= '' THEN DO
+	IF iocontrol(port "set" memb set) then
+	    CALL io_get port memb
+	ELSE NOP
+    END; ELSE do
+	IF get~=""  THEN CALL io_get port memb
+    END
+RETURN
+
+/*
+ *	get_all(port,gets)
+ *
+ * get all information from port. gets contains all get commands 
+ */
+get_all: PROCEDURE
+DO
+    PARSE ARG port x
+    SAY "Current settings:"
+    DO FOREVER
+	PARSE VAR x cmd x
+	IF cmd == '' then LEAVE
+	IF cmd ~= COMMANDS THEN DO
+	    CALL io_get port cmd
+	    END
+    END
+END
+RETURN
+
+/* print formatted sting */
+
+prints: PROCEDURE
+DO
+    PARSE ARG args
+    line=""
+    DO FOREVER
+	IF args='' THEN leave
+	PARSE VAR args str len args
+	l=LENGTH(str)
+	IF len < 0 THEN DO /* left aligned */
+	    len=ABS(len)
+	    IF l<= len then
+		line=line || str || COPIES(" ",(len-l)) || ""
+	    ELSE
+		line=line || str
+	END; ELSE DO
+	    IF l<=len THEN
+		line=line || COPIES(" ",(len-l)) || str
+	    ELSE
+		line=line || str
+	END
+    END
+    SAY line
+END
+RETURN
+
+usage: PROCEDURE
+do
+    SAY "Usage: ch_nfsctl <arguments>"
+    SAY "arguments:"
+    SAY "	DEVICE/A, GET_ALL/S, DIE/S, FLUSH_DEBUG/S,"
+    SAY "	SET_UMASK/K/N, GET_UMASK/S,"
+    SAY "	SET_DEBUG/K/N, GET_DEBUG/S,"
+    SAY "	SET_USER/K, GET_USER/S,"
+    SAY "	SET_MR=SET_MAX_READSIZE/K/N,     GET_MR=GET_MAX_READSIZE/S,"
+    SAY "	SET_MD=SET_MAX_READDIRSIZE/K/N,  GET_MD=GET_MAX_READDIRSIZE/S,"
+    SAY "	SET_MW=SET_MAX_WRITESIZE/K/N,    GET_MN=GET_MAX_WRITESIZE/S,"
+    SAY "	SET_WL=SET_WRITEBUFFERLIMIT/K/N, GET_WL=GET_WRITEBUFFERLIMIT/S,"
+    SAY "	SET_ACTO=SET_ATTRCACHE_TIMEOUT/K/N,GET_ACTO=GET_ATTRCACHE_TIMEOUT/S,"
+    SAY "	SET_DCTO=SET_DIRCACHE_TIMEOUT/K/N, GET_DCTO=GET_DIRCACHE_TIMEOUT/S,"
+    SAY "	SET_RPCTO=SET_RPC_TIMEOUT/K/N,     GET_RPCTO=GET_RPC_TIMEOUT/S,"
+    SAY "	SET_TR=SET_TIMEOUTREQ/K/N,  GET_TR=GET_TIMEOUTREQ/S,"
+    SAY "	SET_SM=SET_SLOW_MEDIUM/K/N, GET_SM=GET_SLOW_MEDIUM/S"
+    SAY "	SET_ARPC=SET_ASYNC_RPC/K/N, GET_ARPC=GET_ASYNC_RPC/S"
+END
+RETURN 
+
+iocontrol: PROCEDURE
+DO
+    PARSE ARG port commands
+    
+    commands=strip(commands)
+    
+    ADDRESS Value Port
+    commands
+    ADDRESS
+    res=1
+    
+    if rc > 0 then DO
+	say "iocontrol:" '"'commands'"' "returned" '"'VALUE(PORT||.LASTERROR)'"'
+	res=0
+    END
+END
+RETURN res
+
+io_get: PROCEDURE
+DO
+    PARSE ARG port cmd
+
+    ADDRESS Value Port
+    get cmd
+    ADDRESS
+
+    if rc > 0 then 
+	say "iocontrol:" '"'get cmd'"' "returned" '"'VALUE(PORT||.LASTERROR)'"'
+    else DO
+	res=result
+	PARSE VAR res minval val maxval rest
+	IF val = '' then
+	    CALL prints cmd "-20" res 10
+	ELSE
+	    CALL prints cmd "-20" val 10 '('||minval||'..'||maxval||')' 15
+    END
+END
+RETURN
+

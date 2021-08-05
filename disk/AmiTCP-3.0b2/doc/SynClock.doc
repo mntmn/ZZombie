@@ -1,0 +1,21 @@
+
+SynClock                AmiTCP/IP User Commands                 SynClock
+
+NAME
+        SynClock -- Synchronice your Amiga clock from remote host
+
+SYNOPSIS
+        SynClock HOST/A,SAVE/S
+
+DESCRIPTION 
+        SynClock is mixed Shell and ARexx script that sets your Amiga
+        system clock using DATE command and the information obtained
+        from network.  The HOST parameter is required to know where the
+        information is to be obtained (daytime service (port 13) is
+        used). The optional SAVE parameter makes SynClock to save the
+        new date and time to the battery-backed clock of your amiga.
+
+REQUIREMENTS
+        AmiTCP/IP must be running and TCP: device mounted before this
+        command can be executed. ARexx is used since using it makes
+        script faster than using normal shell features.

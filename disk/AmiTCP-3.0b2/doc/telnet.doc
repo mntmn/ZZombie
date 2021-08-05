@@ -1,0 +1,63 @@
+
+telnet                  AmiTCP/IP User Commands                 telnet
+
+NAME
+        telnet -- Network Virtual Terminal program for logging to a
+                  remote host
+
+SYNOPSIS
+        telnet HOST/A,SERVICE
+
+DESCRIPTION
+        Telnet communicated with another host using TELNET protocol.
+
+        Once a connection has been opened, telnet enters input mode.
+        In this mode, text typed is sent to the remote host.  The
+        input mode entered will be either "character at a time" or
+        "line by line" depending on what the remote system supports.
+
+        In "character at a time" mode, most text typed is immediately
+        sent to the remote host for processing.
+
+        In "line by line" mode, all text is echoed locally, and only
+        completed lines are sent to the remote host. This version of
+        telnet uses the COOKED mode of interface handler to provide
+        locally echoed line by line mode.
+
+        While connected to a remote host, telnet command mode may be
+        entered by typing the telnet "escape character". That is
+        `^C' (control-c) when operating in line-by-line mode and `^]'
+        (control-right-bracket)) in character mode.
+        This version of telnet has a simple one-character command
+        options, which are the following:
+
+                ^]  -- send ctrl-], only available at character mode.
+
+                 r  -- resume session, continues the session normally.
+
+                 q  -- quit telnet. closes connection and exits.
+
+                 c  -- tries to enter character mode. remote host may
+                                                forbid this.
+
+                 l  -- enters line-by-line mode.
+
+                 ?  -- shows this command list on user's terminal.
+
+
+        Telnet may fail when user has written an unknown hostname or
+        service. There is a possibility that TCP/IP is not running
+        or TCP: not mounted. 
+
+REQUIREMENTS
+        Inet-handler 1.73 (or newer) must be mounted as TCP: in your
+        machine and you must be running inet-handler compatible TCP/IP
+        protocol stack such as AmiTCP/IP.
+
+AUTHOR
+        Tomi Ollila <Tomi.Ollila@hut.fi>
+
+COPYRIGHT 
+        Copyright © 1994 AmiTCP/IP Group, <AmiTCP-group@hut.fi>, 
+        Helsinki University of Technology, Finland.
+

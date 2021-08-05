@@ -1,0 +1,10 @@
+/*
+** Mountlist for inet-handler
+*/
+
+TCP:
+    Handler = AmiTCP:l/inet-handler
+    Stacksize = 2500
+    Priority = 5
+    GlobVec = 1
+#

@@ -1,0 +1,33 @@
+#
+# $Id: napsaprefs,v 3.3 1994/05/14 13:04:36 ppessi Exp $
+#
+# Preferences for Napsaterm when started from CLI.
+#
+napsaterm.device: net
+#napsaterm.unit: 0
+napsaterm.linespeed: 38400
+#napsaterm.remotetype: vt100
+#napsaterm.remotename: nobody
+#
+napsaterm.emulation: vt102
+napsaterm.national: none
+napsaterm.nation: US
+napsaterm.keymap: usa1
+napsaterm.keymap: US/usa1
+napsaterm.mouse: off
+napsaterm.Delete2Backspace: no
+napsaterm.Backspace2Delete: yes
+napsaterm.cursorblink: no
+napsaterm.cursor: block
+napsaterm.bell: visual
+napsaterm.pass8: yes
+napsaterm.ctrl8bit: no
+napsaterm.inverse: no
+napsaterm.altismeta: yes
+#
+napsaterm.geometry: 0/-1/80/24
+#napsaterm.pubScreenName: Workbench
+napsaterm.basefont: napsa/11
+#napsaterm.title: AmiTCP/IP rlogin
+napsaterm.sizegadget: column
+napsaterm.fixedColumns: no
