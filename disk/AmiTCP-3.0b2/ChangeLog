@@ -1,0 +1,769 @@
+Thu May 19 07:35:18 1994  Pekka Pessi  (ppessi@lk-hp-14.hut.fi)
+
+      * Install_AmiTCP:
+        Added user name handling and selecting of default user.
+
+      * devs/netinfo.device (Smakefile, base.h, entries.h, netinfo.c,
+	init.c, server.c, entries.c, groupunit.c, passwdunit.c):
+        Added support for DOS notifications, now the changes in passwd and
+	group files are immediately visible with passwd and group maps.
+
+Wed May 18 19:47:45 1994  Pekka Pessi  (ppessi@lk-hp-1.hut.fi)
+
+      * libs/usergroup.library:
+        Updated the usergroup.library documentation.
+
+      * appl/napsaterm:
+        Upgraded to version 3.8, fixed a couple of bugs in 3.7 and earlier
+	versions. 
+
+Tue May 17 20:29:12 1994  Pekka Pessi  (ppessi@gamma.hut.fi)
+
+      * libs/usergroup.library:
+	Added a new function call getcredentials() which returns all
+	credential for a process, updated library version to 4.
+	
+      * appl/napsaterm:
+	Upgraded to version 3.7, merged enchanchements made by R. Knop.
+	Major new feature is support of the Telnet protocol.
+
+Mon May 16 01:09:27 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * bin/rsh:
+	Fixed bug which caused sending to stop if input was redirected
+	from a (not small) file.
+
+Sun May 15 16:04:20 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * bin/showmount:
+	Added sources to the source distribution.
+
+Sat May 14 16:02:47 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * NFS Client by Carsten Heyl:
+	Added to the distribution. Thanks Carsten!
+
+Tue May  3 00:00:01 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * Install_AmiTCP:
+	Added copying of "libs" dir, which was missing.
+
+      * netinclude: (errno.h, sys/errno.h):
+	Removed the definition for the __sys_errlist. Changed the
+	__sys_nerr to be a macro.
+
+      * netinclude: (inetdlib.h)
+	Removed from the distribution.
+
+Mon Apr 25 14:51:19 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * inetd: (inetd.c):
+	Fixed bugs in server argument parsing.
+
+Sat Apr 23 19:42:11 1994  Tomi Ollila  (too@gamma.hut.fi)
+	
+      * telnet, inet-handler:
+        Fixes and changes to telnet. For DosPacket aborting,
+	ACTION_STACK is now used. Telnet has now version 3.3
+
+Fri Apr 22 15:09:10 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * AmiTCP: (kern/amiga_log.c):
+	Fixed the bug in log file/console name change notify function
+	(NETTRACE's DosBase is no more used before initialization).
+
+      * netstat: (util/netstat/netstat):
+	Added resolving the IP addresses (by Pavel Troller
+	<patrol@k332.feld.cvut.cz>). The resolving is done with AmiTCP
+	command 'resolve', and can be bypassed with command line
+	switch '-n'.
+	Added caching the resolved addresses (jraja).
+
+Sun Apr 17 15:09:37 1994  Tomi Ollila  (too@lk-hp-11.hut.fi)
+
+      * telnet, inet-handler: 
+        Added new `AmiTCP/IP_telnet 3.1' (5760 bytes)
+	Added preliminary ACTION_FORCE handling to inet-handler
+	and chanded some error messages a bit more descriptive.
+
+Wed Apr 13 11:49:37 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * netlib: (serveraccept.c, autoinitd.c, init_inet_daemon.c,
+	set_socket_stdio.c and others with minor modifications):
+	Removed separate objects (serveraccept.o, autoinitd.o). The
+	serveraccept() is now included in the net.lib. autoinitd.o
+	functionality is now replaced with the standard autoinit module
+	int the net.lib + the new init_inet_daemon() function, which
+	obtains the server socket accepted by the inetd. The stdin,
+	stdout, and stderr can be redirected to any socket with the new
+	set_socket_stdio() function.
+
+      * src/examples/serv:
+        Added an simple example server, which uses stdio over the socket.
+	The server is normally started by the inetd (an entry for the
+	in.example must be added to db/inetd.conf), but if started at cli,
+	it will operate over the normal stdin/stdout.
+
+Fri Apr  8 18:22:29 1994  Tomi Ollila  (too@lk-hp-12.hut.fi)
+
+      * netinclude:
+        Fixed arpa/telnet.h to define some TELOPT macros even TELOPTS
+	is not defined. One may need those macros but not that
+	`telopts' string array. Updated inline/usergroup.h for
+	gcc users.
+
+Thu Apr  7 23:51:28 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * netinclude:
+	Added new file amitcp/types.h, which contains common type
+	definitions, which were previously defined in several places
+	around the netincludes. This is done because of the SAS/C GST
+	system, which doesn't like same symbol being defined in more
+	than one file.
+
+Wed Apr  6 18:42:35 1994  Tomi Ollila  (too@lk-hp-12.hut.fi)
+
+      * AmiTCP: (kern/amiga_netdb.[ch], kern/accesscontrol.c):
+	Added symbol '@' as `Service' in access control lists
+	to match with privileged ( < 1024) ports.
+
+Tue Apr  5 20:19:36 1994  Tomi Ollila  (too@lk-hp-11.hut.fi)
+
+      * tcp_AmiTCP, inet-handler:
+        Updated and cleaned up a bit.
+
+Mon Apr  4 04:42:27 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * netlib:
+	Added files popen.c (by Rick Schaeffer), sleep.c and usleep().
+	popen.c implements UNIX compatible popen() and pclose() functions,
+	sleep.c and usleep.c implement UNIX compatible sleep() and
+	usleep() functions, respectively. 
+
+Sat Apr  2 15:03:34 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * AmiTCP: (api/amiga_api.c, api/amiga_api.h, api/amiga_generic2.c,
+	api/gethostnamadr.c, api/res_init.c, api/res_mkquery.c,
+	api/res_query.c, api/res_send.c, api/resolv.h, kern/amiga_main.c):
+	Moved global resolver variables to the SocketBase, eliminating
+	the need for the res_lock, which is removed. Added tag code
+	SBTC_HERRNOLONGPTR for setting the h_errno pointer (LONG *).
+
+      * netlib: (getherrno.c, autoinit.c, rcmd.c, Smakefile, GNUmakefile):
+	Removed getherrno.c, added global h_errno and it's pointer passing
+	to the autoinit.c, changed the rcmd.c to use newer netlib
+	features.
+
+      * netinclude: (netdb.h, amitcp/socketbasetags.h):
+	Added external declaration of the h_errno to the netdb.h, added
+	tag code SBTC_HERRNOLONGPTR to the amitcp/socketbasetags.h.
+
+Tue Mar 29 16:00:00 1994  Jarno Tapio Rajahalme  (jraja@gamma.hut.fi)
+
+      * netlib: (utime.c):
+	Added to the distribution.
+
+      * netinclude: (utime.h):
+	Added to the distribution.
+
+Tue Mar 29 16:00:00 1994  Pekka Pessi  (ppessi@lk-hp-20.hut.fi)
+
+      * usrlib:
+	Moved all functionality to netlib.
+
+Sat Mar 26 12:19:54 1994  Tomi Ollila  (too@lk-hp-11.hut.fi)
+
+      * AmiTCP: (netinet/tcp_input.c, kern/accesscontrol.[ch],
+	kern/amige_netdb.[ch] api/getxbyy.c
+	Added simple (but efficient) access control to the protocol
+	stack. Fixed bug in getservbyname() which now checks the
+	protocol string. 
+
+Tue Mar 22 11:21:59 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+      * AmiTCP: (api/amiga_generic.c, api/amiga_generic2.c,
+	api/amiga_syscalls.c, api/amiga_api.h, api/amiga_api.c,
+	netinclude:amitcp/socketbasetags.h): 
+	Added new field 'fdCallback' to the SocketBase, added new tag to
+	SocketBaseTags() (SBTC_FDCALLBACK) for setting this function
+	pointer. Added code to AmiTCP functions to call this callback
+	whenever dTable changes.
+
+      * netlib: (_allocufb.c, _chkufb.c, _close.c, _lseek.c, _open.c, 
+	_read.c, _write.c, fhopen.c, ioctl.c, iomode.c, isatty.c, stat.c):
+	Added the preliminary unix io compatibility code.
+          
+      * netinclude: (ios1.h):
+	New file containing additions to SAS/C header with the same name
+	(include:ios1.h). Defines flag UFB_SOCK for sockets.
+
+Mon Mar 21 17:18:48 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+      * binary distribution: (bin/netmount, doc/netfs.doc,
+	l/netfs-handler, serv/netfs-server):
+	Updated to the newest release (0.56).
+
+Sun Mar 20 02:13:33 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+      * netinclude: (arpa/ftp.h, arpa/nameser.h, arpa/tftp.h,
+        arpa/telnet.h): 
+	Added to the distribution.
+
+Thu Mar 17 06:23:06 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+      * netinclude: (sys/syslog.h):
+        Added "INACTIVE" to the log window parameters (suggested by
+        Carsten Heyl).
+
+AmiTCP/IP Release 3.0 beta: (released 11.3.1994)
+================================================
+
+Wed Mar  9 11:47:38 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+      * Added new directories: src/examples and src/doc
+
+      * Added Sun RPC 4.0 to the distribution. New files and directories
+	are: db/rpc, help/RPC.guide, netinclude/rpc, netinclude/rpcsvc,
+	src/README.RPC, src/rpclib,  src/examples/rpc, src/doc/rpc,
+	src/util/portmap, src/util/rpcinfo, src/devtools/cpp,
+	src/devtools/rpcgen.
+
+Tue Mar  8 00:47:37 1994  Pekka Pessi  (ppessi@lk-hp-20.hut.fi)
+
+      * netinclude/Smake.template: the version tag includes now prefix
+	string "AmiTCP/IP_".
+
+      * Added new directory devtools to source tree.  Added rcsrev to
+	source and api distribution.
+
+      * src/util/ping/ping.c: Fixed a typo with version tag.
+
+Sun Feb 27 17:05:21 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+      * src/netlib/getherrno.c: new file, implements function GetHErrno(),
+	which returns the host error code set by failing gethostbyname()
+	or gethostbyaddr().
+
+Sun Feb 27 01:26:47 1994  Pekka Pessi  (ppessi@lk-hp-4.hut.fi)
+
+      * util/rsh/rsh.c, util/letnet/letnet.h: Updated <socketbasetags.h>
+	usage to <amitcp/socketbasetags.h>
+
+      * amitcp: Added autodoc files into api subdirectory (api/auto_*),
+	added bsdsocket.doc as Smakefile target.  Updated
+	SetSocketSignals(). 
+
+      * protocols.dok:  Updated ARP and IF sections.
+
+Sat Feb 26 06:15:53 1994  Pekka Pessi  (ppessi@lk-hp-4.hut.fi)
+
+      * Updated DIST targets
+
+      * Added src/libs subdirectory and usergroup.library; added
+	netinfo.device. 
+
+      * db: Updated interfaces file, added default values in comments
+
+      * netinclude: Added include files for usergroup.library and
+	netinfo.device. 
+
+      *	netlib: Updated Smakefile.  Removed netlib.doc from DIST (it is
+	created from sources)
+
+      * utils: Updated the Smakefile, added a real VERSTAG to each
+	utility, fixed small bugs with ping and inetd.  Changed the
+	mechanism used to override the default ^C handling to use
+	__chkabort(). Move finger and ls to util subdirectory (from appl),
+	added id, login, passwd, resolve, rsh, umask and whoami utilities.
+	
+      * appl/napsaterm: Added bugfixes, updated texinfo documentation
+
+Thu Feb 17 11:44:44 1994  Pekka Pessi  (ppessi@lk-hp-19.hut.fi)
+
+      * netlib: (autoinit.c, autoinitd.c, timerinit.c):
+        Fixed return type of autoinitialization functions (in SAS C >6.50
+	they should return 0 on success)
+
+Wed Feb 16 09:02:45 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* netlib: (herror.c):
+	Added name resolver error printing routine (herror()).
+
+	* AmiTCP: (API, kern/subr_prf.c, sys/systm.h):
+	Changed vcsprint() to do the formatting itself. All other
+	functions now use it instead of Exec()'s RawDoFmt(). This has the
+	implication that the format strings passed to the syslog() no
+	longer need the 'l' modifiers for the integer data, since it is
+	the default.
+
+Mon Feb 14 19:41:47 1994  Pekka Pessi  (ppessi@lk-hp-5.hut.fi)
+
+        * (netinclude/clib/sockat_inline.h): Changed the scope of inlined
+	functions.
+
+        * ping.c: Fixed the record routing option (-R), added loose routing
+	option (-L).
+
+Mon Feb 14 16:53:14 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* AmiTCP: (api/amiga_api.c):
+	Changed LogTag to default to NULL, since old apps will include the
+	tag into the log message.
+
+	* netlib: (autoinit.c, autoinitd.c):
+	Added passing the program name via SocketBaseTags() at the startup
+	(syslog will use it in forthcoming messages).
+
+Fri Feb  4 00:22:07 1994  Pekka Pessi  (ppessi@lk-hp-5.hut.fi)
+
+	* AmiTCP: (GNUmakefile, Smakefile, all_includes.h, net/if.c,
+	net/if_sana.c, net/if_sana.h, api/amiga_generic.c, net/sana2arp.c,
+	net/sana2config.c, net/sana2config.h, kern/amiga_cstat.c):
+	Implemented the new-style interface names
+	(slip.device/0 -> sl0)
+
+	* db/interfaces: A new configuration file
+
+	* AmiTCP: (kern/variables.src):
+	Fixed some variable types
+
+	* netlib: (GNUmakefile, Smakefile, autoinitd.c, lineread.c,
+	printfault.c, rcmd.c, strerror.c, perror.c, stubs.c): 
+	Added autodoc entries, fixed some typos and errors in documents
+	and prototypes. Added perror() and some normally inlined stubs.
+
+	* netinclude: (sys/a_ioctl.h, sys/ioctl.h, sys/param.h, sys/types.h,
+	net/a_if.h, net/sana2tags.h, net/if.h, net/if_arp.h): 
+	Added new-style interface names, removed interface tags.
+
+	* netinclude: (grp.h, pwd.h, unistd.h, utmp.h, clib/netlib_protos.h):
+	Added new protypes and declarations for usergroup.library and link
+	library.
+
+	* netinclude: (proto/socket.h, clib/socket_inlines.h): 
+        Include inline functions only if SC option OPTINLINE is used.
+
+Mon Jan 24 09:46:51 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* net.lib: (src/netlib/strerror.c, syslog.c, autoinit.c,
+	autoinitd.c, Smakefile, GNUmakefile):
+	Updated netlib for release 3: removed errlst.c and gethostname.c,
+	added strerror.c and syslog.c. strerror.c has strerror(), which
+	uses error tables of the AmiTCP. syslog.c defines syslog utility
+	functions: openlog(), closelog() and setlogmask().
+
+	* netinclude: (syslog.h, sys/syslog.h, GNUmakefile):
+	Added netinclude:syslog.h for source compatibility (it just
+	includes sys/syslog.h). Added prototypes for openlog(),
+	closelog() and setlogmask() to sys/syslog.h (these functions
+	are now in the netlib).
+
+	* AmiTCP: (net/sana2perror.c, net/sana2arp.c,
+	kern/amiga_log.c, kern/amiga_subr.h, kern/amiga_main.c,
+	Smakefile, GNUmakefile):
+	Added net/sana2perror.c to AmiTCP distribution (was in
+	netlib). Made small fixes for the SAS/C 6.51, raised version
+	to 3.0(beta).
+
+Sat Jan 22 13:40:01 1994  Tomi Ollila  (too@lk-hp-11.hut.fi)
+
+	* netinclude/inline/socket.h
+	Moved clib/socket_inlines.h stuff here since those had to be
+	modified for gcc. Generated big list of defines to make 
+	possible to use local `SocketBase' variable in calls to
+	bsdsocket.library calls. This feature is invoked defining
+	SOCKETBASE_IN_CONTEXT.
+
+Fri Jan 21 14:02:34 1994  Pekka Pessi  (ppessi@lk-hp-3.hut.fi)
+
+	* net.lib: (src/netlib/Smakefile, rmcd.c): 
+	Removed getpwuid() and getgrgid() from link library. Added rcmd()
+	and resvport().
+
+Thu Jan 20 04:33:30 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* AmiTCP: (api/amiga_generic2.c + many other api/ files):
+	Changed SetErrnoPtr() to check its arguments. Errno size is now
+	restricted to 4, 2 or 1 bytes. Address must also be even if the
+	size is even. Also added a return value (formerly it was void): 0
+	is returned on success, -1 on failure, which is due to illegal
+	arguments (_old_ errno is set to EINVAL).
+
+Wed Jan 19 01:07:35 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* AmiTCP: (kern/amiga_log.c):
+	AmiTCP now seeks to the end of an old log file when opening it.
+
+	* AmiTCP: (api/amiga_generic2.c, api/amiga_libcallentry.h):
+	syslog() (and vsyslog()) now support the '%m' feature of the BSD
+	syslog().
+
+Tue Jan 18 17:37:35 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* AmiTCP: (netinclude:clib/socket_protos.h, api/gethostnamadr.c,
+	api/apicalls_sasc.h, kern/amiga_config.h, kern/variables.src,
+	kern/amiga_cstat.c, amiga_subr.h):
+	Implemented gethostname() API function and HOSTNAME ARexx variable
+	(QUERY/SET). The host name is queried from the netdb and/or name
+	server, if it is not explicitly given in db/AmiTCP.config _or_ set
+	with the ARexx SET command.
+
+Mon Jan 17 10:14:45 1994  Pekka Pessi  (ppessi@lk-hp-2.hut.fi)
+
+	* src/appl/GNUmakefile: updated the source tree for new Napsaterm
+	version.
+
+Fri Jan 14 16:29:58 1994  Tomi Ollila  (too@lk-hp-11.hut.fi)
+
+	* tcp_AmiTCP:
+	Added sending of custom packet to ABORT pending read packet
+	when network closes the connection. This packet is FIFO
+	spesific and won't do anything when using another handler.
+	Anyway, it works with emacs which uses FIFO to communicate
+	with spawned processes.
+
+Thu Jan 13 09:38:30 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* AmiTCP: (api/gethostnamadr.c, net/if.c, netinclude/net/if.h):
+	Implemented gethostid(), added findid() to if.c to support it.
+	(gethostid() caches the id.)
+
+Wed Jan 12 09:38:47 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* AmiTCP: (api/amiga_api.c api/amiga_api.h api/amiga_generic.c
+	  api/amiga_generic2.c):
+	Implemented SocketBaseTagList(). Added Syslog() related variables
+	to the socket base. Moved dtable handling functions from
+	api/amiga_generic.c to api/amiga_generic2.c.
+
+	* netinclude: (socketbasetags.h, sys/cdefs.h)
+	Added socketbasetags.h (for the SocketBaseTagList()). Moved
+	sys/cdefs.h from amitcp/sys to netinclude:sys.
+
+Fri Jan  7 17:50:03 1994  Tomi Ollila  (too@lk-hp-11.hut.fi)
+
+	* AmiTCP: (api/amiga_generic.c api/amiga_api.c api/amiga_syscalls.c
+	  api/amiga_generic2.c api/res_query.c api/resolv.c)
+	Added several 3.0 API extensions. Changed socket allocation and 
+	descriptor handling to use new socket usage bitmask which is
+	stored right after descriptor table. Added new feature to 
+	Dup2Socket(): now it marks fd2 as dummy socket in descriptor table
+	when fd1 is given as -1. Added hError to socketbase.
+
+	* AmiTCP: (api/amiga_syscalls.c api/amiga_sendrecv.cm api/sockargs.h)
+	Added functions sendmsg() and recvmsg(). All send & recv functions
+	are moved to amiga_sendrecv.c for easier update.
+
+Wed Jan  5 12:40:36 1994  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* AmiTCP: kern/amiga_log.c kern/amiga_rexx.c
+	Changed the AmiTCP ARexx port (AMITCP) to show only after the API
+	is up and running (no need to "wait" on the bin/startnet).
+
+Mon Jan  3 21:47:09 1994  Pekka Pessi  (ppessi@lk-hp-17.hut.fi)
+
+	* src/devs/rhslip/device_funcs.c, slip_device.h: 
+	Added configureable MTU and EOFMODE to the rh(c)slip.device.
+
+Fri Dec 31 03:29:48 1993  Pekka Pessi  (ppessi@lk-hp-15.hut.fi)
+
+	* AmiTCP: kern/amiga_cstat.c, util/netstat/netstat.rexx
+	Fixed the netmask dumping by getroutes(). 
+
+AmiTCP/IP Release 2.3: (released 23.12.1993)
+============================================
+
+Thu Dec 23 09:24:24 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* distribution
+	Added script bin/stopnet to the distribution.
+
+Wed Dec 22 00:22:24 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* AmiTCP (kern/amiga_main.c, api/amiga_api.c, api/amiga_api.h
+	  kern/amiga_config.c, kern/amiga_config.h):
+	Added new ARexx command 'KILL', which will send break to AmiTCP,
+	which will then try to break all processes which have the library
+	open. If all processes quit, AmiTCP quits also.
+
+	* AmiTCP (net/if_sana.c, net/if_sana.h, net/sana2tags.c, 
+	  netinclude:net/sana2tags.h):
+	Added tags for PPP, defined DOTRACK FALSE for Arcnet.
+	Raised number of write requests for SLIP, PPP and default to be
+	able to send large IP packets (fragmented). 
+
+Sat Dec 18 17:30:53 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11.hut.fi)
+
+	* AmiTCP (sys/mbuf.h, net/sana2copybuff.c, 
+	  kern/uipc_socket.c, kern/uipc_socket2.c):
+	Removed usage of M_EOR, which caused fragmented packets to be
+	truncated.
+	  
+AmiTCP/IP Release 2.2: (released 21.11.1993)
+============================================
+
+Wed Nov 17 14:17:24 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* AmiTCP (kern/uipc_socket.c, kern/uipc_socket2.c):
+	Fixed a bug inherited from the BSDSS4 code. Selecting processes
+	were never woken up if they did not have the asynchronous mode
+	set.
+
+Sun Nov 14 15:53:11 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* AmiTCP (kern/amiga_log.c):
+	Fixed off by one errors in log date and month names.
+
+	* rhslip (device_funcs.c)
+	Changed AddTail() to Enqueue() for the write packets, so that they
+	will be sent in priority order. Note that Enqueue will queue
+	packets with same priority in FIFO order. (rev bumped to 37.6).
+
+Sat Nov 13 06:28:09 1993  Pekka Pessi  (ppessi@beta.hut.fi)
+
+	* NapsaTerm:
+	Fixed a nasty bug causing gurus when a window couldn't be opened.
+	Added a resource "pubScreenName" used to select public screen.
+
+Fri Nov 12 01:29:20 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* EmacsTCP
+	Added forms.el(c) and background.el(c) to the distribution, so
+	that the Emacs gopher.el can be used out-of-the-box.
+
+	* netinclude
+	Added the protocol headers from BSD net2 to dir
+	netinclude/protocols.
+	Added Sana2 assembler header files.
+
+Sun Nov  7 02:11:22 1993  Pekka Pessi  (ppessi@lk-hp-14.hut.fi)
+
+	* src/amitcp/kern/amiga_main.c
+	The version tag is updated.
+
+	* src/amitcp/net/sana2arp.c, src/amitcp/net/sana2arp.h,
+	  netinclude/net/if_arp.h, src/util/arp/arp.c:
+	Added arptable dumping facility (arp -a).
+	  
+	* src/amitcp/sys/systm.h, src/amitcp/kern/amiga_log.h, 
+	  src/amitcp/kern/amiga_log.c, src/amitcp/kern/subr_prf.c:
+	Added csprintf(), a sprintf() replacement with known buffer size.
+
+	* AmiTCP (kern/amiga_config.h, kern/amiga_config.c,
+	  kern/amiga_cstat.c, kern/config_var.awk, kern/variables.src):
+  	Added routing table dump.
+
+	* AmiTCP (net/if_sana.c, net/if_sana.h, net/sana2copybuff.c):
+	The Sana-II device is automatically marked `up' when it is put
+	`online'. A LOWDELAY IP packets are given higher priority IO
+	requests. 
+ 
+AmiTCP/IP Release 2.1: (released 21.10.1993)
+============================================
+
+Thu Oct 21 04:31:56 1993  Pekka Pessi  (ppessi@lk-hp-8.hut.fi)
+
+	* src/appl/ls/ls.c: 
+	  Added errno, otherwise network autonint will be linked with it.
+
+	* AmiTCP:
+	  Added in_cksum() in assembler. Approx 3 times faster than
+	  C-version. Use A68k to compile it.
+
+        * src/util/inetd/inetd.c: 
+	  Added a real version tag. Changed the machtime() to use
+	  gettimeofday() -- now returns GMT if available.
+
+Mon Oct 18 08:14:36 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* netlib: Added new files:
+	  timerinit.c - autoinitialization module for TimerBase + timezone info
+	  gettimeofday.c - gettimeofday() with timezone capabilities.
+
+Sat Oct 16 01:27:16 1993  Pekka Pessi  (ppessi@lk-hp-10.hut.fi)
+
+	* README.FIRST (FILES): Moved installation help to `HowToInstall'.
+
+	* Install_Amitcp: Copies now the old configuration, if it exists.
+
+	* GNUMakefile: Added new files and icons to release.
+
+Fri Oct 15 03:50:41 1993  Pekka Pessi  (ppessi@lk-hp-3.hut.fi)
+
+	* Install_AmiTCP: added passwd and group installing, changed the
+	  way EmacsTcp and Napsaterm are installed. Installer has now the
+	  path bin/installer.
+
+	* src/util/netstat: Some formatting is added, also printing TCP
+	  server sockets is optional.
+
+	* src/appl/Smakefile: Added finger.
+
+	* db/inetd.conf: Changed fingerd path to amitcp:serv/in.fingerd.
+
+	* src/appl/fingerd: Made the fingerd to use finger (with APipe:).
+	
+	* src/appl/finger: Ported finger application from BSD net2.
+
+	* src/netlib: Changed compilation mechanism, added debugging
+	  libraries (e.g. gnet.lib, autoinitd.go). Small fixes to
+	  getpasswdent.c and getgroupent.c, minor modifications to
+	  autoinitd.c and serveraccept.c.
+
+Wed Oct 13 16:52:46 1993  Pekka Pessi  (ppessi@lk-hp-11.hut.fi)
+
+	* GNUmakefile (FILES): Made some major changes in the file and
+	  directory structure. Moved network applications and devices to
+	  their own directories. Included rhslip.device and ls to the
+	  distribution.
+
+	* Added passwd and group database handling routines to the
+	  net.lib. Added example databases to AmiTCP:db.
+
+Wed Sep 15 01:17:23 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* AmiTCP (API)
+	  Fixed bug in WaitSelect(). Before it could return random bits in
+	  the fd_sets.
+
+Fri Sep 10 02:49:51 1993  Pekka Pessi  (ppessi@lk-hp-13.hut.fi)
+
+	* Napsaterm: fixed a bug with OOB data handling, which hanged
+	  Napsaterm sometimes.
+
+	  Default window title is now the name of the remote host. Got a
+	  patch from trossi, a public screen can be used with -S switch.
+
+	* AmiTCP (kern/amiga_log.[hc], kern/subr_prf.c):
+	  Added a timestamp to the log messages.
+
+	* AmiTCP (kern/kern_synch.c): Fixed a bug in the timer message
+	  handling. It is handled now with WaitIO().
+
+	* AmiTCP (Network Interfaces, net/if.c): 
+	  Fixed (?) bug with SIOCGIFCONF ioctl's (it returned the
+	  interface name in the old style format).
+
+Wed Sep 8 20:04:00 1993  Tomi Ollila  (too@lk-hp-21)
+
+	* AmiTCP (API):
+	  Fixed bugs in gethostbyaddr(). Now hostname is '\0' terminated
+	  and alias and address lists NULL terminated.
+
+Fri Sep 3 10:11:00 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* env/sana2/slip0.config & env/sana2/cslip0.config
+	  Removed the `CD' switch from these example configuration files.
+
+AmiTCP/IP Release 2.0: (released 13.8.1993)
+===========================================
+
+Fri Aug  6 18:21:19 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* AmiTCP (SANA-II Interface):
+	Added AbortSanaIO() to the net/if_sana.c to support buggy
+	SANA-II drivers, which expect to get unit pointer as an 
+	argument for their AbortIO() entry.
+
+	* Netinclude:
+	Fixed error in Release(CopyOf)Socket() parameters (names were
+	in opposite order). 
+
+Thu Aug  5 01:16:48 1993  Pekka Pessi  (ppessi@lk-hp-19.hut.fi)
+
+	* netinclude/net:
+	Removed sockaddr_sana2 from if.h (it's private).
+
+Wed Aug  4 00:51:32 1993  Pekka Pessi  (ppessi@lk-hp-12.hut.fi)
+
+	* COPYRIGHTS file:
+	Added Niftyterm copyright and SANA-II copyright
+
+	* netinclude/devices:
+	Moved Sana-II header files into netinclude:
+
+Mon Aug  2 00:26:15 1993  Pekka Pessi  (ppessi@lk-hp-10.hut.fi)
+
+	* Added Napsaterm to the distribution (again..). Removed some
+	files from the Agnet distribution.
+
+Fri Jul 30 16:21:50 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* Distribution
+	Added Agnet to the distribution.
+
+Wed Jul 28 19:02:26 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* AmiTCP (configuration)
+	Fixed inet_aton() calls in kern/amiga_netdb.c. Before the
+	internet address checks had no effect.
+
+Mon Jul 26 16:32:10 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-11)
+
+	* AmiTCP (ARexx interface)
+	Changed ARexx port name from 'NETTRACE' to 'AMITCP'.
+
+Mon Jul 19 17:46:13 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-10)
+
+	* AmiTCP (SANA-II interface)
+	Added Sana-II tags for the Arcnet (untested).
+
+	* netlib (autoinit.c, autoinitd.c)
+	Removed requirement for exact version match in hope that new
+	versions will be compatible with the old ones from now on.
+	Minimum acceptable version is now 2.
+
+Wed Jul 14 22:50:32 1993  Pekka Pessi  (ppessi@lk-hp-12.hut.fi)
+
+	* netinclude:pragmas/socket_pragmas.h 
+	Updated pragmas for the library version 2 
+
+	* util:
+	Fixed utilities using ioctl()
+
+	* netinclude:sys/ioctl.h, ami/api/amiga_generic.c:
+	Changed interface ioctl codes.
+
+	* db:
+	Fixed typos, added an example of passwd file (for fingerd)
+
+	* inetd:
+	Imported full source set including SCOPTIONS. Fixed some minor
+ 	bugs. 
+
+Sun Jun 20 15:43:28 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-12)
+
+	* inetd
+	Fixed bug that crashed the machine when an internal service with
+	own process was started.
+
+Wed Jun 16 19:24:21 1993  Tomi Ollila  (too@lk-hp-20)
+
+	* netlib
+	Added charread and lineread modules (charread is actually
+	a macro package and is located only in netinclude).
+
+Tue Jun 15 01:18:07 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-20)
+
+	* AmiTCP (SANA-II interface)
+	'networks/' prefix for the SANA-II drivers not needed any more by
+	the ifconfig.
+
+Mon Jun 14 02:52:40 1993  Jarno Tapio Rajahalme  (jraja@lk-hp-12)
+
+	* AmiTCP (configuration):
+	Added WITH command to the netdb. Intact Unix database files
+	can now be included.
+
+	* AmiTCP (configuration):
+	Changed netdb HOST entries to Unix format.
+
+Before dawn of this ChangeLog  Tomi Ollila  (too@lk-hp-14)
+
+       * AmiTCP (api)
+       Added Dup2Socket(). 
+
+       * AmiTCP (api)
+       Changed every netdatabase function, Inet_NtoA() and WaitSelect()
+       to use separate buffers in SocketBase.
+

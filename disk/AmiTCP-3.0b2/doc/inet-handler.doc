@@ -1,0 +1,59 @@
+
+inet-handler            AmiTCP/IP User Manual           inet-handler
+
+NAME
+	inet-handler  --  An easy and useful access to internet.
+
+SYNOPSIS
+	Mount TCP: from AmiTCP:devs/inet-mountlist
+
+USAGE
+	Usually the mounting shown above is done automatically at 
+	AmiTCP/IP startup. After this Internet can be accessed by
+	openign TCP: device from shell commands or another programs.
+
+	Filename path after TCP: is used as command line arguments
+	after all slashes '/' are changed to spaces. The command
+	template is as follows...
+
+	H=HOST,P=PORT,S=SERVICE/K,O=OBTAIN/K
+
+	If host and port is given, system tries to connect the requested
+	destination. Service is synonym to port -- and therefore cannot
+	be used together. If only port is given handler binds to this
+	port and leaves file unopened until someone connects to it...
+	i.e acts as a server. if OBTAIN is given, handler tries to get
+	already opened socket with the id provided (usually used with
+	inetd). OBTAIN cannot be used together with anything else.
+
+	Normally when there is more than one item in template that does
+	not require a keyword the first keywordless argument goes to
+	first template item introduced an so on. However since with
+	this handler, port can be given alone, but host not, the only
+	keywordless argument goes to port if port not already given
+	with keyword. This makes handler usage easier for humans.
+ 
+EXAMPLES
+	Open 2 shell windows. Enter `type TCP:127' on one of the shells.
+	Enter `copy * TCP:localhost/127' on another. Now you can write 
+	some words on second window and those appear on first as you press
+	RETURN. This idea can be used th have 2-Way chat with your friend.
+
+	Use the 2 shell windows you have opened. Enter `newshell tcp:16333'
+	on one and try `letnet localhost 16333' on another. You should see
+	the starting shell info and command prompt appear in your 'letnet'
+	window. Enter `endcli' and you get back where you started from.
+
+	In the previous example. you can change the 'letnet' to 'telnet'
+	from remote host. i.e Log on your Amiga. Currently this is not
+	fully supported so you must end every command with ';' since
+	NewShell cannot handle the trailing CR that comes with telnet.
+
+	Enter `type TCP:your.favorite.remote.host/daytime'.
+
+	TCP: can be used wery easy in arexx scripts and also in other
+	programming languages. I suggest you use keywords when writing
+	code that machine executes.
+
+SEE ALSO
+	

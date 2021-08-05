@@ -1,0 +1,1026 @@
+Newsgroups: comp.sys.amiga.misc,comp.sys.amiga.datacomm,demon.ip.support.amiga,comp.answers,news.answers
+From: atcpfaq@domino.demon.co.uk (Neil McRae AmiTCP FAQ Admin)
+Followup-To: poster
+Reply-To: Neil McRae AmiTCP FAQ Admin <atcpfaq@domino.demon.co.uk>
+Subject: AmiTCP/IP Frequently Asked Questions (FAQ)
+X-Newsreader: TIN [version 1.2 021193BETA PL3]
+Organization: Domino
+Date: Tue, 10 May 1994 07:47:18 +0000
+
+Summary: This post contains a list of Frequently Asked Questions 
+        (and their answers) about AmiTCP/IP. It should be read by anyone
+        who wishes to post about or use AmiTCP/IP.
+
+Archive-name: amiga/AmiTCP-Faq
+Posting-Frequency: fortnightly
+Last-modified: 1994/05/08
+Version: 1.04
+
+
+AmiTCP/IP Frequently asked Questions and their Answers.
+=======================================================
+
+This Document is the AmiTCP/IP Frequently Asked Questions and their answers
+(I  hope  ;-).   I  decided  to  create this after I got my Amiga connected
+through  AmiTCP/IP,  and  I  found the same questions being asked again and
+again, I also found myself to be answering some of them also :-)
+
+This  FAQ  will  be  posted  by  myself  every  2  weeks to:  news.answers,
+comp.answers and comp.sys.amiga.datacomm newsgroups.
+
+If you have any suggestions, queries or corrections please email me at
+
+                       atcpfaq@domino.demon.co.uk
+
+and I will do my best to answer it.  I hope this document is helpful to new
+people  and experienced people alike and answers some queries that they may
+have.
+
+If you want to flame me, mail to nobody@localhost.
+
+This  FAQ  is not a guide to TCP/IP, for that look for TCP/IP books in your
+bookstore  or  search  the Internet for Information, which is where most of
+the  information  came  to create this document.  It is also not a guide to
+the internet
+
+I  have  explained briefly some of the Internet protocols but they are very
+basic  explanation  and  I  have  only included them because they bear some
+relevance to AmiTCP/IP.
+
+Mail all spelling errors to must_try_harder@domino.demon.co.uk :-)
+
+AmiTCP/IP is forewith refered to as AmiTCP.
+
+"SLIP/PPP or other dialup protocol" will commonly be referred to
+as "dialup" through out.
+
+Legal Mumbo Jumbo.
+------------------
+
+This  document is copyright Neil J.  McRae.  Permission is granted for this
+to be freely distributed UNALTERED, as long as all credits are left intact.
+If  you plan to use this file, or any part of it, in a publication you MUST
+contact  me  first and ask my permission.  Any part of this document may be
+quoted on USENET.
+
+Permission  is  given  for  this  document to be posted to USENET and to be
+uploaded to any anonymous FTP servers.
+
+If  this document has helped you in some way, then all I ask is that you go
+out and purchase a Genesis album and listen to it atleast once :-)
+
+Disclaimer.
+-----------
+
+If you screw up it`s your fault and not mine.  This information is provided
+as  is  and any damage occuring to you or your equipment is your own fault.
+Neil J.  McRae disclaims any liability of any kind of damage that may occur
+from use of the information within this FAQ.
+
+Neil  J.   McRae  also  disclaims  any  liability  as  to the information's
+accuracy.   While  much effort has gone into providing accurate data, there
+is no guarantee that I have succeeded.
+
+Acknowledgments.
+-----------------
+
+Just  a few thanks to a few people who helped me in some way while creating
+this document.
+
+I`d like to thank the <AmiTCP-Group@hut.fi> who are:
+
+	Pekka Pessi      	        <Pekka.Pessi@hut.fi>
+	Jarno Rajahalme  	    <Jarno.Rajahalme@hut.fi>
+	Markus Peuhkuri  	    <Markus.Peuhkuri@hut.fi>
+	Tomi Ollila      	        <Tomi.Ollila@hut.fi> 
+
+
+Thanks for doing this guys! Keep up the good work on AmiTCP.
+
+And thanks also to:
+
+        Oliver Smith                      <oliver@demon.net>	
+        Michael B. Smith             <mbs@adastra.cvl.va.us>
+        Jake Dias                       <jake@ibmpcug.co.uk>
+        James R Grinter            <jrg@blodwen.demon.co.uk>
+        Graham Walter          <gwalter@gwalter.demon.co.uk>	
+        Wyrd Synapse             <wyrd@ministry.demon.co.uk>
+        Richard Norman           <NORMAN@afas.msfc.nasa.gov>
+        Dan Murrell Jnr.               <djm2@ra.msstate.edu>
+        Matthew Zeier          <mzeier@home.interaccess.com>
+        Douglas Scott             <D.Scott@csu.napier.ac.uk>
+        Demon Internet                  <internet@demon.net>
+        Holger Kruse                      <kruse@cs.ucf.edu>
+
+
+All  the regulars on #amiga & #GB and all the posters of FAQ`s that made me
+get off my backside and do this :-)
+
+and finally to Genesis for making kewl music, lets see another Album guys!
+
+		----------------------------------------
+
+Frequently asked Questions.
+===========================
+
+Index of questions answered.
+----------------------------
+
+ 1> What is AmiTCP?
+
+ 2> What is TCP/IP?
+
+ 3> What is the Internet?
+
+ 4> Where can I get AmiTCP?
+
+ 5> Where is the AmiTCP Documentation?
+
+ 6> Where is the list of AmiTCP applications?
+
+ 7> What is the latest version of AmiTCP?
+
+ 8> How do I contact the AmiTCP author`s?
+
+ 9> I think I found a bug in AmiTCP what should I do?
+
+ 10> Is there an AmiTCP mailing list?
+ 
+ 11> Where are the archives of the AmiTCP Mailing List?
+ 
+ 12> What do I need to be able to use AmiTCP?
+
+ 13> Are there any alternatives to AmiTCP?
+
+ 14> What is SANA-II?
+
+ 15> What is C/SLIP?
+
+ 16> What is PPP?  
+
+ 17> What is Ethernet?
+
+ 18> What is an RFC?
+
+ 19> What is NFS?
+
+ 20> I  get  a  message could not open serial device unit 0 when I run AmiTCP
+     after  I  connect  to  my  SLIP  server.   I  tried quitting Term but my
+     connection  to  my  server is terminated.  
+     a) Why is this?, 
+     b) How can I fix it?  and 
+     c) How do I stay online?
+
+ 21> Can I use AmiTCP with a dynamic IP address?
+
+ 22> I  have  connected  to  my host fine but I cannot connect to any hosts
+     outside my University or Network.  How can I fix this?
+
+ 23> What mail and news clients can I use with AmiTCP?
+
+ 24> Is there an IRC client for AmiTCP?	
+
+ 25> What is NapsaTerm used for?
+
+ 26> Is there a telnet daemon?
+
+ 27> Do I need MultiUser?
+
+ 28> How can I see whats happening with my network connection?
+
+ 29> AmigaELM  uses  the  HOSTNAME but AmiTCP seems to want the fully 
+     qualified domain name, How can I resolve this problem?  
+
+ 30> What is a Domain Name Server? And How do I get one?
+
+ 31> What is are "Domain Names to Search"?
+
+ 32> What is Mosaic?
+
+ 33> Can  I setup a Mosaic Server with AmiTCP?
+
+ 34> I've  heard  Mosaic  is only for version 3.0 Amigas.  Why?  
+     and is there an alternative for version 2.x Amigas?
+
+ 35> I only log on for a few seconds to see if I've got mail waiting. Would
+     AmiTCP  be overkill for those situations?
+
+ 36> I thought Emacs was just a text editor.  I've seen it mentioned in a
+     few  posts.  What is it used for?
+
+ 37> My internet provider does offer SLIP accounts for a small
+     extra charge.  If I change my account to a SLIP account, can I still
+     access it the "old" way,
+     in case I just want to quickly check my mail or something? 
+
+ 38> If I'm using AmiTCP, is my mail and downloaded files being stored 
+     lomy cal hard drive?
+
+ 39> Am I correct in stating that I can be connected to several different
+     computers using several different applications?
+
+ 40> Where can I find more programs for use with AmiTCP?
+
+ 41> What should I do if I have a question that is not answered here?
+
+
+----------------------------------------------------------------------
+
+
+1> What is AmiTCP? 
+
+
+AmiTCP  is  a set of programs that enables the Amiga to connect to a TCP/IP
+network.   AmiTCP  lets the user use commands such as ftp, telnet from your
+Amiga.   AmiTCP  also  lets remote users connect to your machine from other
+TCP/IP  hosts.   AmiTCP  is  a TCP/IP protocol stack for implementing basic
+Internet  protocols  on  top  of any SANA-II network device driver, such as
+one for SLIP or Ethernet.
+
+
+----------------------------------------------------------------------
+
+
+2> What is TCP/IP?
+
+
+TCP/IP stands for Transmission Control Protocol/Internet Protocol.
+ TCP/IP  is  a  protocol  that  allows  any  system  on  a  network to talk
+"directly"  to any other, by passing packets of information back and forth.
+TCP/IP  (and its later relative OSI) is usually used over networks built on
+top  of  Ethernet,  Token-Ring,  Starlan and other LANS.  The Internet uses
+TCP/IP.
+
+
+----------------------------------------------------------------------
+
+
+3> What is the Internet?
+
+
+An  "internet"  is a network comprised of computers that talk to each other
+using  TCP/IP.  
+The "Internet" is a vast network of hundreds of thousands of machines using
+TCP/IP to communicate.
+The  Internet  grew out of a US government funded project in inter-computer
+communications  that  grew into an enormous network of systems.  One of the
+principle characteristics of this network is that machines are addressed by
+domain names which identify the destination, rather than addresses that are
+constructed out of the route from machine-to-machine-to-machine.
+
+----------------------------------------------------------------------
+
+
+4> Where can I get AmiTCP?
+
+
+AmiTCP is available from several places:
+Any Aminet mirror :- ftp.wustl.edu, ftp.doc.ic.ac.uk and ftp.luth.se
+And from: ftp.demon.co.uk, ftp.funet.fi via Anonymous FTP.
+
+	Aminet:comm/net/AmiTCP-bin-22.lha
+	Aminet:comm/net/AmiTCP-22to23.lha this patches the above file.
+	
+	ftp.demon.co.uk:pub/amiga/amitcp/AmiTCP-bin-22.lha
+	ftp.demon.co.uk:pub/amiga/amitcp/AmiTCP-22to23.lha 
+
+	ftp.funet.fi:pub/amiga/net
+
+It is also available on Fred Fish Disks:
+
+
+The home site for AmiTCP is kampi.hut.fi:AmiTCP/ and this is where the
+current version is available from.
+
+
+----------------------------------------------------------------------
+
+
+5> Where is the AmiTCP Documentation?
+
+
+The  documentation  is  available  in  several formats from kampi.hut.fi via
+anonymous FTP.
+
+                           kampi.hut.fi:AmiTCP/
+
+AmiTCP-dvA-20.lha  DVI A4 page size
+AmiTCP-dvL-20.lha  DVI US Letter page size
+AmiTCP-psA-20.lha  Postscript A4 Page Size (recommended =>300 DPI printers)
+AmiTCP-psL-20.lha  Postscript US Letter Page Size (again =>300 DPI printers)
+AmiTCP-txt-20.lha  Docs in ASCII text format
+
+
+----------------------------------------------------------------------
+
+
+6> Where is the list of AmiTCP applications?
+
+
+These are available from gopher:
+
+   <gopher://gopher.tky.hut.fi/00/.publish/puhuri/AmiTCP/NetAppList.txt>
+
+and World Wide Web:
+
+          <http://www.tky.hut.fi/.publish/puhuri/NetAppList.html>
+
+Updates to this list should be mailed to:
+
+                         <Markus.Peuhkuri@hut.fi>
+
+
+----------------------------------------------------------------------
+
+
+7> What is the latest version of AmiTCP?
+
+
+The latest release version of AmiTCP is version 2.3.
+AmiTCP  2.3  is  distributed  as  a  binary patch package to version 2.2 of
+AmiTCP.
+
+Please  note  that  you should not use any beta version of AmiTCP unless, of
+course you are a beta tester.
+
+
+----------------------------------------------------------------------
+
+
+8> How do I contact the AmiTCP author`s?
+
+
+The  AmiTCP  author`s can be Contacted via email at:- amitcp-group@hut.fi
+Please only contact the group on AmiTCP matters, if you have a problem with
+a client or a server with AmiTCP contact the author of that program.
+
+
+----------------------------------------------------------------------
+
+
+9> I think I found a bug in AmiTCP what should I do?
+
+Check  it  in the newsgroup comp.sys.amiga.datacomm before taking it to the
+authors;  make  sure  they  spend their time working on our beloved AmiTCP,
+rather than repeatedly answering the same questions by mail.
+
+Then  once  you  are SURE that it is a bug and you can reproduce it several
+times  mail  Amitcp-bugs@hut.fi  giving  as much information regarding your
+hardware  and  software  setup as possible, with an accurate description of
+the bug and the steps needed to take show the bug`s performance ;-)
+
+
+----------------------------------------------------------------------
+
+
+10> Is there an AmiTCP mailing list?
+
+
+Yes, it is meant for developers of software for AmiTCP.  Please consult the
+file AmiTCP:README.FIRST. ;-)
+
+----------------------------------------------------------------------
+
+
+11> Where are the archives of the AmiTCP Mailing List?
+(thanks Markus :)
+
+These are available in two places from gopher the URL is:
+
+        <gopher://gopher.tky.hut.fi/11/.publish/puhuri/AmiTCP/list>
+
+and also via Anonymous FTP at:
+
+                 kampi.hut.fi:AmiTCP/amitcp-listYYYY-MM.gz
+
+Where YYYY-MM is the year and month.
+
+----------------------------------------------------------------------
+
+
+12> What do I need to be able to use AmiTCP?
+
+
+You need the following Hardware:
+                       ---------
+
+An Amiga running AmigaOS 2 or greater, recommended are hard disk and 2MB of
+ram.   And  some for of Connection to a Network, e.g.  a Modem for a Serial
+connection  or  an  Ethernet  card for an Ethernet connection.  See the FAQ
+What is Ethernet?  for information about Ethernet cards.
+
+
+You need the following Software:
+                       ---------
+
+AmiTCP-bin-22.lha  use  the  installer  script  to  install  this, and then
+extract  the  files  from  AmiTCP-22to23.lha  and  copy  them  over the old
+versions  of  the  files.  See above for information on how to obtain these
+files. 
+You also need a SANA-II Network driver. A SLIP and CSLIP driver is
+included. See below for more information on SANA-II
+
+You need the following Information:
+                       ------------
+
+NOTE:  This information should be sought from your network provider or your
+System/Network Administrator.
+
+
+1) An IP address allocated for you Amiga.
+     for example  my IP address is 158.152.25.117
+
+2) Destination IP address - only applies if you are using a "point
+   to point" protocol such as most dialup protocols.  
+   Usually this is the address of the equipment you connect to.
+
+
+3) Netmask for you network, usually this only applies for a network such as
+   an ethernet or if you are connected to several networks.	
+   If you are connected via a single dialup connection, e.g.  using SLIP or
+   PPP,  you  should  use  a netmask of 255.255.255.254. 
+
+Note: If you only have the one connection, like most of us, netmasks
+      are purely irrelevant.
+
+4) A name for your Amiga i.e a nodename- my hostname is domino, 
+   (which  is  taken  from the Excellent Genesis track Called Domino on The
+    Invisible Touch Album :)
+
+5) Your domain name - this is usually your providers network name,
+   e.g. mine is demon.co.uk, yours may be netcom.net or bbcnc.org.uk
+
+6) The _numeric_ address of a Domain Name Server; eg my nameserver is
+   158.152.1.65 this is used to lookup text addresses (e.g.
+   domino.demon.co.uk) into dotted-decimal IP addresses (e.g.
+   158.152.25.117).  If you don't have access to a name server, you will
+   have to use dotted-decimal (or "numeric") IP addresses to connect to
+   other hosts, or add regularly used addresses to your AmiTCP:db/hosts
+   file.  If you have access to a Unix machine, you can copy their file
+   "/etc/hosts".  You are _highly_ recommended to use a nameserver if you
+   have access to one, as this saves disk space, and will save you many
+   bundles of hair when your favourite host changes it's _numeric_ IP
+   address.  (thanks Oliver)
+
+7) Default Gateway Address - if you have ethernet, this should be the
+   address of your router (the machine with connections to the outside
+   world) - if you are using a dialup protocol, this should be the
+   same as your destination address. If TCP/IP doesn't have specific
+   information on where to send data, it will send it to the default
+   gateway, e.g. if your sending mail to your Auntie in New Zealand, 
+   mai will pass trough this address :-)
+
+
+----------------------------------------------------------------------
+
+
+13> Are there any alternatives to AmiTCP?
+
+
+The  only  other  freely available TCP/IP stack is AmigaNOS.  There is also
+AS225r2  but  as  I  write  this  is only available to registered Commodore
+Developers.   
+
+There is also AS225r1, which was sold together with the Commodore Arnet and
+Ethernet board.  Unlike AS225r2 it is available to the general public -- if
+you manage to get a Commodore Arcnet/Ethernet board.
+This is not SANA2 compatible and does not drive SLIP or PPP.
+
+Other  networking  programs  include  DNET  and AmigaUnixWindows, these and
+AmigaNOS are available on Aminet.
+
+
+----------------------------------------------------------------------
+
+
+14> What is SANA-II?
+
+
+SANA-II   is  the  software  interface  between  AmiTCP  and  your  network
+interface.   There are SANA-II drivers for SLIP.  CSLIP, the A2060 card and
+the  A2065 card and PPP that are freely available.  If you are purchasing a
+card to connect your Amiga to a network, e.g.  Ethernet, make sure that the
+card  has  a  a  SANA-II driver if you are planning to use AmiTCP, with the
+card.
+
+The  SANA-II  is  the  standard  Amiga  network device driver specification
+released by Commodore-Amiga.  The SANA-II specification is available on the
+Aminet, fish disks and other forums.
+(Thanks Jarno)
+
+----------------------------------------------------------------------
+
+
+15> What is C/SLIP?
+
+SLIP is Serial Line Internet Protocol
+SLIP is used, most commonly, for connecting a computer to a TCP/IP network
+using a modem. SLIP lets IP packets be sent up and down a serial line.
+
+CSLIP  is  an  extension  of  the  SLIP protocol, which reduces the typical
+TCP/IP  packet-overhead  of  40-bytes  per  packet  to  3  or  5  bytes  by
+"remembering"  a  number of active connections and (a) not resending unused
+fields  (b)  only  sending  changes  to  the  headers.  Since a compression
+algorithm  is  not  used,  it does not impair any compression added by your
+modem,  and  thus  presents a significant improvement in packet throughput!
+CSLIP  gives  much  better  response  in  interactive  applications such as
+Telnet.  (Thanks Oliver and Markus)
+
+If  your  providers  don't  have slip, or if you are your provider, and you
+don't  have slip, it is publically available.  Ask you System Administrator
+for more information.
+
+Existing AmiTCP CSLIP drivers will only use CSLIP if it is available on the
+remote end, otherwise they will gracefully degrade to using ordinary SLIP.
+
+For  a  detailed  description  of  SLIP  and CSLIP consult a book on TCP/IP
+protocols.    There  is  a  SLIP  faq  available  in  comp.protocols.tcp-ip
+newsgroup.
+
+SLIP is described in RFC 1055 
+CSLIP is described in RFC 1055 & 1144
+
+A SANA-II C/SLIP interface is included with AmiTCP.
+
+
+---------------------------------------------------------------------
+
+
+16> What is PPP?  
+
+
+Point  to  Point Protocol is another way of connecting to your network.  It
+is  a  more  robust  protocol  than  SLIP,  and  addresses  many  of SLIP`s
+weaknesses.   However  it is much more difficult than SLIP to implement but
+the  advantage  over SLIP make it the serial protocol of the future.  (this
+is my opinion ;-)
+
+Again for a detailed description of PPP consult a book on TCP/IP or get the
+PPP faq available via anonymous FTP from
+
+RTFM.MIT.EDU:/usenet/comp.protocols.ppp/*
+
+PPP is described in RFCs 1332, 1333, 1334, 1376, 1377, 1548, 1549, 1552 
+and 1570 phew!
+
+
+As the FAQ was prepared a PPP SANA-II driver was uploaded to Aminet:
+	
+                Aminet:comm/net/PPP1_0.lha
+
+This is a non registered version. A shareware version with many more
+features is also on Aminet but requires a key file which you must pay the
+author $15. I personally plan to register. Consult the documentation for
+more details on this.
+
+
+----------------------------------------------------------------------
+
+
+17> What is Ethernet?
+(thanks to http://wombat.doc.ic.ac.uk/ :)
+
+A  coaxial  cable local area network first described by Metcalfe & Boggs of
+Xerox  PARC in 1976.  Specified by DEC, INTEL & XEROX (DIX), Now recognised
+as  the  industry  standard.   Data  is  broken  into packets.  Packets are
+transmitted   using   the  CSMA/CD  algorithm  until  they  arrive  at  the
+destination  without  colliding  with any other.  The first contention slot
+after  a  transmission  is  reserved  for an acknowledge packet.  A node is
+either  transmitting  or  receiving  at  any instant.  Bandwidth ~10Mbit/s.
+Disk-Ethernet-Disk  transfer rate with TCP/IP is typically 30 kbyte/s.  The
+cable is a 50 ohm coaxial cable with multiple shielding.
+
+EtherNet  is described in lots of RFCs.  Read the index if you're that keen
+to find out.
+
+
+----------------------------------------------------------------------
+
+
+18> What is an RFC?
+
+
+RFC are documents that are used to define the Internet standards.
+RFC stands for  Request For Comments. 
+De facto: Requirement For Conformance. (thanks Michael)
+
+RFC`s   are   available   from  many  FTP  sites  including  ftp.wustl.edu,
+ftp.doc.ic.ac.uk  and  ftp.demon.co.uk.   rs.internic.net is the "official"
+place  in the United States.  ftp.uu.net is the best connected place to get
+them in the USA.
+
+The file "rfc-index.txt" which should be available on every RFC repository,
+contains an index of all published RFC's
+
+
+---------------------------------------------------------------------
+
+
+19> What is NFS?
+(From the Sun NFS documentation:)
+
+NFS  is  a network file system developed by Sun Microsystems, Inc.  The Sun
+Network  Filesystem  (NFS)  protocol  provides transparent remote access to
+shared  filesystems over local area networks.  The NFS protocol is designed
+to  be  machine,  operating  system,  network  architecture,  and transport
+protocol independent.
+
+Again for a detailed description of NFS consult a TCP/IP book.
+
+There  is  an AmiTCP NFS client in development but it is not completed yet.
+Please do not post about this, the author will announce when it is ready.
+
+There  is  however  an  Amiga to Amiga NetFS implemetation that is included
+with  AmiTCP.   This is NOT NFS but lets the Amiga share other Amiga's Disk
+Drives.
+
+
+----------------------------------------------------------------------
+
+
+20>  I  get a message could not open serial device unit 0 when I run AmiTCP
+after I connect to my SLIP server.  I tried quitting Term but my connection
+to my server is terminated.
+
+a) Why is this?, b) How can I fix it? and c) How do I stay online?
+
+a)
+There  are  many  reasons  for  this  problem.  The most common is that the
+serial  device  in  use by another program, for example your comms package.
+(Term,  Terminus  etc).   If  you are using a terminal package to dial into
+your TCP/IP server this will give this error.  And your modem is not set to
+ignore DTR, so when you quit term the modem hangs up the phone, thus ending
+your Connection.
+
+b) 
+There  are  many solutions to avoid this problem.  I am going to suggest 2.
+The  first  is  to  use  the  Dial  in arexx script that in on Aminet, this
+automates  the  entire  connection  process,  Arexx is used to dial up your
+Server  enter your account details and startup AmiTCP when it has connected
+and  logged  in.   The  script is very flexible and also handles Dynamic IP
+assign, you may need to modify the script depending on your setup, however
+this is a very straightforward process. 
+
+The script is available from Aminet:
+
+                     Aminet:comm/net/amitcp_dial10.lha
+
+Also there is another dialer program caller dialer.  This program acts as a
+go  between  serial.device and your PPP/SLIP driver.  This program dials up
+your hosts and logs the user in and then puts the SANA driver online.
+This is available from Demon:
+
+               ftp.demon.co.uk:pub/amiga/amitcp/dialer_1.lha
+
+I`m currently using this and I find it excellent.
+
+I similar type program is gwcslip. Which is by Graham Walter. This is a
+CSLIP SANA driver which dials into your host. It works very similar to the
+above program.
+
+This program is available from Demon:
+
+              ftp.demon.co.uk:/pub/amiga/amitcp/gwslip#?.lha
+
+Look for the revision number which is part of the filename.
+
+c)
+The  other is to set you modem to ignore DTR.  Start your terminal program,
+Dial  into your server, login in as normal, issue what commands you need to
+start  up  your TCP/IP connection (e.g.  sliplogin).  When you have started
+up your serving program QUIT your terminal program leaving the call running
+and THEN start AmiTCP by executing AmiTCP:bin/startnet
+
+NOTE:  You MUST ensure that the BAUD RATE your terminal program is using is
+the SAME AS the BAUD RATE YOU have configured your SLIP/CSLIP/PPP driver to
+use.
+
+PLEASE,  remember  to  set  your baud rate to the configuration file of the
+SANA-II device driver you are using. See the documentation inluded with
+your SANA-II driver for more information on this file.
+
+
+
+----------------------------------------------------------------------
+
+
+21> Can I use AmiTCP with a dynamic IP address?
+
+
+Yes.   You can use the Arexx script on Aminet or follow the above steps but
+before  you  start  AmiTCP  you  must  change  your  startnet script to you
+assigned IP number.  This goes for any other dynamic addresses such as your
+hostname etc.
+
+
+Also the PPP driver on Aminet has special options for connecting to dialup
+hosts. Consult the excellent documentation within the archive.
+
+----------------------------------------------------------------------
+
+
+22> I  have  connected  to  my host fine but I cannot connect to any hosts
+    outside my University or Network.  How can I fix this?
+
+
+This is a routing problem, you must add a route to your default gateway
+using the command:
+
+         AmiTCP:bin/route add default your.default.gateways.number
+
+158.152.6.65 is my default gateway.  Ask your system administrator for this
+number.  This command should be already in your startnet script if you have
+followed the Install procedure correctly.
+
+This  could  also  be  because of a firewall, too.  That is, the IP traffic
+from your hosts is not passed to the Internet. Your Network provider will
+be able to give you more information on this.
+
+
+----------------------------------------------------------------------
+
+
+23> What mail and news clients can I use with AmiTCP?
+
+
+There  is  only  one  complete  Mail  and  News package called INetUtils by
+Michael  B.   Smith,  I  use  these  and  I  recommend  them to all.  These
+utilities work as drop in commands for AUUCP and let you use UUCP compatible
+newsreaders,  such  as  TIN,  and  UUCP  compatible  mail  readers, such as
+AmigaELM.  The faq was posted to USENET using TIN with InetUtils.
+
+GRn  is  also  available for AMITCP which allows direct connection with your
+news server.
+
+AmiPOP by Scott Ellis is also included with InetUtils for users who can
+connect to POP mail servers.
+
+All the above mentioned programs are available on Aminet:
+
+	Aminet:comm/news/
+	Aminet:comm/mail/
+	Aminet:comm/net/
+
+Also  Gnus  can  be  used with GNU Emacs (albeit a tad slow) works fine for
+reading  news,  For mail with emacs you still require an external transport
+unit such as InetUtils.
+Gnus was one of the first applications used to test AmiTCP.
+
+
+----------------------------------------------------------------------
+
+
+24> Is there an IRC client for AmiTCP?	
+
+
+The  only  IRC  client  that  is  available  is  the Emacs lisp one.  Which
+requires  Emacs.   This is available from kampi.hut.fi and works quite well
+:-) Emacs is available on Aminet.
+
+
+A Full Amiga Implemetation of Internet Relay Chat is in development, Please
+do not post about this, the author will announce when it is ready.
+
+
+----------------------------------------------------------------------
+
+
+25> What is NapsaTerm used for?
+
+
+Napsaterm is an rlogin program which can emulate a VT terminal. 
+It lets you login to a host that uses the rlogin protocol, It IS NOT a
+telnet client.
+
+
+----------------------------------------------------------------------
+
+
+26> Is there a telnet daemon?
+
+
+Tnserv on Aminet, however it is an active daemon and also does not use
+the AmiTCP passwd file for password information.
+
+
+----------------------------------------------------------------------
+
+
+27> Do I need MultiUser?
+
+
+If  you  plan to use a FTP server and want more than anonymous ftp then you
+will  have  to install Multiuser at some point.  MultiUser is very handy if
+you  plan  to  have  you  machine on the net all the time.  MultiUser is on
+Aminet.
+
+
+----------------------------------------------------------------------
+
+
+28> How can I see whats happening with my network connection?
+
+
+The  command AmiTCP:bin/netstat will show you all the active connections to
+your machine and where they are from, and which port they are connected to.
+For example if you had a connection to port 25 it would mean that your
+Amiga was getting new mail. 
+
+
+----------------------------------------------------------------------
+
+
+29> AmigaELM  uses  the  HOSTNAME  but  AmiTCP  seems  to  want the fully
+    qualified domain name, How can I resolve this problem?  
+    (Thanks to Jarno and Michael)
+
+
+"You could probably use the variable to "name only", since AmiTCP/IP itself
+does  not  use  the  variable  at  all.   Some application programs (e-mail
+programs,  etc)  might  have problems, though.  The current standard on the
+various  Unix versions is that the HOSTNAME includes the fully qualified 
+host name
+(i.e..  with the domain).
+
+"The  next  release  (3.0)  of the AmiTCP/IP fixes this by implementing the
+gethostname()  function  differently  (the  name  is  taken  from  the name
+server/host database instead of the HOSTNAME variable if possible).
+
+
+----------------------------------------------------------------------
+
+
+30> What is a Domain Name Server? And How do I get one?
+
+
+A Domain Name Server put simply is a massive address book of the internet,
+It enables the user to use hostnames while not having them in their
+Amitcp:db/hosts file.
+
+A  named  implementation  is on ftp.demon.co.uk, however as someone who has
+setup  his own nameserver, I would recommend that you use someone elses :-)
+DNS  is quite a complex system and unless you are running a massive network
+you don`t really need your own.
+
+
+For more information on DNS again consult a TCP/IP book.
+
+
+----------------------------------------------------------------------
+
+
+31> What is/are "Domain Names to Search"?
+(thanks Jarno :) 
+
+
+"The  "Domain names to search" are the domain names which are appended to a
+given  host  name  on  the search.  If you have a name "foo" and the domain
+names to search are "bar.edu" and "zip.zop" then the "foo.bar.edu" is tried
+first,  and if that fails, the "foo.zip.zop" is tried next.  It the name to
+search includes the domain part, it is searched as it is."
+
+
+----------------------------------------------------------------------
+
+
+32> What is Mosaic?
+
+Mosaic  is  a  client  for the World Wide Web.  The World Wide Web is a new
+application on the Internet which allows pictures, sounds, animations to be
+viewed from anywhere on the Internet. Amiga Mosaic in on Aminet.
+
+                   Aminet:comm/net/Mosaic1.1_AmiTCP.lha
+
+
+----------------------------------------------------------------------
+
+
+33> Can I set up a Mosaic Server with AmiTCP?
+
+Yes an _excellent_ http daemon (httpd) exists ported by Graham Walter, It
+has been included with AMosaic.
+
+
+----------------------------------------------------------------------
+
+
+34> I've  heard Mosaic is only for version 3.0 Amigas.  Why?  and is there
+    an alternative for version 2.x Amigas?
+
+
+At  the  moment  Mosaic  is  only  available for version 3.0 Amiga`s.  This
+because  the very nature of Mosaic needs some of the features that are only
+available in version 3 of the Amiga`s OS. That is Inline Datatypes.
+
+The  developers  are  working  on  a version for AmigaOS 2.x.  It is hoped,
+however,  that  Commodore will release version 3 though.  (thats is CBM are
+saved ;-)
+
+
+----------------------------------------------------------------------
+
+
+35> I only log on for a few seconds to see if I've got mail waiting.  Would
+    AmiTCP be overkill for those situations?
+
+
+In this case yes connecting via AmiTCP would be a bit of an overkill.
+
+
+----------------------------------------------------------------------
+
+
+36>  I  thought  Emacs was just a text editor.  I've seen it mentioned in a
+     few posts.  What is it used for?
+
+
+Emacs  is the GOD of all editors :-).  It has it`s own programming language
+that  lets  the  user  run  programs  on it.  Emacs has gopher, IRC and WWW
+programs that can be used with AmiTCP.  And also Gnus for news reading.
+
+
+----------------------------------------------------------------------
+
+
+37> My internet provider does offer SLIP accounts for a small extra charge.
+    If  I  change my account to a SLIP account, can I still access it the 
+    "old" way, in case I just want to quickly check my mail or something?
+
+
+The only people who can answer that are your Network providers.
+
+
+----------------------------------------------------------------------
+
+
+38> If  I'm  using  AmiTCP,  is my mail and downloaded files being stored 
+    on my local hard drive?
+
+
+Yes if you use FTP from your Amiga then the files are transferred DIRECTLY
+to your Amiga`s hard disk drive. No more ZMODEM!!! The same goes for mail,
+news etc.
+
+
+----------------------------------------------------------------------
+
+
+39>  Am  I  correct in stating that I can be connected to several different
+     computers using several different applications?  (thanks Markus :-)
+
+
+Yes,  this  is  correct,  however,  the  more connections you have the more
+bandwidth  is  required/used  on your link.  For example you could be using
+FTP,  while  on  IRC.   OR you could be viewing Mosaic pages while reading
+news.
+However,  if  there is no traffic on some connections (= are idle), they do
+not  use  bandwidth  at  all.   So  it  is  the same if you have ten or one
+terminal sessions open if you are just using one (at the time).
+
+
+----------------------------------------------------------------------
+
+
+40> Where can I find more programs for use with AmiTCP?
+
+
+Aminet  is  always  the  place to look, usually in the comm directory, Also
+look in ftp.demon.co.uk:/pub/amitcp/ this site dedicated to the Internet.
+
+And look in the applications list available via gopher:
+
+   <gopher://gopher.tky.hut.fi/00/.publish/puhuri/AmiTCP/NetAppList.txt>
+
+and On the World Wide Web:
+
+          <http://www.tky.hut.fi/.publish/puhuri/NetAppList.html>
+
+
+----------------------------------------------------------------------
+
+
+41> What should I do if I have a question that is not answered here?
+
+
+Your  best  option  is  to  post  to  USENET in the comp.sys.amiga.datacomm
+newsgroup.   Include  as  much  information  as  possible, what system your
+running,  what  version  of  AmiTCP your running, What the problem is.  The
+more  info  you  give the better the chance you have of your question being
+answered.    Alternatively  mail  me  <atcpfaq@domino.demon.co.uk>  or  the
+Amitcp-group@hut.fi and we will try to answer your questions.
+
+
+This is of course after you have read all the AmiTCP Documentation and any
+additional documentation that comes with the software that you use :-)
+
+
+----------------------------------------------------------------------
+
+--
+Neil J. McRae <neilm@domino.demon.co.uk>
+AmiTCP FAQ Administrator and contributor.
+
+           ----------------------------------------------------
+           | ALL FAQ related information should be mailed to: |
+           |           atcpfaq@domino.demon.co.uk             |
+           ----------------------------------------------------

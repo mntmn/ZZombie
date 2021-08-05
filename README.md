@@ -8,12 +8,9 @@ My challenge was to find a legal way to distribute a standard USB stick image th
 
 - File management with Workbench
 - Shell (NewCLI)
-- Going online via ZZ9000 Ethernet (Demo version of Miami)
+- Going online via ZZ9000 Ethernet (AmiTCP 3)
 - Download files (wget)
-- Rudimentary web (AWeb APL)
 - Mount ADF disk images
-- Play WHDLoad games (if you have them)
-- Limited RTG (with old public version of Picasso96)
 
 This way we can hopefully provide a known-good software environment for testing ZZ9000 and excluding any software configuration problems that are due to individual setups (these vary greatly among Amiga users).
 
@@ -22,6 +19,20 @@ Moreover, this is also just a fun challenge and feedback is very appreciated.
 If you think that any license of any included program is violated by this distribution, please get in touch and I will immediately remove it--especially if you are the author.
 
 *Please note that this is not intended as a base for a production system!* It is merely a pre-installation/last resort/insane technical demo environment for when you really don't care about the quality of the components, just that it works somehow. It is held together by chewing gum and wire. Get the real AmigaOS, P96 etc. instead!
+
+## Usage
+
+TODO: Provide a disk image
+
+Currently, Vim is the bundled editor and replacement for Ed, so you need to know how to operate Vim.
+
+Everything is prepared to go online with AmiTCP, but you need to adjust `AmiTCP:bin/startnet` and change `192.168.1.222` to your desired IP address and `192.168.1.1` to the correct gateway. DHCP is not supported.
+
+To go online, launch a new CLI (Amiga+E, `NewCLI`) and enter `online`. Another CLI window with a harmless S2-related error pops up, close it. You can then use the original CLI to use AmiTCP commands like `ping` to verify that you are really online.
+
+If everything works, you can use `wget <url>` to download things, i.e. to `RAM:` and extract archives with `lha`. For example: `wget http://aminet.net/disk/misc/ImageMount.lha`.
+
+Please note that the included open-source version of AmiTCP is not exactly fast, but it is enough to get you bootstrapped.
 
 ## The Parts: Minimal Version
 
@@ -107,11 +118,10 @@ Other libraries:
 
 These are preinstalled but also the original archives are included:
 
-- AmiTCP 3.0 https://aminet.net/package/comm/net/AmiTCP-bin-30b2 License: GNU
-- AWeb APL Lite 3.5.09 (Basic HTML browser) http://aminet.net/package/comm/www/AWeb-3.5.09-68000 License: "AWeb Public Licence", https://www.yvonrozijn.nl/aweb/apl.txt
+- AmiTCP 3.0 https://aminet.net/package/comm/net/AmiTCP-bin-30b2 License: GPL
 - Ixemul 48 (POSIX libraries required for wget) https://aminet.net/package/util/libs/ixemul-48.0 License: BSD?
 - Wget 1.8.2 (Downloader tool) http://aminet.net/package/comm/tcp/wget-1.8.2 License: GPL
-- ZZ9000 Drivers
+- ZZ9000 Network Driver
 
 ### Fonts
 

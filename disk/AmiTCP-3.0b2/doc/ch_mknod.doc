@@ -1,0 +1,24 @@
+NAME
+	ch_mknod
+
+SYNOPSIS
+	ch_mknod TYPE MAJOR MINOR DEVNAME [DEVNAME ...]
+
+DESCRIPTION
+	Create unix character or block special devices.
+
+	TYPE must be
+		B or BLOCK	block special device
+		C or CHAR	character special device
+
+	MAJOR is the major device number in the range 0..16777215.
+	MINOR is the minor device number in the range 0..255.
+
+NOTES
+	This command may work on amiga bffs partitions, too.
+	Bffs was written by Chris Hooper.
+	
+BUGS
+	None known.
+
+$Id: ch_mknod.doc,v 1.2 1994/04/07 15:09:18 alph Exp $

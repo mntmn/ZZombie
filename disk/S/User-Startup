@@ -1,0 +1,10 @@
+;BEGIN AmiTCP/IP
+setenv HOSTNAME zzombie.local
+assign AmiTCP: SYS:AmiTCP-3.0b2
+path AmiTCP:bin add
+AmiTCP:bin/login -f root
+AmiTCP:bin/umask 022
+
+Alias online execute AmiTCP:bin/startnet
+
+;END AmiTCP/IP

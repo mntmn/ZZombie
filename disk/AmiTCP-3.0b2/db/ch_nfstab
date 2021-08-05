@@ -1,0 +1,50 @@
+# This is a short introduction for the impatient.
+#
+# 1. Legal stuff
+# 
+# Before using the programs in this archive make sure you know
+# that you use them at your own risk. See ch_nfsc.guide/DISCLAIMER for
+# detailed info on this topic. See ch_nfsc.guide/COPYING for
+# copyright and copying permissions.
+# 
+# 2. Here's a small example 
+#
+# a) Let's assume we want to mount the partition "/home/user" from
+#    host "nfsserver". We want to make all NFS accesses as user "ch"
+#    as listed in "AmiTCP:db/passwd" and the local volume name should 
+#    be "nfs:". The umask should be 0755.
+#
+#    So you have to create a file containing the following line:
+#
+nfsserver:/home/user nfs: USER ch UMASK 0755 
+#
+#    Comments are possible using the '#' as the comment marker.
+# 
+# b) Use the following to mount "nfs:".
+#
+#	CLI> ch_nfsmount nfs: from short.doc
+#
+#
+# (Note that the file you are reading now is a legal input file to 
+#  ch_nfsmount.)
+#
+# 3.) The default input file for "ch_nfsmount" is 
+#     "AmiTCP:db/ch_nfstab".
+#     You should copy "ch_nfsc" to "AmiTCP:bin" and all the other 
+#     files to a directory listed in your path.
+#
+# (Note: If "ch_nfsc" is not found in "AmiTCP:bin" it will
+#  be searched for in the actual path.)
+#
+# 
+# Have fun,
+#		Carsten Heyl, 06.03.94
+#
+# P.S.
+#     Here are some more entries.
+#
+ftp.wustl.edu:/archive	wustl:
+#
+# $Id: short.doc,v 1.2 1994/04/07 23:58:39 alph Exp $
+#
+

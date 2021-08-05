@@ -1,0 +1,34 @@
+askhost			AmiTCP/IP User Commands			askhost
+
+NAME
+	askhost -- get hostent information of given hostname/ip-address
+
+SYNOPSIS
+	askhost <hostname>
+
+	or
+
+	askhost <ip-address>
+
+DESCRIPTION
+	Askhost calls nameserver or queries local database to get hostent
+	information of given internet host name or address. If answer comes
+	from local database, all information stored there is retrieved. If
+	answer comes from nameserver, the information it returns is shown.
+	Note that this information is usually not complete (all alias names
+	not shown).
+
+OUTPUT
+	host: <canonical-name>	addrtype: <usually inet> length: <inet: 4>
+	aliases:
+		<possible alias list>
+	address list:
+		<all addresses known by nameserver>
+
+
+	If query fails, some host error string is displayed, usually
+	`host not known'
+
+REQUIREMENTS
+	AmiTCP/IP must be running before this prgram can be run.
+

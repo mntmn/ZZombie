@@ -1,0 +1,1 @@
+rx "address AMITCP; KILL" ; Send "KILL" to AmiTCP

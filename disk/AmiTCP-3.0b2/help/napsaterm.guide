@@ -1,0 +1,1683 @@
+@database napsaterm.guide
+
+@Master napsaterm.texi
+
+@Width 72
+
+
+This is the AmigaGuide® file napsaterm.guide, produced by Makeinfo-1.49 from 
+the input file napsaterm.texi.
+
+   Copyright © 1993 AmiTCP/IP Group, `<amitcp-group@hut.fi>', Helsinki
+University of Technology, Finland.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the copyright holders.
+
+
+@Node Main "napsaterm.guide"
+@Next "About"
+
+NapsaTerm 3
+***********
+
+   NapsaTerm is a VT100 terminal emulator and rlogin client for
+AmiTCP/IP.
+
+   This is edition 1.3.1 of the NapsaTerm documentation,
+13 May 1994, for Napsaterm version 3.8.
+
+
+ @{" About " Link "About"}                        Authors, copying
+ @{" Invoking from Shell " Link "Invoking from Shell"}          How to start Napsaterm from command line
+ @{" Invoking from Workbench " Link "Invoking from Workbench"}      How to start Napsaterm from Workbench
+ @{" Options " Link "Options"}                      Configuring Napsaterm
+ @{" Menus " Link "Menus"}                        Using menus
+ @{" Fonts " Link "Fonts"}                        How Napsaterm uses fonts
+ @{" National " Link "National"}                     Using different character sets and keymaps
+ @{" IO modes " Link "IO modes"}                     Using Napsaterm with AmiTCP, DNet etc.
+ @{" Tektronix emulation " Link "Tektronix emulation"}          Tektronix tek4010 emulation window
+ @{" History " Link "History"}                      Changes from previous versions
+ @{" Glossary " Link "Glossary"}                     Important concepts
+ @{" Index " Link "Index"} 
+
+ -- The Detailed Node Listing --
+
+About Authors
+
+ @{" Copying NapsaTerm " Link "Copying NapsaTerm"}            Your rights
+ @{" Niftyterm licence " Link "Niftyterm licence"}            Original licence
+
+Options
+
+ @{" General options " Link "General options"} 
+ @{" Device options " Link "Device options"}               Using different interfaces.
+ @{" Emulation options " Link "Emulation options"}            Changing the emulation type.
+ @{" Display options " Link "Display options"}              Changing the `NapsaTerm' window.
+ @{" Host names " Link "Host names"}                   Selecting remote host.
+ @{" Preference file " Link "Preference file"}              Setting default preferences
+
+Using Menus
+
+ @{" Command menu " Link "Command menu"} 
+ @{" Edit menu " Link "Edit menu"} 
+ @{" Setup menu " Link "Setup menu"} 
+
+National Modes
+
+ @{" Keymaps " Link "Keymaps"}                      Default national keymaps
+ @{" Character tables " Link "Character tables"}             National character tables
+
+Using Different IO Modes
+
+ @{" rlogin protocol " Link "rlogin protocol"} 
+ @{" Telnet protocol " Link "Telnet protocol"} 
+ @{" Serial device " Link "Serial device"} 
+ @{" DNet " Link "DNet"} 
+ @{" DOS IO " Link "DOS IO"} 
+
+NapsaTerm History
+
+ @{" Changes in Version 3 " Link "Changes in Version 3"} 
+ @{" Changes in Version 2 " Link "Changes in Version 2"} 
+ @{" Changes in Version 1 " Link "Changes in Version 1"} 
+
+
+@EndNode
+
+@Node "About" "napsaterm.guide/About"
+@Next "Invoking from Shell"
+@Prev "Main"
+@Toc "Main"
+
+About Authors
+=============
+
+   NapsaTerm is © copyright 1991, 1993, 1994 Pekka Pessi and AmiTCP/IP
+Group. Our e-mail address is `<AmiTCP-Group@hut.fi>'.  You can reach us
+by mail with address
+     AmiTCP/IP Group
+     c/o Pekka Pessi
+     Jämeräntaival 11E122
+     FI-02150  Espoo
+     Finland, Europe
+
+   Members of the AmiTCP/IP Group and their e-mail addresses are
+     Tomi Ollila, `<Tomi.Ollila@cs.hut.fi>'
+     Pekka Pessi, `<Pekka.Pessi@hut.fi>'
+     Markus Peuhkuri, `<Markus.Peuhkuri@hut.fi>'
+     Jarno Rajahalme, `<Jarno.Rajahalme@hut.fi>'
+
+   We are interested to continuously develop NapsaTerm and AmiTCP/IP. 
+If you improve NapsaTerm or fix bugs, please send the changes to us.
+
+   The @{"Tektronix emulation" Link "Tektronix emulation"} is written by Robert A. Knop,
+`<rknop@cco.caltech.edu>'.  He has also written some new features and
+bug fixes to VT100 emulation.
+
+
+ @{" Copying NapsaTerm " Link "Copying NapsaTerm"}            Your rights
+ @{" Niftyterm licence " Link "Niftyterm licence"}            Original licence
+
+
+@EndNode
+
+@Node "Copying NapsaTerm" "napsaterm.guide/Copying NapsaTerm"
+@Next "Niftyterm licence"
+@Toc "About"
+
+Copying NapsaTerm
+-----------------
+
+   NapsaTerm is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+   NapsaTerm is distributed in the hope that it will be useful, but
+*without any warranty*; without even the implied warranty of
+*merchantability* or *fitness for a particular purpose*. See
+@{"the GNU General Public License" Link " AmiTCP:COPYING/main"}, for more details.
+
+   You should have received a copy of the GNU General Public License
+along with NapsaTerm or with AmiTCP/IP; see the file COPYING.  If not,
+please contact the authors.
+
+
+@EndNode
+
+@Node "Niftyterm licence" "napsaterm.guide/Niftyterm licence"
+@Prev "Copying NapsaTerm"
+@Toc "About"
+
+Niftyterm Licence
+-----------------
+
+   Niftyterm is © copyright 1989, 1990 Christopher J. Newman and Todd
+Williamson
+All Rights Reserved.
+
+   Permission to use, copy, modify, distribute, and sell this software
+and its documentation for any purpose is hereby granted without fee,
+provided that the above copyright notices appear in all copies and that
+both that copyright notices and this permission notice appear in
+supporting documentation, and that the names of Christopher J. Newman
+and Todd Williamson not be used in advertising or publicity pertaining
+to distribution of the software without specific, written prior
+permission.  Christopher J. Newman and Todd Williamson make no
+representations about the suitability of this software for any purpose.
+It is provided "as is" without express or implied warranty.
+
+   CHRISTOPHER J. NEWMAN AND TODD WILLIAMSON DISCLAIM ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL CHRISTOPHER J. NEWMAN OR
+TODD WILLIAMSON BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL
+DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
+
+   Authors: Christopher J. Newman and Todd Williamson
+Niftyterm source code is available upon request.  Send a disk and a
+self-addressed mailer to the address below, and I'll send you a copy.
+
+   If you find this program useful, Chris and I would certainly
+appreciate a donation to support further development:
+     Todd Williamson
+     5440 Fifth Avenue Apt. 59
+     Pittsburgh, Pa.  15232-2243
+
+
+@EndNode
+
+@Node "Invoking from Shell" "napsaterm.guide/Invoking from Shell"
+@Next "Invoking from Workbench"
+@Prev "About"
+@Toc "Main"
+
+Invoking NapsaTerm from Shell
+=============================
+
+   You can start NapsaTerm with following command line options and
+parameters:
+
+     NAPSATERM [-V] [--vt102] [--vt52] [--h19] [-7] [-l FILE] [--slow]
+               [-g GEOMETRY] [--80] [-f FONTNAME] [-p PROGRAMTITLE] [-S SCREEN]
+               [--ic] [-v] [--application] [--numeric] [-w]
+               [-d DEVICE] [-u UNIT] [-B LINESPEED] [--shared] [--stdio]
+               [-N NET] [-s SERVICE] [-r REMOTENAME] [HOST]
+
+   Command line options can be entered in any order and any combination
+(except those that override each other).  Single character options begin
+with single hyphen and can have optional arguments, multicharacter
+options begin with double hyphen.  The rest of the command line
+arguments are interpreted as host names.  With @{"Preference file" Link "Preference file"} you can
+change the default preferences of `NapsaTerm'.
+
+
+@EndNode
+
+@Node "Invoking from Workbench" "napsaterm.guide/Invoking from Workbench"
+@Next "Options"
+@Prev "Invoking from Shell"
+@Toc "Main"
+
+Invoking NapsaTerm from Workbench
+=================================
+
+   You can start NapsaTerm from Workbench with various tool types to
+accommodate your personal preferences.
+
+   If you are using a project icon with NapsaTerm as tool, the
+tooltypes of the project icon will override the tool types of the tool
+icon.
+
+`LOGFILE=FILENAME'
+`WAITTOEND'
+     See @{"General options" Link "General options"}.
+
+`DEVICE=NAME'
+`UNIT=NUMBER'
+`LINESPEED=NUMBER'
+`SHARED'
+`REMOTENAME=LOGIN NAME'
+`REMOTETYPE=TERMINAL TYPE'
+`SERVICE=SERVICE TYPE'
+     See @{"Device options" Link "Device options"}.
+
+`EMULATION=TERMINAL TYPE'
+`NATIONAL=MODE'
+`NATION=NATION NAME'
+`KEYMAP=[NATION/]MAPNAME'
+`KEYBOARD=[NATION/]MAPNAME'
+`KEYPAD=[NUMERIC/APPLICATION]'
+`MOUSE=EVENTS'
+`BACKSPACE2DELETE'
+`DELETE2BACKSPACE'
+`CURSORBLINK'
+`CURSOR=TYPE'
+`BELL=TYPE'
+`PASS8'
+`CTRL8BIT'
+`INVERSE'
+`ALTISMETA'
+     See @{"Emulation options" Link "Emulation options"}.
+
+`GEOMETRY=SPECIFICATION'
+`PUBSCREENNAME=NAME'
+`BASEFONT=FONT/SIZE'
+`TITLE=STRING'
+`SIZEGADGET=TYPE'
+`FIXEDCOLUMNS'
+     See @{"Display options" Link "Display options"}.
+
+`HOST'
+     See @{"Host names" Link "Host names"}.
+
+
+@EndNode
+
+@Node "Options" "napsaterm.guide/Options"
+@Next "Menus"
+@Prev "Invoking from Workbench"
+@Toc "Main"
+
+Options
+=======
+
+   The NapsaTerm can be given either command line options or icon tool
+types.
+
+
+ @{" General options " Link "General options"} 
+ @{" Device options " Link "Device options"}               Using different interfaces.
+ @{" Emulation options " Link "Emulation options"}            Changing the emulation type.
+ @{" Display options " Link "Display options"}              Changing the `NapsaTerm' window.
+ @{" Host names " Link "Host names"}                   Selecting remote host.
+ @{" Preference file " Link "Preference file"}              Setting default preferences
+
+
+@EndNode
+
+@Node "General options" "napsaterm.guide/General options"
+@Next "Device options"
+@Prev "Options"
+@Toc "Options"
+
+General Options
+---------------
+
+`-V'
+     Displays the current version number and copyright notice. There is
+     no corresponding tool type.
+
+`-l FILE'
+`LOGFILE=FILENAME'
+     Logs the terminal output into specified file.
+
+`-w'
+`WAITTOEND'
+     Wait for a keypress before closing the emulation window after the
+     input stream has finished.
+
+`WAITTOEND=NOT'
+     Negative form of previous tool type.
+
+
+@EndNode
+
+@Node "Device options" "napsaterm.guide/Device options"
+@Next "Emulation options"
+@Prev "General options"
+@Toc "Options"
+
+Device Options
+--------------
+
+`-d DEVICE'
+`DEVICE=NAME'
+     Uses specified device. The DEVICE may be any device compatible
+     with serial.device (normal Exec device name) or one of the
+     following:
+
+        * NET - use the remote login protocol over TCP/IP (default).
+
+        * TELNET - use the Telnet protocol over TCP/IP.
+
+        * DNET - use a "DNet" channel.
+
+`-u UNIT'
+`UNIT=NUMBER'
+     causes NapsaTerm to use the specified unit of the device. It has no
+     effect when using TCP/IP or DNet.
+
+     There is no corresponding tool type.
+
+`-N NETWORK'
+     Uses the specified DNet NETWORK. This option is not currently
+     implemented.
+
+`-B LINESPEED'
+`LINESPEED=NUMBER'
+     Starts the NapsaTerm with specified LINE SPEED (as bits per
+     second). This parameter is used with `serial.device' and
+     @{"rlogin protocol" Link "rlogin protocol"}.
+
+`--shared'
+`SHARED'
+     If this option is specified, NapsaTerm will open the device
+     specified in "shared" mode. This allows NapsaTerm to share the
+     serial port with other applications which also can open the serial
+     port in shared mode (including another `NapsaTerm'). You can also
+     prevent NapsaTerm from reading characters from serial device, See
+     @{"Unlisten menu command" Link "Command menu"}.
+
+`--stdio'
+     Causes NapsaTerm to display whatever comes from standard input, and
+     send all keystrokes to standard output. For example:
+          NapsaTerm --stdio < filein > fileout
+     would display file in a NapsaTerm window.
+
+     There is no corresponding tool type.
+
+`REMOTENAME=LOGIN NAME'
+     This tool type is used to specify user name in the remote system
+     when using the @{"rlogin protocol" Link "rlogin protocol"}.
+
+`REMOTETYPE=TERMINAL TYPE'
+     This tool type specifies the terminal type used in the remote
+     system when using the @{"rlogin protocol" Link "rlogin protocol"}.
+
+`REMOTETYPE=TERMINAL TYPE'
+     Napsaterm connects to the service or server port which is
+     specified by this tool type or option when using @{"Telnet protocol" Link "Telnet protocol"}.
+
+
+@EndNode
+
+@Node "Emulation options" "napsaterm.guide/Emulation options"
+@Next "Display options"
+@Prev "Device options"
+@Toc "Options"
+
+Emulation Options
+-----------------
+
+`EMULATION=TERMINAL TYPE'
+     Select the emulation type to use. The emulation type can be chosen
+     with following options from the command line.
+
+`--vt102'
+     Emulate a "vt102" terminal.
+
+`--vt52'
+     Emulate a "vt52" terminal.
+
+`--h19'
+     Emulates a "ht19" terminal.
+
+`NATIONAL=MODE'
+     Determines the national mode used. National modes are (valid
+     abbreviation for each mode in parenthesis):
+    * `None' (`No')
+    * `Multinational' (`Mu')
+    * `National' (`Na')
+     See @{"National modes" Link "National"}.
+
+`NATION=NATION NAME'
+     Specifies the used nation. Valid nations are as follows (valid
+     abbrevations for each nation in parenthesis):
+    * `US ASCII', (`US')
+    * `Danish', (`Da')
+    * `Finnish', (`Fi')
+    * `French', (`Fr')
+    * `German', (`Ge')
+    * `Norwegian', (`No')
+    * `Swedish', (`Sw')
+    * `UK ASCII', (`UK')
+     Default nation is `US'.
+
+`KEYMAP=[NATION/]MAPNAME'
+`KEYBOARD=[NATION/]MAPNAME'
+     These tool types are synonymous. They specify the keymap the
+     NapsaTerm will use. It is possible to change also a specific
+     national keymap, for instance the tool type `KEYMAP=Finnish/sf7'
+     will change the Finnish national keymap to `sf7'. For default
+     national keymaps, See @{"Keymaps" Link "Keymaps"}.
+
+`KEYPAD=[NUMERIC/APPLICATION]'
+`--numeric'
+`--application'
+     These options and tool type control the behauvior of keypad.  If
+     the option `--numeric' is specified or the tool type `KEYPAD' has
+     value `NUMERIC', the keypad is in normal mode.  If the option
+     `--application' is specified or the tool type `KEYPAD' has value
+     `APPLICATION', the keypad is in the application mode.
+
+     In application mode, the vt100 control sequencies will be sent to
+     remote host instead of normal characters.  This is handy for text
+     editors and the like that use the keypad as a function keypad.
+
+`--slow'
+     Starts in slow mode. This mode is useful only watching some vt102
+     animations with `--stdio' option.
+
+     There is no corresponding tool type.
+
+`MOUSE=EVENTS'
+     This tool type controls which kind of mouse events are sent to the
+     remote end.
+    OFF
+          Don't send mouse clicks
+
+    DOWN
+          Send an event only when user presses the select button
+
+    UP
+          Send a mouse event only when user releases the select button
+
+    BOTH
+          Send both up- and downward clicks
+
+     When mouse events are enabled NapsaTerm sends the following
+     sequence when the user presses the left (selection) button on the
+     Amiga mouse:
+          ESC `M' QUALS COLUMN LINE
+     where column and line are bytes that represent the x, y
+     coordinates of the mouse click (offset by 32; a click on (0, 0)
+     results in sending two space characters), and quals is like so:
+
+    bit 0
+          Control key
+
+    bit 1
+          Shift key
+
+    bit 2
+          Meta (alt) key
+
+    bit 3
+          Caps lock
+
+    bit 4
+          Mouse down event
+
+    bit 5
+          Mouse up event
+
+    bit 6
+          Always on (making qual a printable value)
+
+     For example, clicking on column 1, row 1 results in the escape
+     sequence
+          ESC `M' `P' SPC SPC
+
+`BACKSPACE2DELETE'
+     This switch tool type causes the backspace key mapped to `DEL'.
+
+`BACKSPACE2DELETE=NOT'
+     Negative form of previous tool type.
+
+`DELETE2BACKSPACE'
+     This switch tool type causes the Delete key mapped to Backspace.
+
+`DELETE2BACKSPACE=NOT'
+     Negative form of previous tool type.
+
+`CURSORBLINK'
+     By default, NapsaTerm has a solid cursor. Setting this tool type
+     will cause cursor to blink at the rate of once per second.
+
+`CURSORBLINK=NOT'
+     Negative form of previous tool type.
+
+`CURSOR=TYPE'
+     Available cursor types are `Invisible', `Underlined' and `Block'.
+
+`--ic'
+     This option causes NapsaTerm to start up with an invisible cursor.
+
+`BELL=TYPE'
+     Available bell types are `Visual', `Audio', `Both', `None' and
+     `Display'. The visual bell flashes the NapsaTerm window, audio
+     bell plays a simple beep with `audio.device'.  Both of them can be
+     used at the same time. The display bell uses Intuition function
+     `DisplayBeep()'.
+
+`PASS8'
+     Prevents NapsaTerm from stripping off the 8th bit of the input
+     stream character. This is the default mode.
+
+`-7'
+`PASS8=NOT'
+     Causes NapsaTerm to strip off the 8th bit of the incoming
+     characters. This is useful, if the input may contain 7 bit
+     characters with parity enabled.
+
+`CTRL8BIT'
+     Prevents NapsaTerm from converting the 8-bit control codes to
+     escape sequences.  Normally, Napsaterm converts any 8-bit control
+     character (ie. ASCII codes from 128 to 159) to a two character
+     escape sequence. The escape sequences consist of a ESC code and
+     original control character code minus 64.  For example, CSI (ASCII
+     code 155) will be converted to escape sequence ESC [, the ASCII code of [ is 91, 155 -
+     64.
+
+`CTRL8BIT=NOT'
+     Causes NapsaTerm to convert the 8bit control codes to escape
+     sequences.
+
+`-v'
+`INVERSE'
+     Starts up with an inverted window. This may be controlled by
+     terminal codes when emulating a VT102 terminal. See also
+     @{"Setup menu" Link "Setup menu"}.
+
+`INVERSE=NOT'
+     Negative form of previous tool type.
+
+`ALTISMETA'
+     If this tool type is given, the left alt key on the keyboard will
+     act as a meta key. If the left alt key is pressed down, all single
+     character key sequences will be prefixed by ESC character. This is
+     particularly useful for emacs.
+
+`ALTISMETA=NOT'
+     Negative form of previous tool type.
+
+
+@EndNode
+
+@Node "Display options" "napsaterm.guide/Display options"
+@Next "Host names"
+@Prev "Emulation options"
+@Toc "Options"
+
+Display Options
+---------------
+
+   These preferences or tool types affect the NapsaTerm window, its
+size, placement and title.
+
+`-g GEOMETRY'
+`GEOMETRY=SPECIFICATION'
+     Sets up the window geometry.  The format for geometry is
+     /LEFT/TOP/WIDTH/HEIGHT. A value of -1 for the WIDTH or HEIGHT
+     makes the window stretch to the right edge or bottom of the
+     screen.  A value of -1 for the TOP makes the window's top edge
+     appear just below the screen title bar.  The LEFT and TOP are
+     specified in pixels.  The WIDTH and HEIGHT are specified in
+     characters.
+
+`-S SCREEN'
+`PUBSCREENNAME=NAME'
+     Opens the NapsaTerm window on the specified "public screen". If the
+     screen don't exist, open the window on the default public screen
+     (which is normally the Workbench Screen).
+
+`-f FONTNAME'
+`BASEFONT=FONT/SIZE'
+     Sets the font for the NapsaTerm window. By default the font `napsa
+     11' or, if `napsa 11' cannot be found, `topaz 8' is used. If you
+     wish to use a different font such as "courier 11", simply specify
+     FONT as `courier/11'. If the font you choose is not fixed width,
+     strange and unusual things will happen. For more information of
+     NapsaTerm fonts see @{"Fonts" Link "Fonts"}.
+
+`-p PROGRAMTITLE'
+`TITLE=STRING'
+     Draws the PROGRAM TITLE with given text. The actual window title is
+     concatenated with display size indicator `(width × height)'.
+     Normal title is the remote host name when using rlogin, otherwise
+     `NapsaTerm'.
+
+`SIZEGADGET=TYPE'
+     This tool type controls which border of the window the window's
+     sizing gadget will appear in.  If you have a sizing gadget on a
+     window, you must lose some of the window space for the border to
+     contain it.  This preference controls whether you lose rows,
+     columns, or nothing.  If you choose NONE, the window will not have
+     a size gadget, and will therefore not be resizeable. It is useful
+     if you want an 80x24 window to take up the smallest possible
+     screen space. If you choose COLUMN, the sizing gadget will be on
+     the right border, and if ROW, the sizing gadget will be on the
+     bottom border.
+
+`--80'
+`FIXEDCOLUMNS'
+     If this option or tool type is given NapsaTerm won't use no more
+     than 80 columns of text.  This is useful for running programs
+     written for terminals that assume the terminal has 80 columns.
+
+`FIXEDCOLUMNS=NOT'
+     Negative form of previous tool type.
+
+
+@EndNode
+
+@Node "Host names" "napsaterm.guide/Host names"
+@Next "Preference file"
+@Prev "Display options"
+@Toc "Options"
+
+Host Names
+----------
+
+`HOST=NAME[|NAME2...]'
+   The tool type HOST is used to specify remote host name(s). The host
+names should be given in standard internet format.
+
+   When NapsaTerm is started from command line, command line arguments
+which do not start with hyphen are regarded as host names. If you need
+to use host name which begins with hyphen `-', give a single hyphen as
+an argument after all options and before the host name.
+     NapsaTerm -d net - -weird.host.name.in.net
+
+   If NapsaTerm is given multiple host names, it will randomly connect
+to one of them.
+
+   The following command causes NapsaTerm connect to either `punkku' or
+`vinkku':
+     run NapsaTerm -g 0/-1/80/30 punkku vinkku
+
+
+@EndNode
+
+@Node "Preference file" "napsaterm.guide/Preference file"
+@Prev "Host names"
+@Toc "Options"
+
+Preference File
+---------------
+
+   The preference file `AmiTCP:db/NapsaPrefs' contains default
+preferences when you invoke `NapsaTerm' from CLI.
+
+   The preference file contains tool-type-like options given in a
+X-resource-look-a-like format. The preference file format is compatible
+with `NiftyTerm' and older `NapsaTerm' versions. Each row in the
+preference file has format as follows:
+[COMMAND NAME`.']PREFERENCE NAME`:' VALUE
+
+   "Preference name" is the part of the line before the `:' character,
+"preference value" is the part after it.
+
+   Unless otherwise specified, preference name and value are
+case-insensitive. Unregocnized preference names are ignored,
+unrecognized values revert to default.
+
+   If the corresponding tool type is a *switch*, the preference value
+should be `1', `true' or `yes', or the preference is silently ignored.
+
+   Tool type `Host' has no corresponding preference.
+
+   See @{"Alternative command names" Link "Alternative command names"}, if you need many different default
+preference sets.
+
+   For compatibility reasons, if the file `AmiTCP:db/NapsaPrefs' does
+not exist, also the files `S:NapsaPrefs' and `S:NiftyPrefs' are
+searched for preferences.
+
+
+@EndNode
+
+@Node "Alternative command names" "napsaterm.guide/Alternative command names"
+@Toc "Preference file"
+
+Using Alternative Command Names
+...............................
+
+   If the preference name is prefixed with COMMAND NAME, it is valid
+only when `NapsaTerm' is invoked with that name. You can invoke
+`NapsaTerm' with a different name, if you rename the `NapsaTerm'
+program file or make a new link to it. For example, you could make
+following links
+     makelink AmiTCP:bin/NapsaTermUS AmiTCP:bin/NapsaTerm
+     makelink AmiTCP:bin/NapsaTermUK AmiTCP:bin/NapsaTerm
+   and you have added following preferences
+     Nation: Finnish
+     NapsaTerm.Nation: US
+     NapsaTermUK.Nation: UK
+   If you started `NapsaTerm' with the command `NapsaTerm', you could
+use Finnish keyboard (`s') and character set (ISO 646 SF-2). If you
+gave command `NapsaTermUK', you would get the British keyboard (`uk')
+and character set (UK-ASCII).
+
+
+@EndNode
+
+@Node "Menus" "napsaterm.guide/Menus"
+@Next "Fonts"
+@Prev "Options"
+@Toc "Main"
+
+Using Menus
+===========
+
+   NapsaTerm have three menus, `Command', `Edit' and `Setup'. The
+`Command' menu contains terminal control commands.  The `Edit' menu
+handles the clipboard.  The `Setup' menu allows the user to adjust the
+way `NapsaTerm' functions.
+
+
+ @{" Command menu " Link "Command menu"} 
+ @{" Edit menu " Link "Edit menu"} 
+ @{" Setup menu " Link "Setup menu"} 
+
+
+@EndNode
+
+@Node "Command menu" "napsaterm.guide/Command menu"
+@Next "Edit menu"
+@Prev "Menus"
+@Toc "Menus"
+
+Command Menu
+------------
+
+   The `Command' menu contains terminal control commands.
+
+`Clear Screen `Amiga-S''
+     Moves the current NapsaTerm prompt to the top of the NapsaTerm
+     window and clears the screen.
+
+`To Tek4010   `Amiga-G''
+     Selects the Tek4010 emulation and activates the Tek4010 window.
+
+`To VT102     `Amiga-T''
+     Selects the VT102 emulation and activates the VT102 window.
+
+`Soft Reset   `Amiga-R''
+     Resets all terminal styles, scroll regions, and invert mode.
+
+`Flush        `Amiga-F''
+     Flushes the buffers for the current device.  Useful if you did
+     something that will cause a lot of output, and you want to tell
+     NapsaTerm not to display it all.
+
+`Break        `Amiga-B''
+     Sends a break signal to the current device.
+
+     `Break' is enabled only when NapsaTerm is connected to a serial
+     device.
+
+`Unlisten     `Amiga-U''
+     NapsaTerm will cease to talk to whatever device it is connected
+     to, so that another program can use it exclusively.  Note that all
+     keyboard input is flushed as well until you select `Listen' menu
+     option.
+
+     `Unlisten' is enabled only when NapsaTerm is started in `Shared'
+     mode.
+
+`Listen       `Amiga-L''
+     NapsaTerm restarts talking and listening to device it is connected
+     to.
+
+     `Listen' is enabled after `Unlisten' is selected.
+
+     An example of usage for `UnListen' and `Listen': you're logged in
+     and you want to save something to a log file.  You had foresight
+     and started NapsaTerm in shared mode.  You select `Unlisten' and
+     start another NapsaTerm writing to a log file.  When you have
+     everything in the log file, you quit the second NapsaTerm and
+     select `listen' the original.  This option might be useful if
+     someone wants to write some stand-alone file transfer utilities.
+
+`Quit         `Amiga-Q''
+     Exits NapsaTerm and closes the window.
+
+
+@EndNode
+
+@Node "Edit menu" "napsaterm.guide/Edit menu"
+@Next "Setup menu"
+@Prev "Command menu"
+@Toc "Menus"
+
+Edit Menu
+---------
+
+   The `Edit' menu handles the clipboard.
+
+`Copy         `Amiga-C''
+     Copies the selected text into the clipboard.  You can put the text
+     you copied most recently back into any document by choosing
+     `Paste'.
+
+`Paste        `Amiga-P''
+     Copies the most recently copied text to the current cursor
+     position.
+
+`Move         `Amiga-M''
+     If a previous command or some text is selected in the NapsaTerm
+     window, `Move' inserts the text as if it had been typed.
+
+`Execute      `Amiga-E''
+     The same as `Move', only it follows the text with a `LF' character.
+
+
+@EndNode
+
+@Node "Setup menu" "napsaterm.guide/Setup menu"
+@Prev "Edit menu"
+@Toc "Menus"
+
+Setup Menu
+----------
+
+   The `Setup' menu allows the user to adjust the way `NapsaTerm'
+functions.
+
+`National Mode'
+     See @{"Tool type `NATIONAL'" Link "Emulation options"}.
+
+`Nation'
+     See @{"Tool type `NATION'" Link "Emulation options"}.
+
+`Terminal Type'
+     See @{"Tool type `EMULATION'" Link "Emulation options"}.
+
+`Backspace is sent as'
+     See @{"Tool type `BACKSPACE2DELETE'" Link "Emulation options"}.
+
+`Del is sent as'
+     See @{"Tool type `DELETE2BACKSPACE'" Link "Emulation options"}.
+
+`Left Alt key is'
+     See @{"Tool type `ALTISMETA'" Link "Emulation options"}.
+
+`Keypad'
+     See @{"Tool type `KEYPAD'" Link "Emulation options"}.
+
+`Mouse Events'
+     See @{"Tool type `MOUSE'" Link "Emulation options"}.
+
+`Control Codes'
+     See @{"Tool type `CTRL8BIT'" Link "Emulation options"}.
+
+`Cursor'
+     See @{"Tool type `CURSOR'" Link "Emulation options"}.
+
+`Display Width'
+     See @{"Tool type `FIXEDCOLUMNS'" Link "Display options"}.
+
+`Display Speed'
+     See @{"Option `--slow'" Link "Display options"}.
+
+`Bell Type'
+     See @{"Tool type `BELL'" Link "Emulation options"}.
+
+`Reverse'
+     See @{"Tool type `INVERSE'" Link "Emulation options"}.
+
+`Ansi_LNM'
+     Controls whether RETURN should be sent as CR-LF sequence.
+
+
+@EndNode
+
+@Node "Fonts" "napsaterm.guide/Fonts"
+@Next "National"
+@Prev "Menus"
+@Toc "Main"
+
+How NapsaTerm Uses Fonts
+========================
+
+   NapsaTerm should be able to use any fixed-width font.  However,
+standard Amiga fonts do not represent the VT100's character set very
+well. Included with this NapsaTerm is a set of fonts with names
+starting with `Napsa'.  Some explanation of these fonts is in order.
+
+   NapsaTerm starts out with a base font name, something like `topaz'
+or `Napsa'.  If NapsaTerm needs an italic or bold font, it first looks
+in the fonts: directory to see if there is a version of the current
+font which was designed to be italic or bold.  If not, it uses the
+Amiga's internal functions to construct one.  When it needs one of the
+special VT100 character sets, it appends an extension to the font name
+and looks for a font of the same size as the current font with the new
+name.  The extensions are as follows:
+
+`v'
+     alternate character set
+
+`w'
+     double-width font
+
+`t'
+     top half of double-width double-height font
+
+`b'
+     bottom half of double-width double-height font
+
+   `vw', `vt', and `vb' are also extensions, meaning the alternate
+character set version of the different-sized font.  So, for example, if
+NapsaTerm was using the font `Napsa/11', and it needed a double-width
+font, it would look for the font `Napsaw/11'.
+
+   The fonts that come with the distribution are designed to be used on
+screens where the pixels are roughly as wide as they are tall.  Any of
+the 640×400 graphics modes fall into this category.  In the 640×200
+modes, the fonts will seem too tall.
+
+   If anyone creates any fonts for use with NapsaTerm or Niftyterm, I'd
+like to get a copy of them.
+
+
+@EndNode
+
+@Node "National" "napsaterm.guide/National"
+@Next "IO modes"
+@Prev "Fonts"
+@Toc "Main"
+
+National Modes
+==============
+
+   The national mode is set with tool type `NATIONAL' There are three
+different national modes in NapsaTerm.
+
+None
+     By default, when no national mode in not in use, (`None',
+     abbreviated as `NO'), NapsaTerm uses the ISO-8857 Latin 1 character
+     set, the standard character set used in Amiga. By default,
+     NapsaTerm uses either the default system keymap or the keymap
+     specified with tool type `KEYMAP', if any.
+
+Multinational
+     In the `Multinational' mode (abbreviated as `MU') NapsaTerm uses
+     the Latin 1 character set and the appropriate national keymap. See
+     @{"Keymaps" Link "Keymaps"} for a list of default national keymap names. A specific
+     national keymap can also be specified with tool type `KEYMAP' or
+     `KEYBOARD'.
+
+National
+     In the `National' mode (abbreviated as `NA') NapsaTerm uses the
+     appropriate national 7 bit character set and the national keymap.
+     See @{"Character tables" Link "Character tables"} for tables of  national character sets.
+
+
+ @{" Keymaps " Link "Keymaps"}                      Default national keymaps
+ @{" Character tables " Link "Character tables"}             National character tables
+
+
+@EndNode
+
+@Node "Keymaps" "napsaterm.guide/Keymaps"
+@Next "Character tables"
+@Prev "National"
+@Toc "National"
+
+National Keymaps
+----------------
+
+   Default national keymaps are as follows:
+* `US ASCII' uses (`usa1')
+* `Danish', (`dk')
+* `Finnish', (`s')
+* `French', (`f')
+* `German', (`d')
+* `Norwegian', (`n')
+* `Swedish', (`s')
+* `UK ASCII', (`gb')
+   You can change national keymap with tool type
+`KEYMAP'=NATION/KEYMAPNAME, for example
+     KEYMAP=Finnish/s-term
+   changes the Finnish keymap to `s-term'. You can abbreviate the
+nation name, See @{"tool type NATION" Link "Emulation options"}.
+
+
+@EndNode
+
+@Node "Character tables" "napsaterm.guide/Character tables"
+@Prev "Keymaps"
+@Toc "National"
+
+National Character Tables
+-------------------------
+
+   NapsaTerm uses ISO 646 national character codes as follows:
+
+     DEC        35  36  64  91  92  93  94  96 123 124 125 126
+     =========================================================
+     US-ASCII   #   $   @   [   \   ]   ^   `   {   |   }   ~
+     
+     Danish     #   $   @   Æ   Ø   Å   ^   `   æ   ø   å   ~
+     
+     Finnish    #   $   @   Ä   Ö   Å   ^   `   ä   ö   å   ~
+     
+     French     #   $   à   °   ç   §   ^   `   é   ù   è   ¨
+     
+     German     #   $   §   Ä   Ö   Ü   ^   `   ä   ö   ü   ß
+     
+     Norwegian  #   ¤   É   Æ   Ø   Å   Ü   é   æ   ø   å   ü
+     
+     Swedish    #   ¤   É   Ä   Ö   Å   Ü   é   ä   ö   å   ü
+     
+     UK-ASCII   £   $   @   [   \   ]   ^   `   {   |   }   ~
+     =========================================================
+     HEX        23  24  40  5B  5C  5D  5E  60  7B  7C  7D  7E
+
+
+@EndNode
+
+@Node "IO modes" "napsaterm.guide/IO modes"
+@Next "Tektronix emulation"
+@Prev "National"
+@Toc "Main"
+
+Using Different IO Modes
+========================
+
+   NapsaTerm provides four different ways to do the terminal IO.
+
+
+ @{" rlogin protocol " Link "rlogin protocol"} 
+ @{" Telnet protocol " Link "Telnet protocol"} 
+ @{" Serial device " Link "Serial device"} 
+ @{" DNet " Link "DNet"} 
+ @{" DOS IO " Link "DOS IO"} 
+
+
+@EndNode
+
+@Node "rlogin protocol" "napsaterm.guide/rlogin protocol"
+@Next "Telnet protocol"
+@Toc "IO modes"
+
+Rlogin protocol
+---------------
+
+   The rlogin protocol is described in the `RFC 1282'. It is a
+Unix-specific remote terminal session protocol, somewhat like
+@{"Telnet protocol" Link "Telnet protocol"} but with different features. The remote rlogin session
+get your the user name, terminal type and line speed from the rlogin
+client.
+
+   Rlogin protocol uses your local hostname (domain name of the computer
+you are logging from), your local user name and user name at the
+"rlogin server" for authentication. If there is a matching entry in the
+`rhosts' files, the rlogin server let you log in without asking the
+password. If no match is found, rlogin server asks you for the password
+for the remote user. If it is not correct, it reverts to normal login
+procedure.
+
+   NapsaTerm is used as a rlogin client for AmiTCP/IP. Currently
+NapsaTerm gets the local user name from environment variable `USER'. 
+The remote user name is same as your local user name unless you specify
+tool type `RemoteName'.
+
+   For example, your local user name is `ppessi', but remote user name
+is `t35082k'. If not told otherwise, NapsaTerm will introduce your as
+`ppessi' to the remote machine. As the rlogin server regards it as the
+password of account of `ppessi', you can not give your password at the
+first `Password:' prompt.  You should use tool type `RemoteName':
+     RemoteName=t35082k
+   Now you can enter password for `t35082k''s account without typing
+the user name each time.
+
+   You should add an entry to your `.rhosts' file in a Unix machine
+only if your Amiga is trustworthy -- that is, nobody else but you can
+use it and it is in secure network. A `.rhosts' entry consists of a
+host name and a user name in that host. The host name is the canonic
+host name of machine you are logging from. For example, if you have
+account `t35082k' in machine called `kaira.hut.fi', you could add
+following line to your `.rhosts' file:
+     kaira.hut.fi t35082k
+
+   The line speed has additional meaning when using rlogin protocol.
+Some Unix programs and terminal drivers use the nominal terminal speed
+to determine the throughput of your connection. There may be a problem
+if the speed is 300 b/s (or even 9600 b/s) while you are using Ethernet.
+Likewise the nominal speed of 38400 b/s over a 2400 b/s slip connection
+is likely to cause trouble. You can determine your nominal speed in the
+Unix systems with the `stty' command.
+
+
+@EndNode
+
+@Node "Telnet protocol" "napsaterm.guide/Telnet protocol"
+@Next "Serial device"
+@Prev "rlogin protocol"
+@Toc "IO modes"
+
+Serial devices
+--------------
+
+   The Telnet protocol is described in various RFC documents.  It is a
+generic remote session protocol with rich features and more general use
+than @{"rlogin protocol" Link "rlogin protocol"}.
+
+   Currently the Napsaterm supports terminal type and size negotation. 
+It does not pass your user name to telnet server.
+
+
+@EndNode
+
+@Node "Serial device" "napsaterm.guide/Serial device"
+@Next "DNet"
+@Prev "Telnet protocol"
+@Toc "IO modes"
+
+Serial devices
+--------------
+
+   NapsaTerm can use any `serial.device'-compatible Exec device. You
+can specify the device name and unit number with tool types or command
+line options. See @{"Device options" Link "Device options"}.
+
+   You can start NapsaTerm in shared mode, See @{"`--shared'" Link "Device options"}. In "shared
+mode" other programs (like another NapsaTerm) can open serial device in
+the same time. The actual input data is is not shared, but all programs
+will read the data from device in their turn. NapsaTerm can stop
+reading data from serial device, see See @{"Unlisten" Link "Command menu"}.
+
+
+@EndNode
+
+@Node "DNet" "napsaterm.guide/DNet"
+@Next "DOS IO"
+@Prev "Serial device"
+@Toc "IO modes"
+
+DNet
+----
+
+   "DNet" is a serial line multiplexing protocol with priorities and
+provisions for server/client architecture. It works between Amigas and
+Unix machines running 4BSD or SunOS. There are ports for different 4BSD
+variants and Linux. There exists many network-type applications for
+DNet.
+
+   If you are using "DNet", you can use NapsaTerm instead of `FTerm'.
+
+
+@EndNode
+
+@Node "DOS IO" "napsaterm.guide/DOS IO"
+@Prev "DNet"
+@Toc "IO modes"
+
+DOS IO
+------
+
+   The input and output of NapsaTerm can be read from and written to
+"standard input" and "standard output" DOS IO streams. For example, if
+you want to view a VT100 animation with NapsaTerm, you can give command
+     NapsaTerm --slow --stdio < vt100-animation-file
+
+
+@EndNode
+
+@Node "Tektronix emulation" "napsaterm.guide/Tektronix emulation"
+@Next "History"
+@Prev "IO modes"
+@Toc "Main"
+
+Tektronix emulation
+===================
+
+   There are two versions of Napsaterm binaries in distribution archive,
+one with Tektronix emulation and one without.  The tektronix emulation
+is implemented in separate window, the VT100 window works as usually.
+
+   Two menu items have been added to Tektronix emulation version. They
+are `To VT102' and `To Tek4010'.  When a emulation window (tek or vt)
+is selected, it may be brought to the front and activated (depending on
+settings of the config menus on the Tek4010 window).  However, if you
+click in a window, or bring it to the front, it does not necessarily
+make it the one receiving data from the host.  The `To Tek4010' and `To
+VT102' menu items in each screen switch that, as can certain escape
+sequences from the host.
+
+
+@EndNode
+
+@Node "History" "napsaterm.guide/History"
+@Next "Glossary"
+@Prev "Tektronix emulation"
+@Toc "Main"
+
+NapsaTerm History
+=================
+
+   NapsaTerm is derived originally from Niftyterm 1.2.  It is called
+NapsaTerm because original authors wanted to keep distinction clear
+between it and their versions of Niftyterm. See @{"Niftyterm licence" Link "Niftyterm licence"}.
+
+   There are some features in NapsaTerm 3 which are incompatible with
+earlier versions or with NiftyTerm 1.2.
+
+
+ @{" Changes in Version 3 " Link "Changes in Version 3"} 
+ @{" Changes in Version 2 " Link "Changes in Version 2"} 
+ @{" Changes in Version 1 " Link "Changes in Version 1"} 
+
+
+@EndNode
+
+@Node "Changes in Version 3" "napsaterm.guide/Changes in Version 3"
+@Next "Changes in Version 2"
+@Toc "History"
+
+Changed in Version 3.8
+----------------------
+
+   * The tool type `CTRL8BIT' is no more enabled by default, ie. 7 bit
+     control codes are used normally.
+
+   * Bug with audio bell is fixed.
+
+Changed in Version 3.7
+----------------------
+
+   * Support for @{"Telnet protocol" Link "Telnet protocol"} was added.  Supported features include
+     terminal type and size negotation.
+
+   * The long options have now double hyphen at the beginning.
+
+   * The 8-bit/7-bit control codes are working for all keys.
+
+   * New menu item added, See @{"Control Codes" Link "Setup menu"}, which enables sending
+     8-bit control codes.
+
+Changed in Versions 3.4 and 3.5
+-------------------------------
+
+   Robert Knop, `<rknop@cco.caltech.edu>', released these versions. The
+major new feature in these releases is the @{"Tektronix emulation" Link "Tektronix emulation"}.  Any
+bug reports on the tek4010 emulation should be sent to Rob Knop.
+
+   * The tek4010 emulation has following features:
+        - Vector, Alpha, Incremental, and Point-plot modes are (at
+          least partially) supported.
+
+        - As of version 3.5, the GIN cursor is supported.
+
+        - Some GraphOn enhancements, e.g. block fill mode, are also
+          supported.
+
+        -   * `ANSI LNM' added to the @{"Setup menu" Link "Setup menu"}.  Sometimes changing the state
+     of this flag can improve the operation of the terminal's newlines
+     under Unix when running directly over the serial port.  It does
+     not seem to be necessary when Napsaterm is used with AmiTCP/IP.
+
+   * Support for the VT100 application keypad has been added.  Under the
+     @{"Setup menu" Link "Setup menu"}, if you select `Application' for keypad type, VT100
+     escape sequences will be sent to the host instead of characters
+     when you hit keys on the numeric keypad.  This is handy for text
+     editors and the like that use the keypad as a function keypad.
+
+   * A small number of additional minor enhancements and bugfixes to
+     the VT100 emulation.
+
+Changed in Version 3.3
+----------------------
+
+   * For compatibility reasons, if the file `AmiTCP:db/NapsaPrefs' does
+     not exist, the files `S:NapsaPrefs' and `S:NiftyPrefs' are
+     searched for preferences.
+
+   * New menu item `Left Alt key is' was added to `Setup' menu.
+
+Changes in Version 3.2 (3beta)
+------------------------------
+
+   * Workbench support is added. You can start NapsaTerm directly from
+     Workbench
+
+   * As a consequence of previous, the preference parsing is altered.
+     See @{"Preference file" Link "Preference file"}.  Preference files are used only when NapsaTerm
+     started from shell. The program name used in preference parsing is
+     not fixed, the command name given by shell is used
+
+   * NapsaTerm can select randomly a host if it is given multiple host
+     names
+
+   * Mouse support is enchanched. (See @{"Mouse" Link "Emulation options"}.) NapsaTerm sends Mouse
+     events as `ESC M' sequences. Preference `Emacsmode' is obsolete
+     and it is supported no more
+
+   * New preference `Backspace2Delete'. (See @{"Backspace2Delete" Link "Emulation options"}.) There
+     was an old preference `NormalBackspace', which had opposite meaning
+
+   * New preference `Delete2Backspace'. (See @{"Delete2Backspace" Link "Emulation options"}.) There
+     was an old preference `NormalDelete', which had opposite meaning
+
+   * Preference `LineSpeed' is used to change the serial speed, also a
+     new option `-B' changes the line speed
+
+   * Preference `National' has now three values, `None', `MultiNatinal'
+     and `National'
+
+
+@EndNode
+
+@Node "Changes in Version 2" "napsaterm.guide/Changes in Version 2"
+@Next "Changes in Version 1"
+@Prev "Changes in Version 3"
+@Toc "History"
+
+Changes in Version 2.2
+----------------------
+
+   * Preference `PubScreenName'
+
+   * Preference `ctrl8bit'
+
+   * Preference `Keyboard' was mentioned version 2 documentation instead
+     of correct preference `Keymap'. Now both preferences can be used
+
+Changes in Version 2.1
+----------------------
+
+   * Option `-p' selects the public screen
+
+   * The preference file is moved into the directory `AmiTCP:db/'
+
+Changes in Version 2.0
+----------------------
+
+   The AmiTCP/IP BSD socket interface was added to NapsaTerm after the
+porting of real "rlogin" program seemed to take too much effort and
+time. The @{"rlogin protocol" Link "rlogin protocol"} is a very simple. However asynchronous,
+interactive IO with AmigaDOS is quite ineffective and quite complex to
+implement.  Fortunately Niftyterm IO implementation was extremely
+flexible and it was easy to add new IO methods for rlogin.
+
+   * Option `-d net' selects now rlogin protocol (`-d dnet' will select
+     DNet).
+
+   * New preferences:
+    `Linespeed'
+    `RemoteName'
+    `RemoteType'
+
+@EndNode
+
+@Node "Changes in Version 1" "napsaterm.guide/Changes in Version 1"
+@Prev "Changes in Version 2"
+@Toc "History"
+
+NapsaTerm 1.3 Compared to Niftyterm 1.2
+---------------------------------------
+
+   * Support for different international keyboards layouts and
+     character sets is added.  NapsaTerm supports multinational ISO
+     8857-Latin-1 character set, the native Amiga character set. It
+     also supports some ISO 646 national character sets. For the
+     character tables for ISO 646 character sets see @{"Character tables" Link "Character tables"}.
+
+   * New preferences were added:
+    `Keymap'
+    `National'
+   * Left Alt key can be used as a 'Meta' key by setting the "AltisMeta"
+     preference. If you press a key with left Alt key NapsaTerm sends an
+     Escape character (ASCII 27) before the key's ASCII code. Niftyterm
+     sets the 8th bit of sent ASCII code.
+
+   * Switching `Delete' and `Backspace' keys was enchanched. Switching
+     `Delete' and `Backspace' keys are now done before key code
+     conversion. So, even if the `Backspace' key (arrow to left above
+     the `Enter' key) will send a `DEL' code (ASCII 127) but if you
+     press Ctrl and H, NapsaTerm sends still `^H' (ASCII 8).
+
+   * A bug in the clipboard handling is fixed.
+
+   * NapsaTerm do not free the console window when it is started, you
+     must start it explicitly with run. Iconify feature is removed (if
+     you really want it, do recompile from the sources).
+
+   * Iconifying was removed as the zoom feature in Amiga OS 2.04 had
+     most of its functionality
+
+
+@EndNode
+
+@Node "Glossary" "napsaterm.guide/Glossary"
+@Next "Index"
+@Prev "History"
+@Toc "Main"
+
+Glossary
+========
+
+
+@EndNode
+
+@Node "Index" "napsaterm.guide/Index"
+@Prev "Glossary"
+@Toc "Main"
+
+Index
+=====
+
+
+
+ @{" --80 option " Link "Display options"}                          Display options
+ @{" --application option " Link "Emulation options"}                 Emulation options
+ @{" --h19 option " Link "Emulation options"}                         Emulation options
+ @{" --ic option " Link "Emulation options"}                          Emulation options
+ @{" --numeric option " Link "Emulation options"}                     Emulation options
+ @{" --shared option " Link "Device options"}                      Device options
+ @{" --slow option " Link "Emulation options"}                        Emulation options
+ @{" --stdio option " Link "Device options"}                       Device options
+ @{" --vt102 option " Link "Emulation options"}                       Emulation options
+ @{" --vt52 option " Link "Emulation options"}                        Emulation options
+ @{" -7 option " Link "Emulation options"}                            Emulation options
+ @{" -B option " Link "Device options"}                            Device options
+ @{" -d option " Link "Device options"}                            Device options
+ @{" -f option " Link "Display options"}                            Display options
+ @{" -g option " Link "Display options"}                            Display options
+ @{" -l option " Link "General options"}                            General options
+ @{" -N option " Link "Device options"}                            Device options
+ @{" -p option " Link "Display options"}                            Display options
+ @{" -r option " Link "Device options"}                            Device options
+ @{" -S option " Link "Display options"}                            Display options
+ @{" -s option " Link "Device options"}                            Device options
+ @{" -u option " Link "Device options"}                            Device options
+ @{" -v option " Link "Emulation options"}                            Emulation options
+ @{" -V option " Link "General options"}                            General options
+ @{" -w option " Link "General options"}                            General options
+ @{" .rhosts file " Link "rlogin protocol"}                         rlogin protocol
+ @{" Alternate character set " Link "Fonts"}              Fonts
+ @{" Alternative command names " Link "Alternative command names"}            Alternative command names
+ @{" ALTISMETA tool type " Link "Emulation options"}                  Emulation options
+ @{" AmiTCP/IP Group " Link "About"}                      About
+ @{" BACKSPACE2DELETE tool type " Link "Emulation options"}           Emulation options
+ @{" BASEFONT tool type " Link "Display options"}                   Display options
+ @{" BELL tool type " Link "Emulation options"}                       Emulation options
+ @{" Break menu item " Link "Command menu"}                      Command menu
+ @{" Changing command name " Link "Alternative command names"}                Alternative command names
+ @{" Clear Screen menu item " Link "Command menu"}               Command menu
+ @{" Command line interface " Link "Invoking from Shell"}               Invoking from Shell
+ @{" Command menu " Link "Command menu"}                         Command menu
+ @{" Copying " Link "Copying NapsaTerm"}                              Copying NapsaTerm
+ @{" CTRL8BIT tool type " Link "Emulation options"}                   Emulation options
+ @{" CURSOR tool type " Link "Emulation options"}                     Emulation options
+ @{" CURSORBLINK tool type " Link "Emulation options"}                Emulation options
+ @{" Default national keymaps " Link "Keymaps"}             Keymaps
+ @{" DELETE2BACKSPACE tool type " Link "Emulation options"}           Emulation options
+ @{" detaching " Link "Changes in Version 1"}                            Changes in Version 1
+ @{" Device options " Link "Device options"}                       Device options
+ @{" DEVICE tool type " Link "Device options"}                     Device options
+ @{" Display options " Link "Display options"}                      Display options
+ @{" DNet " Link "DNet"}                                 DNet
+ @{" DOS IO " Link "DOS IO"}                               DOS IO
+ @{" Double-height font " Link "Fonts"}                   Fonts
+ @{" Double-width font " Link "Fonts"}                    Fonts
+ @{" Edit menu " Link "Edit menu"}                            Edit menu
+ @{" Emulation options " Link "Emulation options"}                    Emulation options
+ @{" EMULATION tool type " Link "Emulation options"}                  Emulation options
+ @{" Environment variable USER " Link "rlogin protocol"}            rlogin protocol
+ @{" FIXEDCOLUMNS tool type " Link "Display options"}               Display options
+ @{" Flush menu item " Link "Command menu"}                      Command menu
+ @{" Fonts " Link "Fonts"}                                Fonts
+ @{" FTerm " Link "DNet"}                                DNet
+ @{" General options " Link "General options"}                      General options
+ @{" GEOMETRY tool type " Link "Display options"}                   Display options
+ @{" Host names " Link "Host names"}                           Host names
+ @{" HOST tool type " Link "Host names"}                       Host names
+ @{" Icon interface " Link "Invoking from Workbench"}                       Invoking from Workbench
+ @{" Interlace screen " Link "Fonts"}                     Fonts
+ @{" Intuition menus " Link "Menus"}                      Menus
+ @{" INVERSE tool type " Link "Emulation options"}                    Emulation options
+ @{" Invoking from CLI " Link "Invoking from Shell"}                    Invoking from Shell
+ @{" Invoking from workbench " Link "Invoking from Workbench"}              Invoking from Workbench
+ @{" IO modes " Link "IO modes"}                             IO modes
+ @{" ISO 646 " Link "Character tables"}                              Character tables
+ @{" ISO 8857-Latin-1 " Link "Changes in Version 1"}                     Changes in Version 1
+ @{" KEYBOARD tool type " Link "Emulation options"}                   Emulation options
+ @{" KEYMAP tool type " Link "Emulation options"}                     Emulation options
+ @{" Keymaps " Link "Keymaps"}                              Keymaps
+ @{" KEYPAD tool type " Link "Emulation options"}                     Emulation options
+ @{" Knop, Robert " Link "About"}                         About
+ @{" Latin 1 " Link "Changes in Version 1"}                              Changes in Version 1
+ @{" Licence " Link "Copying NapsaTerm"}                              Copying NapsaTerm
+ @{" Licence, Niftyterm " Link "Niftyterm licence"}                   Niftyterm licence
+ @{" Line speed " Link "rlogin protocol"}                           rlogin protocol
+ @{" LINESPEED tool type " Link "Device options"}                  Device options
+ @{" LOGFILE tool type " Link "General options"}                    General options
+ @{" Menus, Intuition " Link "Menus"}                     Menus
+ @{" Mononational mode " Link "National"}                    National
+ @{" MOUSE tool type " Link "Emulation options"}                      Emulation options
+ @{" Multinational mode " Link "National"}                   National
+ @{" Napsa, font " Link "Fonts"}                          Fonts
+ @{" NapsaPrefs " Link "Preference file"}                           Preference file
+ @{" NapsaTermUK " Link "Alternative command names"}                          Alternative command names
+ @{" NapsaTermUS " Link "Alternative command names"}                          Alternative command names
+ @{" NATION tool type " Link "Emulation options"}                     Emulation options
+ @{" National character tables " Link "Character tables"}            Character tables
+ @{" National keymaps " Link "Keymaps"}                     Keymaps
+ @{" National mode " Link "National"}                        National
+ @{" National modes " Link "National"}                       National
+ @{" NATIONAL tool type " Link "Emulation options"}                   Emulation options
+ @{" Nations, available " Link "Emulation options"}                   Emulation options
+ @{" Newman, Christopher J. " Link "Niftyterm licence"}               Niftyterm licence
+ @{" Niftyterm licence " Link "Niftyterm licence"}                    Niftyterm licence
+ @{" Non-Interlace screen " Link "Fonts"}                 Fonts
+ @{" Ollila, Tomi " Link "About"}                         About
+ @{" Option --80 " Link "Display options"}                          Display options
+ @{" Option --application " Link "Emulation options"}                 Emulation options
+ @{" Option --h19 " Link "Emulation options"}                         Emulation options
+ @{" Option --ic " Link "Emulation options"}                          Emulation options
+ @{" Option --numeric " Link "Emulation options"}                     Emulation options
+ @{" Option --shared " Link "Device options"}                      Device options
+ @{" Option --slow " Link "Emulation options"}                        Emulation options
+ @{" Option --stdio " Link "Device options"}                       Device options
+ @{" Option --vt102 " Link "Emulation options"}                       Emulation options
+ @{" Option --vt52 " Link "Emulation options"}                        Emulation options
+ @{" Option -7 " Link "Emulation options"}                            Emulation options
+ @{" Option -B " Link "Device options"}                            Device options
+ @{" Option -d " Link "Device options"}                            Device options
+ @{" Option -f " Link "Display options"}                            Display options
+ @{" Option -g " Link "Display options"}                            Display options
+ @{" Option -l " Link "General options"}                            General options
+ @{" Option -N " Link "Device options"}                            Device options
+ @{" Option -p " Link "Display options"}                            Display options
+ @{" Option -r " Link "Device options"}                            Device options
+ @{" Option -S " Link "Display options"}                            Display options
+ @{" Option -s " Link "Device options"}                            Device options
+ @{" Option -u " Link "Device options"}                            Device options
+ @{" Option -v " Link "Emulation options"}                            Emulation options
+ @{" Option -V " Link "General options"}                            General options
+ @{" Option -w " Link "General options"}                            General options
+ @{" Options " Link "Options"}                              Options
+ @{" Options, Device " Link "Device options"}                      Device options
+ @{" Options, Display " Link "Display options"}                     Display options
+ @{" Options, Emulation " Link "Emulation options"}                   Emulation options
+ @{" Options, General " Link "General options"}                     General options
+ @{" Options, Overview of CLI " Link "Invoking from Shell"}             Invoking from Shell
+ @{" PASS8 tool type " Link "Emulation options"}                      Emulation options
+ @{" Password " Link "rlogin protocol"}                             rlogin protocol
+ @{" Pessi, Pekka " Link "About"}                         About
+ @{" Peuhkuri, Markus " Link "About"}                     About
+ @{" Preference file " Link "Preference file"}                      Preference file
+ @{" Preferences " Link "Preference file"}                          Preference file
+ @{" PUBSCREENNAME tool type " Link "Display options"}              Display options
+ @{" Rajahalme, Jarno " Link "About"}                     About
+ @{" Remote user name " Link "rlogin protocol"}                     rlogin protocol
+ @{" REMOTENAME tool type " Link "Device options"}                 Device options
+ @{" REMOTETYPE tool type " Link "Device options"}                 Device options
+ @{" RFC 1282 " Link "rlogin protocol"}                             rlogin protocol
+ @{" Rlogin client " Link "rlogin protocol"}                        rlogin protocol
+ @{" Rlogin protocol " Link "rlogin protocol"}                      rlogin protocol
+ @{" Rlogin server " Link "rlogin protocol"}                        rlogin protocol
+ @{" Serial devices " Link "Serial device"}                       Serial device
+ @{" serial.device " Link "Serial device"}                        Serial device
+ @{" SERVICE tool type " Link "Device options"}                    Device options
+ @{" Setup menu " Link "Setup menu"}                           Setup menu
+ @{" Shared mode " Link "Serial device"}                          Serial device
+ @{" SHARED tool type " Link "Device options"}                     Device options
+ @{" SIZEGADGET tool type " Link "Display options"}                 Display options
+ @{" Soft Reset menu item " Link "Command menu"}                 Command menu
+ @{" Standard input/output " Link "DOS IO"}                DOS IO
+ @{" Starting from CLI " Link "Invoking from Shell"}                    Invoking from Shell
+ @{" Starting from Workbench " Link "Invoking from Workbench"}              Invoking from Workbench
+ @{" stdio " Link "DOS IO"}                                DOS IO
+ @{" stty " Link "rlogin protocol"}                                 rlogin protocol
+ @{" Telnet " Link "rlogin protocol"}                               rlogin protocol
+ @{" Telnet Protocol " Link "Telnet protocol"}                      Telnet protocol
+ @{" Terminal type " Link "rlogin protocol"}                        rlogin protocol
+ @{" TITLE tool type " Link "Display options"}                      Display options
+ @{" To Tek4010 menu item " Link "Command menu"}                 Command menu
+ @{" To VT102 menu item " Link "Command menu"}                   Command menu
+ @{" Tool type ALTISMETA " Link "Emulation options"}                  Emulation options
+ @{" Tool type BACKSPACE2DELETE " Link "Emulation options"}           Emulation options
+ @{" Tool type BASEFONT " Link "Display options"}                   Display options
+ @{" Tool type BELL " Link "Emulation options"}                       Emulation options
+ @{" Tool type CTRL8BIT " Link "Emulation options"}                   Emulation options
+ @{" Tool type CURSORBLINK " Link "Emulation options"}                Emulation options
+ @{" Tool type CURSOR " Link "Emulation options"}                     Emulation options
+ @{" Tool type DELETE2BACKSPACE " Link "Emulation options"}           Emulation options
+ @{" Tool type DEVICE " Link "Device options"}                     Device options
+ @{" Tool type EMULATION " Link "Emulation options"}                  Emulation options
+ @{" Tool type FIXEDCOLUMNS " Link "Display options"}               Display options
+ @{" Tool type GEOMETRY " Link "Display options"}                   Display options
+ @{" Tool type HOST " Link "Host names"}                       Host names
+ @{" Tool type INVERSE " Link "Emulation options"}                    Emulation options
+ @{" Tool type KEYBOARD " Link "Emulation options"}                   Emulation options
+ @{" Tool type KEYMAP " Link "Emulation options"}                     Emulation options
+ @{" Tool type KEYPAD " Link "Emulation options"}                     Emulation options
+ @{" Tool type LINESPEED " Link "Device options"}                  Device options
+ @{" Tool type MOUSE " Link "Emulation options"}                      Emulation options
+ @{" Tool type NATIONAL " Link "Emulation options"}                   Emulation options
+ @{" Tool type NATION " Link "Emulation options"}                     Emulation options
+ @{" Tool type PASS8 " Link "Emulation options"}                      Emulation options
+ @{" Tool type PUBSCREENNAME " Link "Display options"}              Display options
+ @{" Tool type REMOTENAME " Link "Device options"}                 Device options
+ @{" Tool type REMOTETYPE " Link "Device options"}                 Device options
+ @{" Tool type SERVICE " Link "Device options"}                    Device options
+ @{" Tool type SHARED " Link "Device options"}                     Device options
+ @{" Tool type SIZEGADGET " Link "Display options"}                 Display options
+ @{" Tool type TITLE " Link "Display options"}                      Display options
+ @{" Tool type UNIT " Link "Device options"}                       Device options
+ @{" Tool type LOGFILE " Link "General options"}                    General options
+ @{" Tool type WAITTOEND " Link "General options"}                  General options
+ @{" Tool types " Link "Invoking from Workbench"}                           Invoking from Workbench
+ @{" Tool types " Link "Options"}                           Options
+ @{" UNIT tool type " Link "Device options"}                       Device options
+ @{" Usage " Link "Invoking from Shell"}                                Invoking from Shell
+ @{" USER environment variable " Link "rlogin protocol"}            rlogin protocol
+ @{" VT100 animations " Link "Emulation options"}                     Emulation options
+ @{" VT100 animations " Link "Device options"}                     Device options
+ @{" VT100 animations " Link "DOS IO"}                     DOS IO
+ @{" WAITTOEND tool type " Link "General options"}                  General options
+ @{" Warranty " Link "Niftyterm licence"}                             Niftyterm licence
+ @{" Williamson, Todd " Link "Niftyterm licence"}                     Niftyterm licence
+ @{" ~/.rhosts file " Link "rlogin protocol"}                       rlogin protocol
+
+@EndNode
+

@@ -1,0 +1,293 @@
+/* sys:rexxc/rx
+ * Hey Emacs! This file is -*- rexx -*-
+ * $Id: netstat,v 3.2 1994/04/22 15:11:55 jraja Exp $
+ * $VER: netstat 3.1 (22.4.94)
+ * Copyright © 1993, 1994 AmiTCP/IP Group, <amitcp-group@hut.fi>,
+ *                  Helsinki University of Technology, Finland.
+ *                  All rights reserved.
+ */
+
+ARG opt args
+if left(opt,1)~='-' then do
+  args=opt
+  opt=''
+end
+args=strip(args)
+numeric=0
+if pos('N',opt)~=0 then numeric=1
+
+resolved. = ''
+ALL = 0
+tab="	"
+
+if args = "ALL" then ALL=1 /* All information wanted */
+
+options results /* Results from external command wanted */
+address AMITCP /* default command host is AMITCP */
+
+RESULT = "" /* Set so that it don't get value RESULT */
+
+if args = "" | args = "ALL" then do
+  /* States of TCP finite state machine */
+  state.0 = "CLOSED"
+  state.1 = "LISTEN"
+  state.2 = "SYN_SENT"
+  state.3 = "SYN_RECV"
+  state.4 = "ESTABLISHED"
+  state.5 = "CLOSE_FIN"
+  state.6 = "CLOSED_FIN"
+  state.7 = "FINACK_WAIT"
+  state.8 = "CLOSED_FINACK"
+  state.9 = "CLOSED"
+  state.A = "TIME_WAIT"
+
+  'QUERY' 'CONNECTIONS' /* Ask information */
+
+  /* Print header */
+  say "Proto Recv-Q Send-Q  Local Address           Foreign Address        (status)"
+
+  rest=result
+  do while rest ~= ""
+  parse upper value rest with pr rq sq la lp fa fp st rest
+  /* Parse result string */
+  if pr=t then do
+    pro = "tcp" /* Protocol */
+    sts = state.st /* Name of state */
+  end
+  else do
+    pro = "udp"
+    sts = "" /* udp is stateless */
+  end
+  rqd = x2d(rq) /* Queue lengths */
+  sqd = x2d(sq)
+  /* Addresses to decimal dot notation */
+  lad = x2d(substr(la,1,2)) || "." ||x2d(substr(la,3,2)),
+    || "." ||x2d(substr(la,5,2)) || "." ||x2d(substr(la,7,2))
+  fad = x2d(substr(fa,1,2)) || "." ||x2d(substr(fa,3,2)),
+    || "." ||x2d(substr(fa,5,2)) || "." ||x2d(substr(fa,7,2))
+  lpd = x2d(lp) /* Port numbers to decimal */
+  fpd = x2d(fp)
+  /* Print only if connection is non-listening or all connections wanted */
+  if all = 1 | (st ~= 0 & st ~= 1) then do
+    sockst = left(pro, 5) right(rqd, 6) right(sqd, 6),
+      left("  " || resolve(lad) || "." || lpd, 23),
+      left("  " || resolve(fad) || "." || fpd, 23) "" sts
+    say sockst
+  end
+end /* while */
+end /* connections */
+
+/* If status wanted */
+if left(args,6) = "STATUS" then do
+
+  /* Ask ICMP information */
+  'Q' ICMP CHksum ICMP COde ICMP Error ICMP Icmpold ICMP Length ICMP Tooshort ICMP Responses ICMP Shortold
+  /* Parse ICMP information */
+  parse value result with icps_checksum icps_badcode icps_error icps_oldicmp icps_badlen icps_reflect icps_oldshort icps_tooshort .
+
+  /* Ask and parse IP information */
+  'Q' IP CH IP D IP FC IP FD IP FE IP FO IP FS IP FT IP FW IP H IP LE IP LO IP N IP OD IP OF IP REA IP RED IP TOOSH  IP TOOSM IP TOTAL
+  parse value result with ips_badsum ips_delivered ips_cantfragment ips_fragdropped ips_fragmented ips_forward ips_fragments ips_fragtimeout ips_cantforward ips_badhlen ips_badlen ips_localout ips_noproto ips_odropped ips_ofragments ips_reassembed ips_redirectsent ips_tooshort ips_toosmall ips_total .
+
+  /* Ask and parse TCP information */
+  'Q' TCP Accepts TCP CAttem TCP CDrops TCP CLosed TCP COnnect TCP DElack TCP DRops TCP KADrops TCP KAProbe  TCP KATimeo TCP Persist TCP RACKByte TCP RACKPack TCP RACKToom TCP RAFter TCP RBLate TCP RBYte TCP RChksum TCP RDUPAck TCP RDUPByte TCP RDUPPack TCP ROFfset TCP ROOByte TCP ROOPack TCP RPAck TCP RPDUPByte TCP RPDUPData TCP RPLate TCP RPShort TCP RTOtal TCP RTTupdate TCP RWProbe TCP RWUpdate TCP SAcks TCP SByte TCP SCtrl TCP SEgstimed TCP SPack TCP SREByte TCP SREPack TCP STotal TCP SUrgent TCP SWProbe TCP SWUpdate TCP Timeodrop TCP RExmtt
+  parse value result with tcps_accepts tcps_connattempt tcps_conndrops tcps_closed tcps_connects tcps_delack tcps_drops tcps_keepdrops tcps_keepprobe tcps_keeptimeo tcps_persisttimeo tcps_rcvackbyte tcps_rcvackpack tcps_rcvacktoomuch tcps_rcvafterclose tcps_rcvbyteafterwin tcps_rcvbyte tcps_rcvbadsum tcps_rcvdupack tcps_rcvdupbyte tcps_rcvduppack tcps_rcvbadoff tcps_rcvoobyte tcps_rcvoopack tcps_rcvpack tcps_rcvpartdupbyte tcps_rcvpartduppack tcps_rcvpackafterwin tcps_rcvshort tcps_rcvtotal tcps_rttupdated tcps_rcvwinprobe tcps_rcvwinupd tcps_sndacks tcps_sndbyte tcps_sndctrl tcps_segstimed tcps_sndpack tcps_sndrexmitbyte tcps_sndrexmitpack tcps_sndtotal tcps_sndurg tcps_sndprobe tcps_sndwinup tcps_timeoutdrop tcps_rexmttimeo .
+
+  /* Ask and parse UDP information */
+  'Q' UDP Bcnoport UDP Chksum UDP Fullsoc UDP Headshort UDP Itotal UDP Length UDP Mispcb UDP Noport UDP Ototal
+  parse value result with udps_noportbcast udps_badsum udps_fullsock udps_hdrops udps_ipackets udps_badlen udps_pcbcachemiss udps_noport udps_opackets .
+
+  /* Ask ICMP history */
+  'Q' ICMPHIST
+  icmphist = result
+
+  say "tcp:"
+  say tab || tcps_sndtotal "packets sent"
+  say tab || tab || tcps_sndpack "data packets ("||tcps_sndbyte "bytes)"
+  say tab || tab || tcps_sndrexmitpack "data packets ("||tcps_sndrexmitbyte "bytes) retransmitted"
+  say tab || tab || tcps_sndacks "ack-only packets ("|| tcps_delack "delayed)"
+  say tab || tab || tcps_sndurg "URG only packets"
+  say tab || tab || tcps_sndprobe "window probe packets"
+  say tab || tab || tcps_sndwinup "window update packets"
+  say tab || tab || tcps_sndctrl "control packets"
+  say tab || tcps_rcvtotal "packets received"
+  say tab || tab || tcps_rcvackpack "acks (for" tcps_rcvackbyte "bytes)"
+  say tab || tab || tcps_rcvdupack  "duplicate acks"
+  say tab || tab || tcps_rcvacktoomuch "acks for unsent data"
+  say tab || tab || tcps_rcvpack "packets ("|| tcps_rcvbyte "bytes) received in-sequence"
+  say tab || tab || tcps_rcvduppack "completely duplicate packets ("|| tcps_rcvdupbyte "bytes)"
+  say tab || tab || tcps_rcvpartduppack "packets with some dup. data ("|| tcps_rcvpartdupbyte "bytes duped)"
+  say tab || tab || tcps_rcvoopack "out-of-order packets ("||tcps_rcvoobyte "bytes)"
+  say tab || tab || tcps_rcvpackafterwin "packets ("||tcps_rcvbyteafterwin "bytes) of data after window"
+  say tab || tab || tcps_rcvwinprobe "window probes"
+  say tab || tab || tcps_rcvwinupd "window update packets"
+  say tab || tab || tcps_rcvafterclose "packets received after close"
+  say tab || tab || tcps_rcvbadsum "discarded for bad checksum"
+  say tab || tab || tcps_rcvbadoff "discarded for bad header offset fields"
+  say tab || tab || tcps_rcvshort "discarded because packet too short"
+  say tab || tcps_connattempt "connection requests"
+  say tab || tcps_accepts "connection accepts"
+  say tab || tcps_connects "connections established (including accepts)"
+  say tab || tcps_closed "connections closed (including" tcps_drops "drops)"
+  say tab || tcps_conndrops "embryonic connections dropped"
+  say tab || tcps_rttupdated "segments updated rtt (of" tcps_segstimed "attempts)"
+  say tab || tcps_rexmttimeo "retransmit timeouts"
+  say tab || tab || tcps_timeoutdrop "connections dropped by rexmit timeout"
+  say tab || tcps_persisttimeo "persist timeouts"
+  say tab || tcps_keeptimeo "keepalive timeouts"
+  say tab || tab || tcps_keepprobe "keepalive probes sent"
+  say tab || tab || tcps_keepdrops "connections dropped by keepalive"
+
+  say "udp:"
+  say tab || udps_hdrops "incomplete headers"
+  say tab || udps_badlen "bad data length fields"
+  say tab || udps_badsum "bad checksums"
+
+  say "ip:"
+  say tab || ips_total "total packets received"
+  say tab || ips_badsum "bad header checksums"
+  say tab || ips_tooshort "with size smaller than minimum"
+  say tab || ips_toosmall "with data size < data length"
+  say tab || ips_badhlen "with header length < data size"
+  say tab || ips_badlen "with data length < header length"
+  say tab || ips_fragments "fragments received"
+  say tab || ips_fragdropped "fragments dropped (dup or out of space)"
+  say tab || ips_fragtimeout "fragments dropped after timeout"
+  say tab || ips_forward "packets forwarded"
+  say tab || ips_cantforward "packets not forwardable"
+  say tab || ips_redirectsent "redirects sent"
+
+  /* ICMP codes */
+  icmph. = "UNKNOWN" /* default */
+  icmph.0 = "Echo reply"
+  icmph.3 = "Destination unreachable"
+  icmph.4 = "Packet lost, slow down"
+  icmph.5 = "Shorter route"
+  icmph.8 = "Echo service"
+  icmph.11 = "Time exceeded"
+  icmph.12 = "IP header bad"
+  icmph.13 = "Timestamp request"
+  icmph.14 = "Timestamp reply"
+  icmph.15 = "Information request"
+  icmph.16 = "Information reply"
+  icmph.17 = "Address mask request"
+  icmph.18 = "Address mask reply"
+  /* First out, then in statistics */
+  say "icmp:"
+  do a = 0 to 1
+    if a = 0 then do
+      say tab || icps_error "calls to icmp_error"
+      say tab || icps_oldicmp "errors not generated 'cuz old message was icmp"
+      say tab || "Output histogram:"
+    end
+    else do
+      say tab || icps_badcode "messages with bad code fields"
+      say tab || icps_tooshort "messages < minimum length"
+      say tab || icps_checksum "bad checksums"
+      say tab || icps_badlen "messages with bad length"
+      say tab || "Input histogram:"
+    end
+    do b = 0 to 18
+      count = subword(icmphist, a*19 + b + 1, 1)
+      if count ~= 0 then say tab || tab || count "times" icmph.b
+    end /* do b */
+  end /* do a */
+  say tab || icps_reflect "message responses generated"
+end /* end STATUS */
+
+if left(args, 5) = "ROUTE" then do
+  afamily.1  = "Unix";
+  afamily.2  = "Internet Protocols";
+  afamily.3  = "Arpanet IMP Addresses";
+  afamily.4  = "PUP Protocols";
+  afamily.5  = "MIT CHAOS";
+  afamily.6  = "XEROX NS ";
+  afamily.7  = "ISO Protocols";
+  afamily.8  = "ECMA";
+  afamily.9  = "Datakit Protocols";
+  afamily.10 = "CCITT (X.25) Protocols";
+  afamily.11 = "IBM SNA";
+  afamily.12 = "DECnet";
+  afamily.13 = "DEC Direct Data Link Interface";
+  afamily.14 = "LAT";
+  afamily.15 = "NSC Hyperchannel";
+  afamily.16 = "Apple Talk";
+  afamily.17 = "Internal Routing Protocol";
+  afamily.18 = "Link layer interface";
+  afamily.19 = "eXpress Transfer Protocol";
+
+  'QUERY ROUTES ALL' /* Ask information */
+
+  oldaf = -1;
+  rest = result;
+  do while rest ~= ""
+    parse value rest with af dest gate flags refs used iface rest
+    /* Print address (protocol) family */
+    af=x2d(af);
+    if af ~= oldaf then do
+    /* Print header */
+      if af ~= 0 then do 
+        say "Routing table for" afamily.af
+        say "Destination          Gateway              Flags     Refs     Use  Interface"
+      end; else do
+	say "Netmasks"
+      end
+      oldaf = af;
+    end
+    /* Addresses to decimal dot notation */
+    if (af == 2) then do
+      if (dest == "00000000") then do
+        desta = "default"
+      end 
+      else do
+        desta = x2d(substr(dest,1,2)) || "." || x2d(substr(dest,3,2)) || "." ||,
+                x2d(substr(dest,5,2)) || "." || x2d(substr(dest,7,2))
+      end
+      gatea = x2d(substr(gate,1,2)) || "." || x2d(substr(gate,3,2)) || "." ||,
+              x2d(substr(gate,5,2)) || "." || x2d(substr(gate,7,2))
+      /* Print route */
+      refs = x2d(refs);
+      used = x2d(used);
+      say left(resolve(desta), 20) left(resolve(gatea), 20) left(flags, 8),
+	  right(refs, 4) right(used, 8) "" iface;
+	  /* right(refs, 5), right(use, 9), interface */
+    end 
+    else do
+      say x2d(substr(dest,1,2)) || "." || x2d(substr(dest,3,2)) || "." ||,
+          x2d(substr(dest,5,2)) || "." || x2d(substr(dest,7,2))
+    end
+  end /* while rest */
+end /* ROUTE */
+/*EOF*/
+exit
+
+/*
+ * Using the AmiTCP 3.0 'resolve' command, this subroutine tries to convert
+ * the ip address into a canonical name of the host.
+ * (by Pavel Troller <patrol@k332.feld.cvut.cz>)
+ *
+ * The resolved names are cached into the "resolved.". If resolving fails,
+ * the address is inserted to the cache to prevent resolving the same 
+ * address again.
+ * (jraja)
+ */
+
+resolve:
+parse arg resadr .
+if ~numeric then do
+ resname = resolved.resadr
+ if resname = '' then do
+   address 'COMMAND' 'AmiTCP:bin/resolve >PIPE:netstat'||pragma("ID") resadr
+   call open(rfile, 'PIPE:netstat'||pragma("ID"), 'R')
+   parse value readln(rfile) with bla bla resname .
+   call close(rfile)
+ end
+ if resname = '' then
+   resname = resadr
+ /*
+  * Add the resolved name to cache
+  */
+ resolved.resadr = resname
+
+end
+return resname

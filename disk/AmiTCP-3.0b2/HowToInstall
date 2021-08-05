@@ -1,0 +1,222 @@
+* How to Install AmiTCP/IP:
+
+  You should not install the current version on top of older
+  version.  If your disk space allows, leave the old version on the
+  disk and delete it when you have the new version up and running. The
+  installation script will copy your old configuration from old
+  version directory.
+  
+  Extract first the distribution archives (AmiTCP_xxx_xx.lha) to some
+  directory in your hard disk (e.g. WORK:).
+
+* Configuration Information
+  
+  Before you proceed, you should get the following information from
+  your network administration (if you don't have the information, you
+  have to reinstall AmiTCP/IP afterwards):
+  
+  * Internet protocol address for your computer. This is a 32 bit
+    integer represented as a series of decimal numbers separated by
+    dots. For example, 130.233.161.40 is a legal internet address.
+
+  * If you have a point-to-point connection to the network, you need
+    to know your destination IP address, that is the IP address of
+    the host you are connected. SLIP, CSLIP and PPP are examples of
+    point-to-point connections.
+  
+  * Netmask for your network. This specifies how many bits of your
+    internet address are used to specify the network address. Netmask
+    is like 255.255.255.0. If your network is not sub-netted, then do
+    not have to supply this value (a default computed from the IP
+    address is used).
+  
+  * Address of the default gateway. If your host do not know any route
+    to a host it resorts to the default gateway. If you have only one
+    point-to-point connection, you should use the host you are
+    connected as a default gateway.
+  
+  * Your host name. Host name is a more convenient way than the internet
+    address to refer your computer. This is like `Amiga1'.
+  
+  * Domain name of your site. For example, "hut.fi" is the domain name
+    for the Helsinki University of Technology in Finland. The part
+    after the first dot in your full host name is usually (but not
+    always) your domain name.
+  
+  * Addresses of the Domain Name Servers which will be used to
+    translate host names to the corresponding internet addresses. A
+    local database must be used instead if there is no name server on
+    your domain.
+  
+    If you have an access to a Unix machine in your network, you can
+    probably find a list of domains and name server addresses in the
+    file `/etc/resolv.conf'. Also, if there is no name server, you can
+    copy the file `/etc/hosts' to the `AmiTCP:db/hosts'.
+
+  Next you should obtain a SANA-II compatible device driver for your
+  network adapter. The SANA-II drivers are usually installed into
+  directory `DEVS:networks'. We have included a few freely
+  distributable drivers with the AmiTCP/IP. You can use the SLIP or
+  CSLIP drivers with a serial interface.
+
+  AmiTCP/IP uses a mnemonic name of SANA-II device driver to access
+  it. The name and parameter mapping is specified in the configuration
+  file db/interfaces. You should also know the number of unit you are
+  using (usually 0). You might also have to make a configuration file
+  for your device driver. The configuration files have usually the
+  name of the interface appended with unit number and `.config', e.g.
+  unit 1 of rhslip.device uses the configuration file `slip1.config'.
+  Configuration files are usually stored into the directory
+  `ENV:Sana2/'. See the example configuration file for the slip.device
+  unit 0 at the end of this file.
+  
+  You may start the installation by double-clicking the
+  "Install_AmiTCP"-icon.
+  
+  If you use slip.device or cslip.device SANA-II drivers, you _must_
+  edit the configuration files before starting AmiTCP.
+
+* About User and Group Databases
+
+  AmiTCP/IP gives some user management support. For each user, there
+  is one line of information in the file AmiTCP:db/passwd, which is
+  currently used by `finger' and `ls' commands.  This line is
+  separated to 7 parts with vertical bars (`|'):
+
+username|password|uid|gid|gecos|home directory|shell
+
+  The `gecos' part contains real name, office, office phone and home
+  phome numbers separated with commas (',').  You can print them with
+  finger. Markus Peuhkuri has following entry in the example `passwd'
+  file:
+
+puhuri|*|17681|100|Markus Peuhkuri,G218,4512462,4521992|users:puhuri|shell
+
+  Markus has username puhuri. As the password field contains `*', his
+  password is disabled (so he can not log into your machine even if
+  the remote login is installed). His numeric identifier, UID, is
+  17681, and his default group number, GID, is 100, `users'. The UID
+  and GID must be numbers between 0 - 65535. After his real name there
+  is his office room at HUT, is work phone and his home phone.  His
+  home directory is `users:puhuri', finger searches his `.plan' and
+  `.project' files from that directory. Last field is his login shell,
+  AmiTCP/IP does not currently use that for anything.
+
+  You can add and remove users simply editing your `passwd' file with
+  text editors (Emacs, Ed, Edit). Make sure that finger can parse the
+  changed file and finger each user that you have changed.
+
+  The passwd file format is mostly compatible with MultiUser by Geert
+  Uytterhoeven and with AS225r2 beta from Commodore. You can use `ls'
+  with MultiUser or other filesystems which have WB3.0 compatible
+  interface. If you are using MultiUser, you should copy or link your
+  MultiUser passwd file to AmiTCP:db/passwd (install script tries to
+  copy automatically, but it does not have enough intelligence to do
+  it always right).
+
+  The group file, `AmiTCP:db/group' has similar format. There is more
+  information about group and password files in AutoDoc file
+  AmiTCP:db/doc/netlib.doc.
+
+* If There Is Some Problems with Installation 
+  
+  Here is an example of the required information:
+
+	Name of your computer:	 		slip-2
+	Your domain part: 			hut.fi
+	Aliases for it: 			amy
+	Your Internet address: 			130.233.161.50
+	Destination address (terminal server):	130.233.161.90
+	Netmask of used in your network:	255.255.252.0
+	Address of the default gateway: 	130.233.163.254
+	Domain names to search:			hut.fi
+						cs.hut.fi
+	Addresses of nameservers: 		130.233.224.1
+						130.233.224.13  
+						128.214.4.29
+	SANA-II device driver: 			slip.device 
+		(Serial Line IP)
+	Unit of the SANA-II device driver: 	0 
+	Name of the interface (db/interfaces):	slip0
+   
+  `AmiTCP:bin/StartNet' (lines beginning with `;' are comments):
+
+	run AmiTCP:AmiTCP
+	SYS:Rexxc/WaitForPort AMITCP
+	; configure loop-back device
+	AmiTCP:bin/ifconfig lo0 localhost
+	; Configure slip0
+	AmiTCP:bin/ifconfig slip0 130.233.161.50 +
+	130.233.161.90 netmask 255.255.252.0
+	; Add route to this host
+	AmiTCP:bin/route add slip-2.hut.fi localhost
+	; Add route to the default gateway
+	AmiTCP:bin/route add default 130.233.163.254
+	; Start the internet `super server'
+	run AmiTCP:bin/inetd
+
+  `Amitcp:db/netdb-myhost' (lines beginning with `;' are comments):
+
+	; This host
+	HOST 130.233.161.50 slip-2.hut.fi slip-2 amy
+	; Domain names
+	DOMAIN hut.fi
+	DOMAIN cs.hut.fi
+	; Name servers
+	NAMESERVER 130.233.224.1
+	NAMESERVER 130.233.224.13
+	NAMESERVER 128.214.4.29
+
+  `S:User-Startup' will contain something along following lines (if
+  you do not choose to start AmiTCP at the system startup):
+  
+	;BEGIN AmiTCP/IP
+	setenv HOSTNAME slip-2.hut.fi
+	assign AmiTCP: Work:AmiTCP-x.x
+	path AmiTCP:bin add
+	;END AmiTCP/IP
+
+  Example of ENV:sana2/slip0.config:
+
+	serial.device 0 19200 130.233.161.50
+
+  Note that the baud rate must match the baud rate of the terminal
+  program used for dialing!
+
+* What Happens in the Installation?
+  
+  The course of installation is shortly explained for those of you who
+  want to know what happens to their computer:
+
+  * Amount of free memory and version of system software is checked
+  * Destination directory is asked for
+  * An earlier installation is checked in the destination directory,
+    so you can change your setup by running the installation script
+    again
+  * The AmiTCP/IP files are copied to the destination if needed
+  * Included Sana-II device drivers are installed
+  * Example configuration files for the SANA-II drivers are copied to
+    ENVARC:sana2/ 
+  * EmacsTCP is installed 
+  * NapsaTerm is installed
+  * User and group databases are installed. They are useful when
+    dealing with Unix or multiuser filesystems.
+  * You are queried some information concerning your network setup:
+    * Your host and domain name name is stored to the environment
+      variable HOSTNAME
+    * You are asked for aliases (nicknames) for your host
+    * You are asked for the name, unit of the interface you are using
+    * Likewise the interface (and destination) IP addresses and
+      netmask are asked
+    * You are asked for the IP address of the default gateway
+    * You are asked for domain names and domain name server IP
+      addresses
+  * If you select to start AmiTCP/IP when your computer boots,
+    appropriate command is added to your s:user-startup.
+  * S:user-startup is modified to make right assigns and paths.
+  * Installer creates Amitcp:bin/startnet, a script to start
+    AmiTCP/IP, configure Sana-II interfaces and provide basic routing
+  * Other network information is saved in the file
+    AmiTCP:db/netdb-myhost
+
+EOF

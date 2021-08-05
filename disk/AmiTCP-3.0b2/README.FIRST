@@ -1,0 +1,64 @@
+* Credits
+
+  See the file `COPYRIGHTS' for the copyright information of the
+  AmiTCP/IP and included material.
+
+* License
+
+  The GNU General Public License version 2 (see the file `COPYING')
+  applies to the whole distribution, except for files explicitly
+  stated in the file `COPYRIGHTS'.
+
+* This Release
+
+  This is a second beta version of the release 3.0 of the AmiTCP/IP.
+
+  See the end of this file for new features/enchancements and bug
+  fixes.
+
+* How to Contact Authors?
+
+  Authors of the AmiTCP/IP can be reached from the e-mail address
+
+	<AmiTCP-Group@hut.fi>
+
+  The e-mail address for bug reports is:
+
+	<AmiTCP-Bug@hut.fi>
+
+  There is also a mailing list for the developers, <AmiTCP@hut.fi>. You
+  can join it by sending a request to:
+
+	<AmiTCP-Request@hut.fi>
+
+  Please include a word `ADD' along with your mail address in a single
+  line in your message body.
+
+  Any problems and suggestions can also be discussed in the newsgroup
+  comp.sys.amiga.datacomm.
+
+* Programs in the Binary Distribution
+
+  We have included some useful programs in the binary archive. Their
+  sources are not included, however.
+
+  - ch_nfsc - An NFS Client by Carsten Heyl
+
+      See the documentation for more info.
+
+  - NcFTP - Alternative user interface for FTP
+
+      Author is Mike Gleanson, NCEMRSoft <mgleason@cse.unl.edu>. Port was
+      made by Carsten Heyl <ch@irb.informatik.uni-dortmund.de>. Source
+      code for NcFTP and other programs ported by Carsten Heyl can be
+      fetched with anonymous ftp from from AmiNet directory comm/net or
+      from nic.funet.fi:/pub/amiga/datacomm/tcpip.
+
+  - NetFS -- network file system between Amigas
+
+      Author is Timo Rossi, <trossi@jyu.fi>. With NetFS it is
+      possible to use Amiga filesystems accross network.
+
+* New Features, enchancements and bug fixes on each release:
+
+  This section is moved to the AmiTCP-bin-xxx.readme.
