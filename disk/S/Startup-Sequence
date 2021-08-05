@@ -1,0 +1,31 @@
+MakeDir RAM:ENV
+MakeDir RAM:T
+MakeDir RAM:Clipboards
+Assign  ENV:     RAM:ENV
+Assign  T:       RAM:T
+Assign  CLIPS:   RAM:Clipboards
+Assign  LOCALE:  SYS:Locale
+Assign  HELP:    LOCALE:Help
+
+Copy >NIL: ENVARC:#? ENV: ALL
+
+Mount >NIL: DEVS:DOSDrivers/~(#?.info)
+
+Alias Version C:VersionWB LIKECVER
+Alias Ed SYS:Tools/Redit
+Alias Installer C:Installer
+Alias More C:More
+Alias MultiView SYS:Utilities/MultiView
+
+SetPatch
+RTPatch
+
+IF EXISTS s:user-startup
+  Execute s:user-startup
+EndIF
+
+C:FastIPrefs
+
+LoadWB
+EndCLI
+
